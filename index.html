@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>EmpireCity State</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Подключаем стильный моноширинный шрифт для баланса -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -53,7 +49,7 @@
 
     /* Карточка персонажа */
     .glass-card {
-      background: rgba(18, 18, 26, 0.5); /* Более прозрачный фон */
+      background: rgba(18, 18, 26, 0.45);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
@@ -102,7 +98,7 @@
     }
 
     .lvl-badge {
-      background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(202, 138, 4, 0.3));
+      background: rgba(234, 179, 8, 0.15);
       border: 1px solid rgba(234, 179, 8, 0.8);
       color: #fef08a;
       padding: 6px 12px;
@@ -115,7 +111,7 @@
 
     .balance-box {
       margin-top: 16px;
-      background: rgba(8, 8, 12, 0.45);
+      background: rgba(8, 8, 12, 0.5);
       padding: 14px 16px;
       border-radius: 14px;
       display: flex;
@@ -130,9 +126,9 @@
       letter-spacing: 0.8px;
     }
 
-    /* Новый строгий моноширинный шрифт для финансового баланса */
+    /* Моноширинный строго финансовый шрифт */
     .balance-amount {
-      font-family: 'Roboto Mono', monospace;
+      font-family: 'Courier New', Courier, monospace;
       font-size: 18px;
       font-weight: 700;
       color: #facc15;
@@ -141,16 +137,16 @@
       text-shadow: 0 0 10px rgba(234, 179, 8, 0.25);
     }
 
-    /* Вертикальное Главное Меню (3 Прозрачные Кнопки) */
+    /* Вертикальное Главное Меню */
     .main-menu-vertical {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .glass-btn-large {
-      background: rgba(18, 18, 26, 0.35); /* Ещё более прозрачные */
+      background: rgba(18, 18, 26, 0.35);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(234, 179, 8, 0.25);
@@ -247,4 +243,178 @@
         <div class="user-profile">
           <div class="avatar" id="user-avatar">😎</div>
           <div class="user-info">
-            <h2 id="user-name">Игрок
+            <h2 id="user-name">Игрок</h2>
+            <p id="user-status">Гражданин EmpireCity</p>
+          </div>
+        </div>
+        <div class="lvl-badge">⭐ LVL 1</div>
+      </div>
+      
+      <div class="balance-box">
+        <div>
+          <div class="balance-title">Наличные</div>
+          <div class="balance-amount" id="cash">$ 5,000</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="balance-title">Счёт</div>
+          <div class="balance-amount" id="bank">$ 50,000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ВЕРТИКАЛЬНОЕ ГЛАВНОЕ МЕНЮ (3 Прозрачные Кнопки) -->
+    <div id="main-screen" class="main-menu-vertical">
+      <button class="glass-btn-large" onclick="openScreen('screen-profile')">
+        <span>👤 Профиль</span>
+        <span style="color: #eab308;">➔</span>
+      </button>
+      <button class="glass-btn-large" onclick="openScreen('screen-city')">
+        <span>🏙️ Город</span>
+        <span style="color: #eab308;">➔</span>
+      </button>
+      <button class="glass-btn-large" onclick="openScreen('screen-other')">
+        <span>⚙️ Прочее</span>
+        <span style="color: #eab308;">➔</span>
+      </button>
+    </div>
+
+    <!-- ЭКРАН 1: ПРОФИЛЬ -->
+    <div id="screen-profile" class="sub-screen">
+      <button class="btn-back" onclick="goHome()">⬅️ В главное меню</button>
+      <div class="section-title">Раздел Профиль</div>
+      <div class="content-grid">
+        <button class="glass-btn" onclick="alert('Статистика персонажа')">📊 Статистика</button>
+        <button class="glass-btn" onclick="alert('Инвентарь пуст!')">🎒 Инвентарь</button>
+      </div>
+    </div>
+
+    <!-- ЭКРАН 2: ГОРОД -->
+    <div id="screen-city" class="sub-screen">
+      <button class="btn-back" onclick="goHome()">⬅️ В главное меню</button>
+      <div class="section-title">Локации Города</div>
+      <div class="content-grid">
+        <button class="glass-btn" onclick="alert('Центр занятости')">💼 Работа</button>
+        <button class="glass-btn" onclick="alert('Центральный Банк')">🏦 Банк</button>
+        <button class="glass-btn" onclick="alert('Салон связи')">📱 Салон связи</button>
+        <button class="glass-btn" onclick="alert('Аукцион')">🔨 Аукцион</button>
+        <button class="glass-btn" onclick="alert('Автосалон Luxury')">🚘 Автосалоны</button>
+        <button class="glass-btn" onclick="alert('Агентство недвижимости')">🏠 Недвижимость</button>
+      </div>
+    </div>
+
+    <!-- ЭКРАН 3: ПРОЧЕЕ -->
+    <div id="screen-other" class="sub-screen">
+      <button class="btn-back" onclick="goHome()">⬅️ В главное меню</button>
+      <div class="section-title">Дополнительно</div>
+      <div class="content-grid">
+        <button class="glass-btn" onclick="alert('Настройки профиля')">⚙️ Настройки</button>
+        <button class="glass-btn" onclick="alert('Активация промокода')">🎁 Промокоды</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function openScreen(screenId) {
+      document.getElementById('main-screen').style.display = 'none';
+      document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function goHome() {
+      document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('main-screen').style.display = 'flex';
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        try { tg.expand(); tg.ready(); } catch (e) {}
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+          const user = tg.initDataUnsafe.user;
+          const name = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+          document.getElementById('user-name').innerText = name;
+          document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
+        }
+      }
+    });
+
+    const canvas = document.getElementById('space-bg');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const stars = Array.from({ length: 65 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 1.2,
+      alpha: Math.random(),
+      speed: Math.random() * 0.02 + 0.005
+    }));
+
+    const shootingStars = [];
+
+    function createShootingStar() {
+      if (shootingStars.length < 3 && Math.random() < 0.035) {
+        shootingStars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * (canvas.height / 2),
+          length: Math.random() * 80 + 40,
+          speed: Math.random() * 10 + 6,
+          dx: (Math.random() - 0.3) * 6,
+          dy: Math.random() * 6 + 4,
+          alpha: 1
+        });
+      }
+    }
+
+    function animateSpace() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      stars.forEach(star => {
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+        ctx.fill();
+      });
+
+      createShootingStar();
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const s = shootingStars[i];
+        s.x += s.dx;
+        s.y += s.dy;
+        s.alpha -= 0.015;
+
+        if (s.alpha <= 0 || s.x < 0 || s.x > canvas.width || s.y > canvas.height) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        const gradient = ctx.createLinearGradient(s.x, s.y, s.x - s.dx * 5, s.y - s.dy * 5);
+        gradient.addColorStop(0, `rgba(250, 204, 21, ${s.alpha})`);
+        gradient.addColorStop(1, `rgba(234, 179, 8, 0)`);
+        
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.dx * (s.length / 10), s.y - s.dy * (s.length / 10));
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(animateSpace);
+    }
+
+    animateSpace();
+  </script>
+</body>
+</html>
