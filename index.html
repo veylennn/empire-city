@@ -29,7 +29,7 @@
       position: relative;
     }
 
-    /* Звездный фон */
+    /* Фон Космоса */
     #space-bg {
       position: fixed;
       top: 0;
@@ -177,10 +177,11 @@
     }
 
     .xp-bar-fill {
-      width: 35%;
+      width: 0%;
       height: 100%;
       background: linear-gradient(90deg, #ca8a04, #facc15);
       box-shadow: 0 0 8px #facc15;
+      transition: width 0.2s ease;
     }
 
     /* Балансы */
@@ -210,13 +211,13 @@
 
     .balance-amount {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: #facc15;
       margin-top: 3px;
     }
 
-    /* Увеличенные Локации Города */
+    /* Карточки Города */
     .hub-container {
       display: flex;
       flex-direction: column;
@@ -326,7 +327,52 @@
       border-color: #facc15;
     }
 
-    /* Увеличенная Нижняя Кнопка Назад */
+    /* МИНИ-ИГРА: СБОР БАНОК */
+    .cans-game-area {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      background: rgba(10, 10, 15, 0.7);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .can-item {
+      position: absolute;
+      font-size: 36px;
+      cursor: pointer;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.4));
+      transition: transform 0.1s;
+    }
+
+    .can-item:active {
+      transform: scale(1.3);
+    }
+
+    /* Всплывающие цифры заработка */
+    .floating-text {
+      position: absolute;
+      color: #4ade80;
+      font-weight: 900;
+      font-size: 16px;
+      pointer-events: none;
+      animation: floatUp 0.6s forwards ease-out;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-35px); }
+    }
+
     .btn-back-bottom {
       background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(202, 138, 4, 0.15));
       border: 1px solid rgba(234, 179, 8, 0.6);
@@ -338,15 +384,8 @@
       cursor: pointer;
       text-align: center;
       margin-top: 8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
-    .btn-back-bottom:active {
-      transform: scale(0.97);
-      background: rgba(234, 179, 8, 0.35);
-    }
-
-    /* Нижняя панель */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -412,12 +451,10 @@
 </head>
 <body>
 
-  <!-- Фон Космоса -->
   <canvas id="space-bg"></canvas>
 
   <div class="app-container">
 
-    <!-- Шапка -->
     <div class="server-status">
       <span>EMPIRE CITY STATE</span>
       <div class="status-online">
@@ -436,19 +473,19 @@
           </div>
           <div class="user-info">
             <h2 id="user-name">Игрок</h2>
-            <p id="user-status">Нажмите для статистики ➔</p>
+            <p id="user-status">Гражданин EmpireCity ➔</p>
           </div>
         </div>
-        <div class="lvl-badge">⭐ LVL 1</div>
+        <div class="lvl-badge" id="lvl-badge">⭐ LVL 1</div>
       </div>
 
       <div class="xp-container">
         <div class="xp-info">
           <span>Прогресс уровня</span>
-          <span>350 / 1000 XP</span>
+          <span id="xp-text">0 / 500 XP</span>
         </div>
         <div class="xp-bar-bg">
-          <div class="xp-bar-fill"></div>
+          <div class="xp-bar-fill" id="xp-bar"></div>
         </div>
       </div>
       
@@ -457,59 +494,55 @@
           <div class="balance-header">
             <span>💵</span> Наличные
           </div>
-          <div class="balance-amount" id="cash">$ 5 000</div>
+          <div class="balance-amount" id="cash">1 000 ₽</div>
         </div>
         <div class="balance-card">
           <div class="balance-header">
             <span>💳</span> Счёт
           </div>
-          <div class="balance-amount" id="bank">$ 50 000</div>
+          <div class="balance-amount" id="bank">0 ₽</div>
         </div>
       </div>
     </div>
 
-    <!-- ВКЛАДКА «ГОРОД»: ОТСОРТИРОВАННЫЕ КНОПКИ -->
+    <!-- ВКЛАДКА ГОРОД -->
     <div id="main-screen" class="sub-screen active">
       <div class="hub-container">
         
-        <!-- 1. Ежедневный бонус -->
         <div class="hub-card" onclick="claimDailyReward()">
           <div class="hub-card-left">
             <div class="hub-icon-box">🎁</div>
             <div class="hub-text">
               <h3>Ежедневный Бонус <span class="badge-claim">ГОТОВ</span></h3>
-              <p>Заберите награду +$1,000</p>
+              <p>Заберите награду +500 ₽</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
         </div>
 
-        <!-- 2. Центр занятости -->
         <div class="hub-card" onclick="openScreen('screen-work')">
           <div class="hub-card-left">
             <div class="hub-icon-box">💼</div>
             <div class="hub-text">
               <h3>Центр Занятости</h3>
-              <p>Заработок: курьер, такси, дальнобой</p>
+              <p>Сбор банок, подработки и контракты</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
         </div>
 
-        <!-- 3. Салон сотовой связи -->
-        <div class="hub-card" onclick="alert('📱 Салон связи: Покупка красивых номеров (777-777, 007-007)')">
+        <div class="hub-card" onclick="alert('📱 Салон связи: Блатные номера от 15 000 ₽')">
           <div class="hub-card-left">
             <div class="hub-icon-box">📱</div>
             <div class="hub-text">
               <h3>Салон Сотовой Связи</h3>
-              <p>Покупка красивых и блатных номеров</p>
+              <p>Покупка блатных номеров</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
         </div>
 
-        <!-- 4. Центральный банк -->
-        <div class="hub-card" onclick="alert('🏦 Центральный Банк: Вклады под 5% и переводы')">
+        <div class="hub-card" onclick="alert('🏦 Центральный Банк: Вклады под 5% в день')">
           <div class="hub-card-left">
             <div class="hub-icon-box">🏦</div>
             <div class="hub-text">
@@ -520,20 +553,18 @@
           <span class="arrow-icon">➔</span>
         </div>
 
-        <!-- 5. Автосалон -->
-        <div class="hub-card" onclick="alert('🚘 Автосалон Luxury Cars')">
+        <div class="hub-card" onclick="alert('🚘 Автосалон: Автомобили от 250 000 ₽')">
           <div class="hub-card-left">
             <div class="hub-icon-box">🚘</div>
             <div class="hub-text">
               <h3>Автосалон</h3>
-              <p>Покупка спорткаров и премиум авто</p>
+              <p>Покупка автомобилей и спорткаров</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
         </div>
 
-        <!-- 6. Недвижимость -->
-        <div class="hub-card" onclick="alert('🏠 Агентство Недвижимости')">
+        <div class="hub-card" onclick="alert('🏠 Агентство Недвижимости: Жилье от 2 500 000 ₽')">
           <div class="hub-card-left">
             <div class="hub-icon-box">🏠</div>
             <div class="hub-text">
@@ -544,13 +575,12 @@
           <span class="arrow-icon">➔</span>
         </div>
 
-        <!-- 7. Развлечения (Казино, Рулетка) -->
-        <div class="hub-card" onclick="alert('🎰 Развлечения: Колесо Фортуны, Казино и Лотереи')">
+        <div class="hub-card" onclick="alert('🎰 Развлечения: Доступно со 2-го уровня!')">
           <div class="hub-card-left">
             <div class="hub-icon-box">🎰</div>
             <div class="hub-text">
               <h3>Развлечения</h3>
-              <p>Казино, Колесо Фортуны и Лотереи</p>
+              <p>Казино, Колесо Фортуны и Рулетка</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
@@ -564,54 +594,64 @@
       <div class="section-title">Раздел Профиль</div>
       <div class="content-grid">
         <button class="glass-btn" onclick="alert('Статистика персонажа')">📊 Статистика</button>
-        <button class="glass-btn" onclick="alert('Список достижений')">🏆 Достижения</button>
-        <button class="glass-btn" onclick="alert('МФЦ: Выдача лицензий')">📜 Лицензии</button>
-        <button class="glass-btn" onclick="alert('Управление VIP подпиской')">👑 VIP Статус</button>
+        <button class="glass-btn" onclick="alert('Достижения')">🏆 Достижения</button>
+        <button class="glass-btn" onclick="alert('Лицензии')">📜 Лицензии</button>
+        <button class="glass-btn" onclick="alert('VIP Статус')">👑 VIP Статус</button>
       </div>
       <button class="btn-back-bottom" onclick="goHome()">⬅️ Вернуться в Город</button>
     </div>
 
-    <!-- ЭКРАН: РАБОТА -->
+    <!-- ЭКРАН: ЦЕНТР ЗАНЯТОСТИ (РАБОТЫ) -->
     <div id="screen-work" class="sub-screen">
-      <div class="section-title">Доступные Вакансии</div>
+      <div class="section-title">Доступные Работы</div>
       <div class="content-grid">
-        <button class="glass-btn" onclick="alert('Вы поработали курьером +$150')">📦 Курьер</button>
-        <button class="glass-btn" onclick="alert('Вы выполнили заказ на такси +$300')">🚕 Таксист</button>
-        <button class="glass-btn" onclick="alert('Доступно с 3 уровня!')">Дальнобойщик 🔒</button>
-        <button class="glass-btn" onclick="alert('Доступно владельцам VIP!')">IT-Специалист 🔒</button>
+        <button class="glass-btn" style="border-color: #facc15;" onclick="openScreen('screen-cans-game')">🥫 Сбор банок<br><span style="font-size:10px; color:#4ade80;">1–3 ₽ / банка</span></button>
+        <button class="glass-btn" style="opacity: 0.6;" onclick="alert('📦 Работа Курьера в разработке 🚧')">📦 Курьер<br><span style="font-size:10px; color:#eab308;">[В разработке 🚧]</span></button>
       </div>
       <button class="btn-back-bottom" onclick="goHome()">⬅️ Вернуться в Город</button>
     </div>
 
-    <!-- ВКЛАДКА 2: ИНВЕНТАРЬ -->
+    <!-- ЭКРАН МИНИ-ИГРЫ: СБОР БАНОК -->
+    <div id="screen-cans-game" class="sub-screen">
+      <div class="section-title">Мини-игра: Сбор жестяных банок</div>
+      <p style="font-size: 11px; color: #94a3b8;">Нажимайте на появляющиеся банки, чтобы сдавать их в пункт приёма.</p>
+      
+      <div class="cans-game-area" id="cans-area">
+        <!-- Банки спавнятся через JS -->
+      </div>
+
+      <button class="btn-back-bottom" onclick="openScreen('screen-work')">⬅️ Вернуться к Вакансиям</button>
+    </div>
+
+    <!-- ИНВЕНТАРЬ -->
     <div id="screen-inventory" class="sub-screen">
       <div class="section-title">Купленное Имущество</div>
       <div class="content-grid">
-        <button class="glass-btn" onclick="alert('В гараже пусто!')">🚗 Мой Гараж</button>
-        <button class="glass-btn" onclick="alert('У вас нет недвижимости!')">🏠 Мои Дома</button>
-        <button class="glass-btn" onclick="alert('Слоты инвентаря: 0/20')">🎒 Личные вещи</button>
-        <button class="glass-btn" onclick="alert('Активные бусты отсутствуют')">⚡ Бусты и Награды</button>
+        <button class="glass-btn">🚗 Мой Гараж</button>
+        <button class="glass-btn">🏠 Мои Дома</button>
+        <button class="glass-btn">🎒 Личные вещи</button>
+        <button class="glass-btn">⚡ Бусты</button>
       </div>
     </div>
 
-    <!-- ВКЛАДКА 3: ТОП -->
+    <!-- ТОП -->
     <div id="screen-top" class="sub-screen">
       <div class="section-title">Топ Богачей EmpireCity</div>
       <div style="background: rgba(10,10,15,0.6); padding: 16px; border-radius: 16px; font-size: 14px; border: 1px solid rgba(255,255,255,0.05);">
-        <p>1. 🥇 Alex_Gromov — $15,200,000</p><br>
-        <p>2. 🥈 Rich_Guy — $9,800,000</p><br>
-        <p>3. 🥉 Elon_M — $7,100,000</p>
+        <p>1. 🥇 Alex_Gromov — 15 200 000 ₽</p><br>
+        <p>2. 🥈 Rich_Guy — 9 800 000 ₽</p><br>
+        <p>3. 🥉 Elon_M — 7 100 000 ₽</p>
       </div>
     </div>
 
-    <!-- ВКЛАДКА 4: ПРОЧЕЕ -->
+    <!-- ПРОЧЕЕ -->
     <div id="screen-options" class="sub-screen">
       <div class="section-title">Настройки и Промокоды</div>
       <input type="text" class="input-box" placeholder="Введите промокод...">
       <button class="glass-btn" style="background: rgba(234, 179, 8, 0.25); color: #facc15; font-size: 15px;" onclick="alert('Промокод не найден')">🎁 Активировать промокод</button>
       <div class="content-grid" style="margin-top: 8px;">
-        <button class="glass-btn" onclick="alert('Звуковые эффекты включены')">🎧 Звук</button>
-        <button class="glass-btn" onclick="alert('Напишите администратору @admin')">💬 Поддержка</button>
+        <button class="glass-btn">🎧 Звук: Вкл</button>
+        <button class="glass-btn">💬 Поддержка</button>
       </div>
     </div>
 
@@ -638,6 +678,97 @@
   </div>
 
   <script>
+    // Глобальные переменные игрока
+    let player = {
+      cash: 1000,
+      bank: 0,
+      xp: 0,
+      maxXp: 500,
+      lvl: 1
+    };
+
+    // Синтез Звука Кликера (Web Audio API)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playCanSound() {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    }
+
+    // Обновление UI экономики
+    function updateUI() {
+      document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('xp-text').innerText = `${player.xp} / ${player.maxXp} XP`;
+      document.getElementById('lvl-badge').innerText = `⭐ LVL ${player.lvl}`;
+      
+      const percent = Math.min((player.xp / player.maxXp) * 100, 100);
+      document.getElementById('xp-bar').style.width = percent + '%';
+    }
+
+    function addReward(cashAmount, xpAmount) {
+      player.cash += cashAmount;
+      player.xp += xpAmount;
+
+      if (player.xp >= player.maxXp) {
+        player.lvl += 1;
+        player.xp -= player.maxXp;
+        player.maxXp = Math.floor(player.maxXp * 1.8);
+        alert(`🎉 ПОЗДРАВЛЯЕМ! Вы достигли ${player.lvl}-го уровня!`);
+      }
+      updateUI();
+    }
+
+    // Логика Спавна Банок
+    const canEmojis = ['🥫', '🥤', '🍺'];
+    function spawnCan() {
+      const area = document.getElementById('cans-area');
+      if (!area || !document.getElementById('screen-cans-game').classList.contains('active')) return;
+
+      if (area.children.length >= 5) return; // Не больше 5 банок одновременно
+
+      const can = document.createElement('div');
+      can.className = 'can-item';
+      can.innerText = canEmojis[Math.floor(Math.random() * canEmojis.length)];
+      
+      const x = Math.random() * (area.clientWidth - 50);
+      const y = Math.random() * (area.clientHeight - 50);
+      can.style.left = x + 'px';
+      can.style.top = y + 'px';
+
+      can.onclick = function (e) {
+        playCanSound();
+        const earned = Math.floor(Math.random() * 3) + 1; // 1-3 рубля
+        addReward(earned, 1);
+
+        // Всплывающие цифры
+        const floatText = document.createElement('div');
+        floatText.className = 'floating-text';
+        floatText.innerText = `+${earned} ₽`;
+        floatText.style.left = x + 'px';
+        floatText.style.top = y + 'px';
+        area.appendChild(floatText);
+
+        setTimeout(() => floatText.remove(), 600);
+        can.remove();
+      };
+
+      area.appendChild(can);
+    }
+
+    setInterval(spawnCan, 900); // Спавн банки каждые 0.9 сек
+
     function openScreen(screenId) {
       document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
       const target = document.getElementById(screenId);
@@ -668,11 +799,13 @@
     }
 
     function claimDailyReward() {
-      alert('🎁 Ежедневный бонус получен: +$1,000!');
+      addReward(500, 20);
+      alert('🎁 Вы забрали ежедневный бонус: +500 ₽ и +20 XP!');
     }
 
-    // Telegram Инициализация
+    // Инициализация Telegram
     document.addEventListener("DOMContentLoaded", function () {
+      updateUI();
       try {
         if (window.Telegram && window.Telegram.WebApp) {
           const tg = window.Telegram.WebApp;
@@ -686,12 +819,10 @@
             document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
           }
         }
-      } catch (e) {
-        console.log("Запуск вне Telegram");
-      }
+      } catch (e) {}
     });
 
-    // Оптимизированное Звездное Небо
+    // Анимация Звезд
     const canvas = document.getElementById('space-bg');
     const ctx = canvas.getContext('2d');
 
@@ -710,25 +841,8 @@
       speed: Math.random() * 0.02 + 0.005
     }));
 
-    const shootingStars = [];
-
-    function createShootingStar() {
-      if (shootingStars.length < 3 && Math.random() < 0.04) {
-        shootingStars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * (canvas.height / 2),
-          length: Math.random() * 80 + 40,
-          speed: Math.random() * 10 + 6,
-          dx: (Math.random() - 0.3) * 6,
-          dy: Math.random() * 6 + 4,
-          alpha: 1
-        });
-      }
-    }
-
     function animateSpace() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       stars.forEach(star => {
         star.alpha += star.speed;
         if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
@@ -738,34 +852,8 @@
         ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
         ctx.fill();
       });
-
-      createShootingStar();
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const s = shootingStars[i];
-        s.x += s.dx;
-        s.y += s.dy;
-        s.alpha -= 0.015;
-
-        if (s.alpha <= 0 || s.x < 0 || s.x > canvas.width || s.y > canvas.height) {
-          shootingStars.splice(i, 1);
-          continue;
-        }
-
-        ctx.beginPath();
-        const gradient = ctx.createLinearGradient(s.x, s.y, s.x - s.dx * 5, s.y - s.dy * 5);
-        gradient.addColorStop(0, `rgba(250, 204, 21, ${s.alpha})`);
-        gradient.addColorStop(1, `rgba(234, 179, 8, 0)`);
-        
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2;
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(s.x - s.dx * (s.length / 10), s.y - s.dy * (s.length / 10));
-        ctx.stroke();
-      }
-
       requestAnimationFrame(animateSpace);
     }
-
     animateSpace();
   </script>
 </body>
