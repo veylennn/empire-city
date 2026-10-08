@@ -19,8 +19,7 @@
     body {
       background: #050508;
       color: #f8fafc;
-      padding: 16px;
-      padding-bottom: 90px;
+      padding: 16px 16px 90px 16px; /* Отступ снизу под Bottom Bar */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -29,7 +28,7 @@
       overflow-x: hidden;
     }
 
-    /* Космос */
+    /* Анимированный космос */
     #space-bg {
       position: fixed;
       top: 0;
@@ -48,15 +47,47 @@
       gap: 16px;
     }
 
-    /* Премиум Карточка Персонажа */
+    /* Верхняя плашка состояния сервера */
+    .server-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+      padding: 0 4px;
+    }
+
+    .status-online {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #4ade80;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #4ade80;
+    }
+
+    /* Карточка Профиля (Кликабельная) */
     .glass-card {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 22px;
-      padding: 20px;
+      padding: 18px;
       border: 1px solid rgba(234, 179, 8, 0.35);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .glass-card:active {
+      transform: scale(0.98);
     }
 
     .header {
@@ -76,16 +107,16 @@
     }
 
     .avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 18px;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
       background: linear-gradient(135deg, #facc15, #ca8a04);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 24px;
       color: #000;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
+      box-shadow: 0 0 18px rgba(234, 179, 8, 0.4);
       border: 2px solid rgba(255, 255, 255, 0.3);
     }
 
@@ -95,552 +126,178 @@
       right: -4px;
       background: #000;
       color: #facc15;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 900;
-      padding: 2px 5px;
-      border-radius: 6px;
+      padding: 2px 4px;
+      border-radius: 5px;
       border: 1px solid #eab308;
     }
 
     .user-info h2 {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 800;
       color: #ffffff;
-      letter-spacing: 0.3px;
     }
 
     .user-info p {
-      font-size: 12px;
+      font-size: 11px;
       color: #94a3b8;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .lvl-badge {
       background: rgba(234, 179, 8, 0.12);
       border: 1px solid rgba(234, 179, 8, 0.6);
       color: #fef08a;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 11px;
       font-weight: 800;
-      box-shadow: 0 0 12px rgba(234, 179, 8, 0.2);
     }
 
     /* Шкала Опыта (XP) */
     .xp-container {
-      margin-top: 14px;
+      margin-top: 12px;
     }
+
     .xp-info {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 10px;
       color: #94a3b8;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       font-weight: 600;
     }
+
     .xp-bar-bg {
       width: 100%;
-      height: 6px;
+      height: 5px;
       background: rgba(255, 255, 255, 0.08);
       border-radius: 10px;
       overflow: hidden;
     }
+
     .xp-bar-fill {
       width: 35%;
       height: 100%;
       background: linear-gradient(90deg, #ca8a04, #facc15);
       box-shadow: 0 0 8px #facc15;
-      border-radius: 10px;
     }
 
-    /* Балансы */
+    /* Финансовые Блоки */
     .balance-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     .balance-card {
       background: rgba(10, 10, 15, 0.55);
-      padding: 12px 14px;
-      border-radius: 16px;
+      padding: 10px 12px;
+      border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
     }
 
     .balance-header {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
+      gap: 5px;
+      font-size: 10px;
       color: #94a3b8;
       text-transform: uppercase;
       font-weight: 700;
-      letter-spacing: 0.5px;
     }
 
     .balance-amount {
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 17px;
+      font-family: monospace;
+      font-size: 16px;
       font-weight: 700;
       color: #facc15;
-      text-shadow: 0 0 10px rgba(234, 179, 8, 0.2);
+      margin-top: 2px;
     }
 
-    /* Карточки-Баннеры Главного Меню */
-    .main-menu-vertical {
+    /* Интерактивные Игровые Баннеры */
+    .hub-container {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .menu-card {
+    .hub-card {
       position: relative;
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(234, 179, 8, 0.25);
-      border-radius: 20px;
-      padding: 18px 20px;
+      border-radius: 18px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      overflow: hidden;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s;
     }
 
-    /* Блик при клике */
-    .menu-card::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-      transform: rotate(30deg);
-      transition: opacity 0.3s;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .menu-card:active {
+    .hub-card:active {
       transform: scale(0.97);
       border-color: #facc15;
-      box-shadow: 0 0 25px rgba(234, 179, 8, 0.4);
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
     }
 
-    .menu-card:active::after {
-      opacity: 1;
-    }
-
-    .menu-card-left {
+    .hub-card-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
-    .menu-icon-box {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
+    .hub-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
       background: rgba(234, 179, 8, 0.12);
       border: 1px solid rgba(234, 179, 8, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      box-shadow: inset 0 0 10px rgba(234, 179, 8, 0.1);
+      font-size: 20px;
     }
 
-    .menu-text h3 {
-      font-size: 16px;
+    .hub-text h3 {
+      font-size: 15px;
       font-weight: 700;
       color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .menu-text p {
-      font-size: 12px;
+    .hub-text p {
+      font-size: 11px;
       color: #94a3b8;
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
-    .badge-mini {
-      font-size: 10px;
+    .badge-claim {
+      font-size: 9px;
       font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 8px;
-      background: #eab308;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #22c55e;
       color: #000;
       text-transform: uppercase;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
     }
 
     .arrow-icon {
-      font-size: 18px;
+      font-size: 16px;
       color: #eab308;
       opacity: 0.8;
-      transition: transform 0.2s;
     }
 
-    .menu-card:active .arrow-icon {
-      transform: translateX(4px);
-    }
-
-    /* Нижняя панель навигации (Bottom Nav) */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100vw;
-      background: rgba(10, 10, 15, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(234, 179, 8, 0.25);
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0 14px;
-      z-index: 100;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: #64748b;
-      font-size: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: color 0.15s;
-    }
-
-    .nav-item.active {
-      color: #facc15;
-    }
-
-    .nav-item span {
-      font-size: 18px;
-    }
-
-    /* Подразделы */
+    /* Подэкраны */
     .sub-screen {
       display: none;
-      animation: fadeIn 0.25s ease;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .sub-screen.active {
-      display: flex;
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .glass-btn {
-      background: rgba(18, 18, 26, 0.4);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(234, 179, 8, 0.2);
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 16px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s ease;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .glass-btn:active {
-      transform: scale(0.96);
-      border-color: #facc15;
-      background: rgba(234, 179, 8, 0.15);
-    }
-
-    .btn-back {
-      background: rgba(234, 179, 8, 0.12);
-      border: 1px solid rgba(234, 179, 8, 0.6);
-      color: #fef08a;
-      padding: 12px;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .section-title {
-      font-size: 13px;
-      color: #eab308;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-
-  <canvas id="space-bg"></canvas>
-
-  <div class="app-container">
-
-    <!-- Премиум Карточка Профиля -->
-    <div class="glass-card">
-      <div class="header">
-        <div class="user-profile">
-          <div class="avatar-wrapper">
-            <div class="avatar" id="user-avatar">😎</div>
-            <div class="vip-tag">VIP</div>
-          </div>
-          <div class="user-info">
-            <h2 id="user-name">Игрок</h2>
-            <p id="user-status">Гражданин EmpireCity</p>
-          </div>
-        </div>
-        <div class="lvl-badge">⭐ LVL 1</div>
-      </div>
-
-      <!-- Шкала XP -->
-      <div class="xp-container">
-        <div class="xp-info">
-          <span>Прогресс уровня</span>
-          <span>350 / 1000 XP</span>
-        </div>
-        <div class="xp-bar-bg">
-          <div class="xp-bar-fill"></div>
-        </div>
-      </div>
-      
-      <!-- Финансовые Карточки -->
-      <div class="balance-grid">
-        <div class="balance-card">
-          <div class="balance-header">
-            <span>💵</span> Наличные
-          </div>
-          <div class="balance-amount" id="cash">$ 5 000</div>
-        </div>
-        <div class="balance-card">
-          <div class="balance-header">
-            <span>💳</span> Банк
-          </div>
-          <div class="balance-amount" id="bank">$ 50 000</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ВЕРТИКАЛЬНОЕ ГЛАВНОЕ МЕНЮ (Интерактивные Карточки) -->
-    <div id="main-screen" class="main-menu-vertical">
-      
-      <div class="menu-card" onclick="openScreen('screen-profile')">
-        <div class="menu-card-left">
-          <div class="menu-icon-box">👤</div>
-          <div class="menu-text">
-            <h3>Профиль</h3>
-            <p>Статистика, навыки и инвентарь</p>
-          </div>
-        </div>
-        <span class="arrow-icon">➔</span>
-      </div>
-
-      <div class="menu-card" onclick="openScreen('screen-city')">
-        <div class="menu-card-left">
-          <div class="menu-icon-box">🏙️</div>
-          <div class="menu-text">
-            <h3>Город <span class="badge-mini">3 Онлайн</span></h3>
-            <p>Работа, банк, автосалон, недвижимость</p>
-          </div>
-        </div>
-        <span class="arrow-icon">➔</span>
-      </div>
-
-      <div class="menu-card" onclick="openScreen('screen-other')">
-        <div class="menu-card-left">
-          <div class="menu-icon-box">⚙️</div>
-          <div class="menu-text">
-            <h3>Прочее</h3>
-            <p>Настройки, промокоды, поддержка</p>
-          </div>
-        </div>
-        <span class="arrow-icon">➔</span>
-      </div>
-
-    </div>
-
-    <!-- ЭКРАН 1: ПРОФИЛЬ -->
-    <div id="screen-profile" class="sub-screen">
-      <button class="btn-back" onclick="goHome()">⬅️ В главное меню</button>
-      <div class="section-title">Раздел Профиль</div>
-      <div class="content-grid">
-        <button class="glass-btn" onclick="alert('Статистика персонажа')">📊 Статистика</button>
-        <button class="glass-btn" onclick="alert('Инвентарь пуст!')">🎒 Инвентарь</button>
-      </div>
-    </div>
-
-    <!-- ЭКРАН 2: ГОРОД -->
-    <div id="screen-city" class="sub-screen">
-      <button class="btn-back" onclick="goHome()">⬅️ В главное меню</button>
-      <div class="section-title">Локации Города</div>
-      <div class="content-grid">
-        <button class="glass-btn" onclick="alert('Центр занятости')">💼 Работа</button>
-        <button class="glass-btn" onclick="alert('Центральный Банк')">🏦 Банк</button>
-        <button class="glass-btn" onclick="alert('Салон связи')">📱 Салон связи</button>
-        <button class="glass-btn" onclick="alert('Аукцион')">🔨 Аукцион</button>
-        <button class="glass-btn" onclick="alert('Автосалон Luxury')">🚘 Автосалоны</button>
-        <button class="glass-btn" onclick="alert('Агентство недвижимости')">🏠 Недвижимость</button>
-      </div>
-    </div>
-
-    <!-- ЭКРАН 3: ПРОЧЕЕ -->
-    <div id="screen-other" class="sub-screen">
-      <button class="btn-back" onclick="goHome()">⬅️ В главное меню</button>
-      <div class="section-title">Дополнительно</div>
-      <div class="content-grid">
-        <button class="glass-btn" onclick="alert('Настройки профиля')">⚙️ Настройки</button>
-        <button class="glass-btn" onclick="alert('Активация промокода')">🎁 Промокоды</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (Bottom Navigation) -->
-  <div class="bottom-nav">
-    <div class="nav-item active" onclick="goHome()">
-      <span>🏠</span>
-      <div>Главная</div>
-    </div>
-    <div class="nav-item" onclick="openScreen('screen-profile')">
-      <span>🎒</span>
-      <div>Инвентарь</div>
-    </div>
-    <div class="nav-item" onclick="alert('Рейтинг игроков скоро!')">
-      <span>🏆</span>
-      <div>Топ</div>
-    </div>
-    <div class="nav-item" onclick="openScreen('screen-other')">
-      <span>⚙️</span>
-      <div>Опции</div>
-    </div>
-  </div>
-
-  <script>
-    function openScreen(screenId) {
-      document.getElementById('main-screen').style.display = 'none';
-      document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
-    }
-
-    function goHome() {
-      document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('main-screen').style.display = 'flex';
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        try { tg.expand(); tg.ready(); } catch (e) {}
-
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-          const user = tg.initDataUnsafe.user;
-          const name = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-          document.getElementById('user-name').innerText = name;
-          document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
-        }
-      }
-    });
-
-    // Анимация космоса
-    const canvas = document.getElementById('space-bg');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    const stars = Array.from({ length: 65 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 1.2,
-      alpha: Math.random(),
-      speed: Math.random() * 0.02 + 0.005
-    }));
-
-    const shootingStars = [];
-
-    function createShootingStar() {
-      if (shootingStars.length < 3 && Math.random() < 0.035) {
-        shootingStars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * (canvas.height / 2),
-          length: Math.random() * 80 + 40,
-          speed: Math.random() * 10 + 6,
-          dx: (Math.random() - 0.3) * 6,
-          dy: Math.random() * 6 + 4,
-          alpha: 1
-        });
-      }
-    }
-
-    function animateSpace() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      stars.forEach(star => {
-        star.alpha += star.speed;
-        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
-
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
-        ctx.fill();
-      });
-
-      createShootingStar();
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const s = shootingStars[i];
-        s.x += s.dx;
-        s.y += s.dy;
-        s.alpha -= 0.015;
-
-        if (s.alpha <= 0 || s.x < 0 || s.x > canvas.width || s.y > canvas.height) {
-          shootingStars.splice(i, 1);
-          continue;
-        }
-
-        ctx.beginPath();
-        const gradient = ctx.createLinearGradient(s.x, s.y, s.x - s.dx * 5, s.y - s.dy * 5);
-        gradient.addColorStop(0, `rgba(250, 204, 21, ${s.alpha})`);
-        gradient.addColorStop(1, `rgba(234, 179, 8, 0)`);
-        
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2;
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(s.x - s.dx * (s.length / 10), s.y - s.dy * (s.length / 10));
-        ctx.stroke();
-      }
-
-      requestAnimationFrame(animateSpace);
-    }
-
-    animateSpace();
-  </script>
-</body>
-</html>
+      animation: fadeIn 0.2s ease;
+      flex-direction: column;ы
