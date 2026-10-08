@@ -25,11 +25,11 @@
 
     body {
       color: #f8fafc;
-      padding: 16px 16px 90px 16px;
+      padding: 16px 16px 85px 16px;
       position: relative;
     }
 
-    /* Анимированное звездное небо */
+    /* Звездный фон */
     #space-bg {
       position: fixed;
       top: 0;
@@ -48,7 +48,7 @@
       gap: 14px;
     }
 
-    /* Серверная шапка */
+    /* Шапка Сервера */
     .server-status {
       display: flex;
       align-items: center;
@@ -74,7 +74,7 @@
       box-shadow: 0 0 8px #22c55e;
     }
 
-    /* Премиум Карточка Профиля */
+    /* Карточка Профиля */
     .glass-card {
       background: rgba(18, 18, 28, 0.65);
       backdrop-filter: blur(16px);
@@ -154,7 +154,7 @@
       font-weight: 800;
     }
 
-    /* XP Шкала */
+    /* Шкала XP */
     .xp-container {
       margin-top: 12px;
     }
@@ -216,7 +216,7 @@
       margin-top: 3px;
     }
 
-    /* Игровые Хаб Баннеры */
+    /* Локации Города (Прямой выбор) */
     .hub-container {
       display: flex;
       flex-direction: column;
@@ -290,7 +290,7 @@
       color: #eab308;
     }
 
-    /* Экранные Подразделы */
+    /* Подэкраны */
     .sub-screen {
       display: none;
       flex-direction: column;
@@ -337,7 +337,7 @@
       cursor: pointer;
     }
 
-    /* ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ НИЖНЯЯ ПАНЕЛЬ */
+    /* Нижняя панель */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -407,7 +407,7 @@
 
   <div class="app-container">
 
-    <!-- Серверная шапка -->
+    <!-- Шапка -->
     <div class="server-status">
       <span>EMPIRE CITY STATE</span>
       <div class="status-online">
@@ -416,7 +416,7 @@
       </div>
     </div>
 
-    <!-- Карточка Профиля -->
+    <!-- Профиль -->
     <div class="glass-card" onclick="openScreen('screen-profile')">
       <div class="header">
         <div class="user-profile">
@@ -458,7 +458,7 @@
       </div>
     </div>
 
-    <!-- ГЛАВНЫЙ ЭКРАН HAF -->
+    <!-- ВКТАДКА «ГОРОД»: ВСЕ ЛОКАЦИИ СРАЗУ -->
     <div id="main-screen" class="sub-screen active">
       <div class="hub-container">
         
@@ -466,8 +466,8 @@
           <div class="hub-card-left">
             <div class="hub-icon-box">🎁</div>
             <div class="hub-text">
-              <h3>Бонус <span class="badge-claim">ГОТОВ</span></h3>
-              <p>Заберите ежедневную награду</p>
+              <h3>Ежедневный Бонус <span class="badge-claim">ГОТОВ</span></h3>
+              <p>Заберите награду +$1,000</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
@@ -477,19 +477,41 @@
           <div class="hub-card-left">
             <div class="hub-icon-box">💼</div>
             <div class="hub-text">
-              <h3>Биржа Труда</h3>
-              <p>Работа, заказы и кликер</p>
+              <h3>Центр Занятости</h3>
+              <p>Заработок: курьер, такси, дальнобой</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
         </div>
 
-        <div class="hub-card" onclick="openScreen('screen-city')">
+        <div class="hub-card" onclick="alert('Центральный Банк: Вклады под 5% и переводы')">
           <div class="hub-card-left">
-            <div class="hub-icon-box">🏙️</div>
+            <div class="hub-icon-box">🏦</div>
             <div class="hub-text">
-              <h3>Карта Города</h3>
-              <p>Банк, автосалоны, недвижимость, аукцион</p>
+              <h3>Центральный Банк</h3>
+              <p>Переводы, депозиты и сейфы</p>
+            </div>
+          </div>
+          <span class="arrow-icon">➔</span>
+        </div>
+
+        <div class="hub-card" onclick="alert('Автосалон Luxury Cars')">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">🚘</div>
+            <div class="hub-text">
+              <h3>Автосалон Luxury</h3>
+              <p>Покупка спорткаров и премиум авто</p>
+            </div>
+          </div>
+          <span class="arrow-icon">➔</span>
+        </div>
+
+        <div class="hub-card" onclick="alert('Агентство Недвижимости')">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">🏠</div>
+            <div class="hub-text">
+              <h3>Недвижимость</h3>
+              <p>Квартиры, пентхаусы и виллы</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
@@ -500,7 +522,7 @@
 
     <!-- ЭКРАН: ПРОФИЛЬ -->
     <div id="screen-profile" class="sub-screen">
-      <button class="btn-back" onclick="goHome()">⬅️ Назад в Главную</button>
+      <button class="btn-back" onclick="goHome()">⬅️ Вернуться в Город</button>
       <div class="section-title">Раздел Профиль</div>
       <div class="content-grid">
         <button class="glass-btn" onclick="alert('Статистика персонажа')">📊 Статистика</button>
@@ -510,24 +532,10 @@
       </div>
     </div>
 
-    <!-- ЭКРАН: ГОРОД -->
-    <div id="screen-city" class="sub-screen">
-      <button class="btn-back" onclick="goHome()">⬅️ Назад в Главную</button>
-      <div class="section-title">Инфраструктура Города</div>
-      <div class="content-grid">
-        <button class="glass-btn" onclick="openScreen('screen-work')">💼 Работа</button>
-        <button class="glass-btn" onclick="alert('Центральный Банк: вклады и переводы')">🏦 Банк</button>
-        <button class="glass-btn" onclick="alert('Салон сотовой связи: Выбор кратных номеров')">📱 Салон связи</button>
-        <button class="glass-btn" onclick="alert('Аукцион редких вещей временно закрыт!')">🔨 Аукцион</button>
-        <button class="glass-btn" onclick="alert('Автосалон Luxury Cars')">🚘 Автосалоны</button>
-        <button class="glass-btn" onclick="alert('Агентство недвижимости: Дома и Квартиры')">🏠 Недвижимость</button>
-      </div>
-    </div>
-
     <!-- ЭКРАН: РАБОТА -->
     <div id="screen-work" class="sub-screen">
-      <button class="btn-back" onclick="goHome()">⬅️ Назад в Главную</button>
-      <div class="section-title">Вакансии Города</div>
+      <button class="btn-back" onclick="goHome()">⬅️ Вернуться в Город</button>
+      <div class="section-title">Доступные Вакансии</div>
       <div class="content-grid">
         <button class="glass-btn" onclick="alert('Вы поработали курьером +$150')">📦 Курьер</button>
         <button class="glass-btn" onclick="alert('Вы выполнили заказ на такси +$300')">🚕 Таксист</button>
@@ -536,18 +544,18 @@
       </div>
     </div>
 
-    <!-- ЭКРАН: ИНВЕНТАРЬ -->
+    <!-- ВКЛАДКА 2: ИНВЕНТАРЬ -->
     <div id="screen-inventory" class="sub-screen">
-      <div class="section-title">Имущество персонажа</div>
+      <div class="section-title">Купленное Имущество</div>
       <div class="content-grid">
-        <button class="glass-btn" onclick="alert('В гараже пусто!')">🚗 Гараж</button>
-        <button class="glass-btn" onclick="alert('У вас нет недвижимости!')">🏠 Недвижимость</button>
-        <button class="glass-btn" onclick="alert('Слоты инвентаря: 0/20')">🎒 Предметы</button>
-        <button class="glass-btn" onclick="alert('Активные бусты отсутствуют')">⚡ Бусты</button>
+        <button class="glass-btn" onclick="alert('В гараже пусто!')">🚗 Мой Гараж</button>
+        <button class="glass-btn" onclick="alert('У вас нет недвижимости!')">🏠 Мои Дома</button>
+        <button class="glass-btn" onclick="alert('Слоты инвентаря: 0/20')">🎒 Личные вещи</button>
+        <button class="glass-btn" onclick="alert('Активные бусты отсутствуют')">⚡ Бусты и Награды</button>
       </div>
     </div>
 
-    <!-- ЭКРАН: ТОП -->
+    <!-- ВКЛАДКА 3: ТОП -->
     <div id="screen-top" class="sub-screen">
       <div class="section-title">Топ Богачей EmpireCity</div>
       <div style="background: rgba(10,10,15,0.6); padding: 14px; border-radius: 14px; font-size: 13px; border: 1px solid rgba(255,255,255,0.05);">
@@ -557,7 +565,7 @@
       </div>
     </div>
 
-    <!-- ЭКРАН: ОПЦИИ -->
+    <!-- ВКЛАДКА 4: ПРОЧЕЕ -->
     <div id="screen-options" class="sub-screen">
       <div class="section-title">Настройки и Промокоды</div>
       <input type="text" class="input-box" placeholder="Введите промокод...">
@@ -570,11 +578,11 @@
 
   </div>
 
-  <!-- НИЖНЯЯ ПАНЕЛЬ -->
+  <!-- НИЖНИЙ НАВБАР -->
   <div class="bottom-bar">
     <div class="tab-item active" id="tab-home" onclick="switchTab('home')">
-      <span class="tab-icon">🏠</span>
-      <span>Главная</span>
+      <span class="tab-icon">🏙️</span>
+      <span>Город</span>
     </div>
     <div class="tab-item" id="tab-inventory" onclick="switchTab('inventory')">
       <span class="tab-icon">🎒</span>
@@ -586,7 +594,7 @@
     </div>
     <div class="tab-item" id="tab-options" onclick="switchTab('options')">
       <span class="tab-icon">⚙️</span>
-      <span>Опции</span>
+      <span>Прочее</span>
     </div>
   </div>
 
@@ -688,3 +696,38 @@
 
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+        ctx.fill();
+      });
+
+      createShootingStar();
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const s = shootingStars[i];
+        s.x += s.dx;
+        s.y += s.dy;
+        s.alpha -= 0.015;
+
+        if (s.alpha <= 0 || s.x < 0 || s.x > canvas.width || s.y > canvas.height) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        const gradient = ctx.createLinearGradient(s.x, s.y, s.x - s.dx * 5, s.y - s.dy * 5);
+        gradient.addColorStop(0, `rgba(250, 204, 21, ${s.alpha})`);
+        gradient.addColorStop(1, `rgba(234, 179, 8, 0)`);
+        
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.dx * (s.length / 10), s.y - s.dy * (s.length / 10));
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(animateSpace);
+    }
+
+    animateSpace();
+  </script>
+</body>
+</html>
