@@ -376,7 +376,7 @@
       transform: translateY(0);
     }
 
-    /* РУЛЕТКА НОМЕРОВ В САЛОНЕ СВЯЗИ */
+    /* РУЛЕТКА НОМЕРОВ */
     .spin-box {
       background: rgba(10, 10, 15, 0.85);
       border: 2px solid rgba(234, 179, 8, 0.4);
@@ -616,4 +616,121 @@
         <!-- Салон связи -->
         <div class="hub-card" onclick="openModal('modal-mobile-store')">
           <div class="hub-card-left">
-            <div class="hub-icon-box">📱
+            <div class="hub-icon-box">📱</div>
+            <div class="hub-text">
+              <h3>Салон Сотовой Связи</h3>
+              <p>Прокрутка номеров, телефоны и баланс SIM</p>
+            </div>
+          </div>
+          <span class="arrow-icon">➔</span>
+        </div>
+
+        <div class="hub-card" onclick="alert('🏦 Центральный Банк: Вклады под 5% в день')">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">🏦</div>
+            <div class="hub-text">
+              <h3>Центральный Банк</h3>
+              <p>Переводы, депозиты и сейфы</p>
+            </div>
+          </div>
+          <span class="arrow-icon">➔</span>
+        </div>
+
+        <!-- АУКЦИОН -->
+        <div class="hub-card" onclick="enterAuction()">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">🔨</div>
+            <div class="hub-text">
+              <h3>Городской Аукцион</h3>
+              <p>Торги редкими номерами и имуществом</p>
+            </div>
+          </div>
+          <span class="arrow-icon">➔</span>
+        </div>
+
+        <div class="hub-card" onclick="alert('🚘 Автосалон: Автомобили от 250 000 ₽')">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">🚘</div>
+            <div class="hub-text">
+              <h3>Автосалон</h3>
+              <p>Покупка автомобилей и спорткаров</p>
+            </div>
+          </div>
+          <span class="arrow-icon">➔</span>
+        </div>
+
+        <div class="hub-card" onclick="alert('🏠 Агентство Недвижимости: Жилье от 2 500 000 ₽')">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">🏠</div>
+            <div class="hub-text">
+              <h3>Недвижимость</h3>
+              <p>Квартиры, пентхаусы и виллы</p>
+            </div>
+          </div>
+          <span class="arrow-icon">➔</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ЭКРАН: ПРОФИЛЬ -->
+    <div id="screen-profile" class="sub-screen">
+      <div class="section-title">Раздел Профиль</div>
+      <div class="content-grid">
+        <button class="glass-btn" onclick="alert('Статистика персонажа')">📊 Статистика</button>
+        <button class="glass-btn" onclick="alert('Достижения')">🏆 Достижения</button>
+        <button class="glass-btn" onclick="alert('Лицензии')">📜 Лицензии</button>
+        <button class="glass-btn" onclick="alert('VIP Статус')">👑 VIP Статус</button>
+      </div>
+      <button class="btn-back-bottom" onclick="goHome()">⬅️ Вернуться в Город</button>
+    </div>
+
+    <!-- ЭКРАН: ЦЕНТР ЗАНЯТОСТИ (РАБОТЫ) -->
+    <div id="screen-work" class="sub-screen">
+      <div class="section-title">Доступные Работы</div>
+      <div class="content-grid">
+        <button class="glass-btn" style="border-color: #facc15;" onclick="openScreen('screen-cans-game')">🥫 Сбор банок<br><span style="font-size:10px; color:#4ade80;">15–40 ₽ / банка</span></button>
+        <button class="glass-btn" style="opacity: 0.6;" onclick="alert('📦 Работа Курьера в разработке 🚧')">📦 Курьер<br><span style="font-size:10px; color:#eab308;">[В разработке 🚧]</span></button>
+      </div>
+      <button class="btn-back-bottom" onclick="goHome()">⬅️ Вернуться в Город</button>
+    </div>
+
+    <!-- ЭКРАН МИНИ-ИГРЫ: СБОР БАНОК -->
+    <div id="screen-cans-game" class="sub-screen">
+      <div class="section-title">Мини-игра: Сбор жестяных банок</div>
+      <p style="font-size: 11px; color: #94a3b8;">Собирайте банки для сдачи в пункт приема (Шанс выбить редкую медную банку за 200 ₽!).</p>
+      
+      <div class="cans-game-area" id="cans-area"></div>
+
+      <button class="btn-back-bottom" onclick="openScreen('screen-work')">⬅️ Вернуться к Вакансиям</button>
+    </div>
+
+    <!-- ИНВЕНТАРЬ -->
+    <div id="screen-inventory" class="sub-screen">
+      <div class="section-title">Купленное Имущество</div>
+      <div class="content-grid">
+        <button class="glass-btn" onclick="alert('У вас нет автомобиля!')">🚗 Мой Гараж</button>
+        <button class="glass-btn" onclick="alert('У вас нет недвижимости!')">🏠 Мои Дома</button>
+        <button class="glass-btn" id="inv-phone-status">📱 Смартфон: Нет</button>
+        <button class="glass-btn">⚡ Бусты</button>
+      </div>
+
+      <div class="section-title" style="margin-top: 10px;">📱 Мои Сим-карты (Макс. 2)</div>
+      <div id="sim-inventory-list"></div>
+    </div>
+
+    <!-- ТОП -->
+    <div id="screen-top" class="sub-screen">
+      <div class="section-title">Топ Богачей EmpireCity</div>
+      <div style="background: rgba(10,10,15,0.6); padding: 16px; border-radius: 16px; font-size: 14px; border: 1px solid rgba(255,255,255,0.05);">
+        <p>1. 🥇 Alex_Gromov — 15 200 000 ₽</p><br>
+        <p>2. 🥈 Rich_Guy — 9 800 000 ₽</p><br>
+        <p>3. 🥉 Elon_M — 7 100 000 ₽</p>
+      </div>
+    </div>
+
+    <!-- ПРОЧЕЕ -->
+    <div id="screen-options" class="sub-screen">
+      <div class="section-title">Настройки и Промокоды</div>
+      <input type="text" class="input-box" placeholder="Введите промокод...">
+      <button class="glass-btn" style="background: rgba
