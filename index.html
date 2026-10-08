@@ -144,6 +144,13 @@
       color: #94a3b8;
     }
 
+    .phone-tag {
+      font-size: 11px;
+      color: #facc15;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
     .lvl-badge {
       background: rgba(234, 179, 8, 0.15);
       border: 1px solid rgba(234, 179, 8, 0.7);
@@ -327,6 +334,70 @@
       border-color: #facc15;
     }
 
+    /* ВЫЕЗЖАЮЩАЯ ШТОРКА (MODAL OVERLAY) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: flex;
+      align-items: flex-end;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-height: 85vh;
+      background: rgba(18, 18, 28, 0.95);
+      border-top: 1px solid rgba(234, 179, 8, 0.5);
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-overlay.active .modal-sheet {
+      transform: translateY(0);
+    }
+
+    /* РУЛЕТКА НОМЕРОВ В САЛОНЕ СВЯЗИ */
+    .spin-box {
+      background: rgba(10, 10, 15, 0.85);
+      border: 2px solid rgba(234, 179, 8, 0.4);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .spin-number-display {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 22px;
+      font-weight: 900;
+      color: #facc15;
+      letter-spacing: 1px;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.5);
+    }
+
     /* МИНИ-ИГРА: СБОР БАНОК */
     .cans-game-area {
       position: relative;
@@ -352,7 +423,6 @@
       transform: scale(1.3);
     }
 
-    /* Всплывающие цифры заработка */
     .floating-text {
       position: absolute;
       color: #4ade80;
@@ -443,6 +513,18 @@
       letter-spacing: 0.5px;
     }
 
+    /* Карточки Сим-карт в Инвентаре */
+    .sim-card-item {
+      background: rgba(10, 10, 15, 0.75);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      padding: 12px 14px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
@@ -474,6 +556,7 @@
           <div class="user-info">
             <h2 id="user-name">Игрок</h2>
             <p id="user-status">Гражданин EmpireCity ➔</p>
+            <p class="phone-tag" id="user-phone">📱 SIM: Не установлена</p>
           </div>
         </div>
         <div class="lvl-badge" id="lvl-badge">⭐ LVL 1</div>
@@ -531,12 +614,13 @@
           <span class="arrow-icon">➔</span>
         </div>
 
-        <div class="hub-card" onclick="alert('📱 Салон связи: Блатные номера от 15 000 ₽')">
+        <!-- Кнопка вызова выезжающей шторки Салона связи -->
+        <div class="hub-card" onclick="openModal('modal-mobile-store')">
           <div class="hub-card-left">
             <div class="hub-icon-box">📱</div>
             <div class="hub-text">
               <h3>Салон Сотовой Связи</h3>
-              <p>Покупка блатных номеров</p>
+              <p>Прокрутка и покупка красивых номеров</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
@@ -616,9 +700,7 @@
       <div class="section-title">Мини-игра: Сбор жестяных банок</div>
       <p style="font-size: 11px; color: #94a3b8;">Нажимайте на появляющиеся банки, чтобы сдавать их в пункт приёма.</p>
       
-      <div class="cans-game-area" id="cans-area">
-        <!-- Банки спавнятся через JS -->
-      </div>
+      <div class="cans-game-area" id="cans-area"></div>
 
       <button class="btn-back-bottom" onclick="openScreen('screen-work')">⬅️ Вернуться к Вакансиям</button>
     </div>
@@ -631,6 +713,11 @@
         <button class="glass-btn">🏠 Мои Дома</button>
         <button class="glass-btn">🎒 Личные вещи</button>
         <button class="glass-btn">⚡ Бусты</button>
+      </div>
+
+      <div class="section-title" style="margin-top: 10px;">📱 Мои Сим-карты (Макс. 2)</div>
+      <div id="sim-inventory-list">
+        <!-- Купленные симки появятся здесь -->
       </div>
     </div>
 
@@ -648,13 +735,37 @@
     <div id="screen-options" class="sub-screen">
       <div class="section-title">Настройки и Промокоды</div>
       <input type="text" class="input-box" placeholder="Введите промокод...">
-      <button class="glass-btn" style="background: rgba(234, 179, 8, 0.25); color: #facc15; font-size: 15px;" onclick="alert('Промокод не найден')">🎁 Активировать промокод</button>
+      <button class="glass-btn" style="background: rgba(234, 179, 8, 0.25); color: #facc15; font-size: 15px;" onclick="activatePromo()">🎁 Активировать промокод</button>
       <div class="content-grid" style="margin-top: 8px;">
         <button class="glass-btn">🎧 Звук: Вкл</button>
         <button class="glass-btn">💬 Поддержка</button>
       </div>
     </div>
 
+  </div>
+
+  <!-- ВЫЕЗЖАЮЩАЯ ШТОРКА: САЛОН СВЯЗИ (КАЗИНО-РУЛЕТКА) -->
+  <div class="modal-overlay" id="modal-mobile-store">
+    <div class="modal-sheet">
+      <div class="section-title" style="font-size: 15px;">📱 Салон Сотовой Связи «EmpireMobile»</div>
+      <p style="font-size: 12px; color: #94a3b8;">Выбивайте блатные и редкие номера российском формате +7 (777) XXX-XX-XX!</p>
+      
+      <div class="spin-box">
+        <div style="font-size: 11px; color: #94a3b8; font-weight: 700;">ВЫПАВШИЙ НОМЕР:</div>
+        <div class="spin-number-display" id="spin-display">+7 (777) ???-??-??</div>
+        
+        <div style="display: flex; gap: 10px; width: 100%; margin-top: 6px;">
+          <button class="glass-btn" id="btn-spin" style="flex: 1; background: rgba(234, 179, 8, 0.2); color: #facc15;" onclick="startPhoneSpin()">
+            🎲 Крутить (500 ₽)
+          </button>
+          <button class="glass-btn" id="btn-buy-sim" style="flex: 1; border-color: #22c55e; color: #4ade80; display: none;" onclick="buyCurrentSim()">
+            💳 Купить (1 500 ₽)
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-back-bottom" onclick="closeModal('modal-mobile-store')">Закрыть салон</button>
+    </div>
   </div>
 
   <!-- НИЖНИЙ НАВБАР -->
@@ -678,65 +789,229 @@
   </div>
 
   <script>
-    // Глобальные переменные игрока
     let player = {
       cash: 1000,
       bank: 0,
       xp: 0,
       maxXp: 500,
-      lvl: 1
+      lvl: 1,
+      phone: 'Не установлена',
+      sims: [] // Купленные сим-карты (макс 2)
     };
 
-    // Синтез Звука Кликера (Web Audio API)
+    let currentRolledNumber = null;
+    let isSpinning = false;
+
+    // Синтез звуков (Звук кликера и Звук рулетки)
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playCanSound() {
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+    
+    function playSound(freq, duration, type = 'sine') {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      osc.stop(audioCtx.currentTime + 0.08);
+      osc.stop(audioCtx.currentTime + duration);
     }
 
-    // Обновление UI экономики
+    function playCanSound() {
+      playSound(800, 0.08);
+    }
+
+    function playTickSound() {
+      playSound(1200, 0.04, 'square');
+    }
+
+    function playWinSound() {
+      playSound(600, 0.15);
+      setTimeout(() => playSound(900, 0.2), 100);
+    }
+
     function updateUI() {
       document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('xp-text').innerText = `${player.xp} / ${player.maxXp} XP`;
       document.getElementById('lvl-badge').innerText = `⭐ LVL ${player.lvl}`;
+      document.getElementById('user-phone').innerText = `📱 SIM: ${player.phone}`;
       
       const percent = Math.min((player.xp / player.maxXp) * 100, 100);
       document.getElementById('xp-bar').style.width = percent + '%';
+
+      renderInventorySims();
     }
 
     function addReward(cashAmount, xpAmount) {
       player.cash += cashAmount;
       player.xp += xpAmount;
 
-      if (player.xp >= player.maxXp) {
+      while (player.xp >= player.maxXp) {
         player.lvl += 1;
         player.xp -= player.maxXp;
         player.maxXp = Math.floor(player.maxXp * 1.8);
-        alert(`🎉 ПОЗДРАВЛЯЕМ! Вы достигли ${player.lvl}-го уровня!`);
       }
       updateUI();
     }
 
-    // Логика Спавна Банок
+    // Промокоды
+    function activatePromo() {
+      const input = document.querySelector('#screen-options .input-box');
+      if (!input) return;
+
+      const code = input.value.trim().toUpperCase();
+
+      if (code === 'TEST') {
+        addReward(500000, 15000);
+        alert('🚀 Активирован промокод TEST:\n+500 000 ₽\n+15 000 XP');
+        input.value = '';
+      } else if (code === 'RESET') {
+        player.cash = 1000;
+        player.bank = 0;
+        player.xp = 0;
+        player.maxXp = 500;
+        player.lvl = 1;
+        player.phone = 'Не установлена';
+        player.sims = [];
+        updateUI();
+        alert('🔄 Прогресс сброшен!');
+        input.value = '';
+      } else {
+        alert('❌ Промокод не найден!');
+      }
+    }
+
+    // РУЛЕТКА ПРОКРУТКИ НОМЕРОВ
+    function generateRandomPhone() {
+      const part1 = Math.floor(100 + Math.random() * 900);
+      const part2 = Math.floor(10 + Math.random() * 90);
+      const part3 = Math.floor(10 + Math.random() * 90);
+      return `+7 (777) ${part1}-${part2}-${part3}`;
+    }
+
+    function startPhoneSpin() {
+      if (isSpinning) return;
+      if (player.cash < 500) {
+        alert('❌ Недостаточно средств для прокрута! Нужно 500 ₽');
+        return;
+      }
+
+      player.cash -= 500;
+      updateUI();
+      isSpinning = true;
+
+      const display = document.getElementById('spin-display');
+      const buyBtn = document.getElementById('btn-buy-sim');
+      buyBtn.style.display = 'none';
+
+      let counter = 0;
+      const interval = setInterval(() => {
+        display.innerText = generateRandomPhone();
+        playTickSound();
+        counter += 50;
+
+        if (counter >= 1500) {
+          clearInterval(interval);
+          currentRolledNumber = generateRandomPhone();
+          display.innerText = currentRolledNumber;
+          playWinSound();
+          isSpinning = false;
+          buyBtn.style.display = 'block';
+        }
+      }, 50);
+    }
+
+    function buyCurrentSim() {
+      if (!currentRolledNumber) return;
+      if (player.sims.length >= 2) {
+        alert('❌ У вас уже есть 2 сим-карты! Продайте одну из текущих в Инвентаре.');
+        return;
+      }
+      if (player.cash < 1500) {
+        alert('❌ Недостаточно средств для покупки сим-карты! Нужно 1 500 ₽');
+        return;
+      }
+
+      player.cash -= 1500;
+      player.sims.push(currentRolledNumber);
+      alert(`🎉 Поздравляем! Номер ${currentRolledNumber} добавлен в ваш Инвентарь!`);
+      
+      currentRolledNumber = null;
+      document.getElementById('btn-buy-sim').style.display = 'none';
+      document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+      updateUI();
+    }
+
+    // Отображение и Управление Сим-картами в Инвентаре
+    function renderInventorySims() {
+      const list = document.getElementById('sim-inventory-list');
+      if (!list) return;
+
+      if (player.sims.length === 0) {
+        list.innerHTML = `<p style="font-size: 11px; color: #64748b; padding: 10px;">У вас нет купленных сим-карт.</p>`;
+        return;
+      }
+
+      list.innerHTML = '';
+      player.sims.forEach((sim, index) => {
+        const item = document.createElement('div');
+        item.className = 'sim-card-item';
+        item.innerHTML = `
+          <div>
+            <div style="font-weight: 800; font-size: 13px; color: #facc15;">📱 ${sim}</div>
+            <div style="font-size: 10px; color: #94a3b8;">${player.phone === sim ? '🟢 Активна' : '⚪ В запасе'}</div>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button style="background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;" onclick="useSim(${index})">Использовать</button>
+            <button style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;" onclick="sellSimOptions(${index})">Продать</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function useSim(index) {
+      player.phone = player.sims[index];
+      updateUI();
+      alert(`✅ Сим-карта ${player.phone} установлена!`);
+    }
+
+    function sellSimOptions(index) {
+      const sim = player.sims[index];
+      const choice = confirm(`Выберите вариант продажи для ${sim}:\n\n Нажмите OK — Продать государству за 750 ₽\n Нажмите Отмена — Попробовать выставить на аукцион`);
+      
+      if (choice) {
+        // Продажа государству
+        player.cash += 750;
+        if (player.phone === sim) player.phone = 'Не установлена';
+        player.sims.splice(index, 1);
+        updateUI();
+        alert(`💰 Сим-карта ${sim} продана государству за 750 ₽`);
+      } else {
+        // Выставить на аукцион
+        alert('🔨 Продажа на аукционе [В разработке 🚧]');
+      }
+    }
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('active');
+    }
+
+    // Спавн баночек
     const canEmojis = ['🥫', '🥤', '🍺'];
     function spawnCan() {
       const area = document.getElementById('cans-area');
       if (!area || !document.getElementById('screen-cans-game').classList.contains('active')) return;
-
-      if (area.children.length >= 5) return; // Не больше 5 банок одновременно
+      if (area.children.length >= 5) return;
 
       const can = document.createElement('div');
       can.className = 'can-item';
@@ -747,12 +1022,11 @@
       can.style.left = x + 'px';
       can.style.top = y + 'px';
 
-      can.onclick = function (e) {
+      can.onclick = function () {
         playCanSound();
-        const earned = Math.floor(Math.random() * 3) + 1; // 1-3 рубля
+        const earned = Math.floor(Math.random() * 3) + 1;
         addReward(earned, 1);
 
-        // Всплывающие цифры
         const floatText = document.createElement('div');
         floatText.className = 'floating-text';
         floatText.innerText = `+${earned} ₽`;
@@ -766,8 +1040,7 @@
 
       area.appendChild(can);
     }
-
-    setInterval(spawnCan, 900); // Спавн банки каждые 0.9 сек
+    setInterval(spawnCan, 900);
 
     function openScreen(screenId) {
       document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
@@ -803,7 +1076,6 @@
       alert('🎁 Вы забрали ежедневный бонус: +500 ₽ и +20 XP!');
     }
 
-    // Инициализация Telegram
     document.addEventListener("DOMContentLoaded", function () {
       updateUI();
       try {
@@ -822,7 +1094,6 @@
       } catch (e) {}
     });
 
-    // Анимация Звезд
     const canvas = document.getElementById('space-bg');
     const ctx = canvas.getContext('2d');
 
