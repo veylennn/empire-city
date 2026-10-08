@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>EmpireCity State</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Подключаем стильный моноширинный шрифт для баланса -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600;700&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
@@ -27,7 +32,7 @@
       overflow-x: hidden;
     }
 
-    /* Анимированное звездное небо */
+    /* Анимированный космос */
     #space-bg {
       position: fixed;
       top: 0;
@@ -46,15 +51,15 @@
       gap: 16px;
     }
 
-    /* Стеклянные карточки с золотой окантовкой */
+    /* Карточка персонажа */
     .glass-card {
-      background: rgba(18, 18, 26, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(18, 18, 26, 0.5); /* Более прозрачный фон */
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
       padding: 20px;
       border: 1px solid rgba(234, 179, 8, 0.3);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(234, 179, 8, 0.05);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(234, 179, 8, 0.03);
     }
 
     .header {
@@ -80,38 +85,38 @@
       font-size: 22px;
       font-weight: bold;
       color: #000;
-      box-shadow: 0 0 15px rgba(234, 179, 8, 0.5);
+      box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
     }
 
     .user-info h2 {
       font-size: 18px;
       font-weight: 700;
       color: #ffffff;
+      letter-spacing: 0.3px;
     }
 
     .user-info p {
       font-size: 12px;
       color: #e2e8f0;
-      opacity: 0.8;
+      opacity: 0.75;
     }
 
-    /* Бейдж Уровня */
     .lvl-badge {
-      background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(202, 138, 4, 0.4));
-      border: 1px solid #eab308;
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(202, 138, 4, 0.3));
+      border: 1px solid rgba(234, 179, 8, 0.8);
       color: #fef08a;
       padding: 6px 12px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 800;
       letter-spacing: 0.5px;
-      box-shadow: 0 0 10px rgba(234, 179, 8, 0.2);
+      box-shadow: 0 0 10px rgba(234, 179, 8, 0.15);
     }
 
     .balance-box {
       margin-top: 16px;
-      background: rgba(10, 10, 15, 0.6);
-      padding: 14px;
+      background: rgba(8, 8, 12, 0.45);
+      padding: 14px 16px;
       border-radius: 14px;
       display: flex;
       justify-content: space-between;
@@ -122,71 +127,63 @@
       font-size: 11px;
       color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
     }
 
+    /* Новый строгий моноширинный шрифт для финансового баланса */
     .balance-amount {
-      font-size: 17px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 18px;
       font-weight: 700;
-      color: #eab308;
-      margin-top: 2px;
-      text-shadow: 0 0 8px rgba(234, 179, 8, 0.3);
+      color: #facc15;
+      margin-top: 4px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 10px rgba(234, 179, 8, 0.25);
     }
 
-    /* Главная навигация (3 Основные кнопки) */
-    .main-nav {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
+    /* Вертикальное Главное Меню (3 Прозрачные Кнопки) */
+    .main-menu-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 6px;
     }
 
-    .nav-tab-btn {
-      background: rgba(24, 24, 35, 0.6);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(234, 179, 8, 0.3);
-      color: #cbd5e1;
-      padding: 14px 8px;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    }
-
-    .nav-tab-btn.active {
-      background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(161, 98, 7, 0.35));
-      border-color: #facc15;
-      color: #fff;
-      box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
-    }
-
-    /* Анимация нажатия кнопок */
-    .glass-btn {
-      background: rgba(20, 20, 30, 0.6);
-      backdrop-filter: blur(8px);
+    .glass-btn-large {
+      background: rgba(18, 18, 26, 0.35); /* Ещё более прозрачные */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(234, 179, 8, 0.25);
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 14px;
+      color: #ffffff;
+      padding: 18px 20px;
+      border-radius: 16px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 16px;
       cursor: pointer;
-      text-align: center;
-      transition: all 0.15s ease;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.15s ease;
     }
 
-    .glass-btn:active, .nav-tab-btn:active {
-      transform: scale(0.95);
+    .glass-btn-large:active, .glass-btn:active {
+      transform: scale(0.97);
       border-color: #facc15;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.6);
-      background: rgba(234, 179, 8, 0.2);
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+      background: rgba(234, 179, 8, 0.15);
+    }
+
+    /* Подразделы */
+    .sub-screen {
+      display: none;
+      animation: fadeIn 0.25s ease;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sub-screen.active {
+      display: flex;
     }
 
     .content-grid {
@@ -195,33 +192,51 @@
       gap: 12px;
     }
 
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.3s ease;
+    .glass-btn {
+      background: rgba(18, 18, 26, 0.35);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(234, 179, 8, 0.2);
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
-    .tab-content.active {
-      display: block;
+    .btn-back {
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.6);
+      color: #fef08a;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 4px;
+      transition: all 0.15s ease;
     }
 
     .section-title {
-      font-size: 14px;
+      font-size: 13px;
       color: #eab308;
-      margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 1px;
       font-weight: 700;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Фон падающих звезд -->
   <canvas id="space-bg"></canvas>
 
   <div class="app-container">
@@ -232,173 +247,4 @@
         <div class="user-profile">
           <div class="avatar" id="user-avatar">😎</div>
           <div class="user-info">
-            <h2 id="user-name">Игрок</h2>
-            <p id="user-status">Гражданин EmpireCity</p>
-          </div>
-        </div>
-        <div class="lvl-badge">⭐ LVL 1</div>
-      </div>
-      
-      <div class="balance-box">
-        <div>
-          <div class="balance-title">Наличные</div>
-          <div class="balance-amount" id="cash">$ 5,000</div>
-        </div>
-        <div style="text-align: right;">
-          <div class="balance-title">Счёт</div>
-          <div class="balance-amount" id="bank">$ 50,000</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Основные 3 кнопки навигации -->
-    <div class="main-nav">
-      <button class="nav-tab-btn active" onclick="switchTab('profile', this)">👤 Профиль</button>
-      <button class="nav-tab-btn" onclick="switchTab('city', this)">🏙️ Город</button>
-      <button class="nav-tab-btn" onclick="switchTab('other', this)">⚙️ Прочее</button>
-    </div>
-
-    <!-- Вкладка: Профиль -->
-    <div id="tab-profile" class="tab-content active">
-      <div class="section-title">Раздел Профиль</div>
-      <div class="content-grid">
-        <button class="glass-btn" onclick="alert('Статистика в разработке!')">📊 Статистика</button>
-        <button class="glass-btn" onclick="alert('Инвентарь пуст!')">🎒 Инвентарь</button>
-      </div>
-    </div>
-
-    <!-- Вкладка: Город -->
-    <div id="tab-city" class="tab-content">
-      <div class="section-title">Инфраструктура Города</div>
-      <div class="content-grid">
-        <button class="glass-btn" onclick="alert('Центр занятости скоро откроется!')">💼 Работа</button>
-        <button class="glass-btn" onclick="alert('Банк EmpireCity готов к работе!')">🏦 Банк</button>
-        <button class="glass-btn" onclick="alert('Салон сотовой связи')">📱 Салон связи</button>
-        <button class="glass-btn" onclick="alert('Аукцион временно закрыт!')">🔨 Аукцион</button>
-        <button class="glass-btn" onclick="alert('Автосалон Luxury Cars')">🚘 Автосалоны</button>
-        <button class="glass-btn" onclick="alert('Агентство недвижимости')">🏠 Недвижимость</button>
-      </div>
-    </div>
-
-    <!-- Вкладка: Прочее -->
-    <div id="tab-other" class="tab-content">
-      <div class="section-title">Дополнительно</div>
-      <div class="content-grid">
-        <button class="glass-btn" onclick="alert('Настройки профиля')">⚙️ Настройки</button>
-        <button class="glass-btn" onclick="alert('Вводите промокод!')">🎁 Промокоды</button>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    // 1. Переключение Вкладок
-    function switchTab(tabName, btnElement) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
-      
-      document.getElementById('tab-' + tabName).classList.add('active');
-      btnElement.classList.add('active');
-    }
-
-    // 2. Инициализация Telegram SDK
-    document.addEventListener("DOMContentLoaded", function () {
-      if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        try {
-          tg.expand();
-          tg.ready();
-        } catch (e) {}
-
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-          const user = tg.initDataUnsafe.user;
-          const name = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-          document.getElementById('user-name').innerText = name;
-          document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
-        }
-      }
-    });
-
-    // 3. Анимация звёздного неба и падающих звёзд
-    const canvas = document.getElementById('space-bg');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    // Обычные звезды
-    const stars = Array.from({ length: 60 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 1.2,
-      alpha: Math.random(),
-      speed: Math.random() * 0.02 + 0.005
-    }));
-
-    // Падающие звезды
-    const shootingStars = [];
-
-    function createShootingStar() {
-      if (shootingStars.length < 3 && Math.random() < 0.03) {
-        shootingStars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * (canvas.height / 2),
-          length: Math.random() * 80 + 40,
-          speed: Math.random() * 10 + 6,
-          dx: (Math.random() - 0.3) * 6, // Хаотичное направление влево/вправо
-          dy: Math.random() * 6 + 4,
-          alpha: 1
-        });
-      }
-    }
-
-    function animateSpace() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Отрисовка фоновых звезд
-      stars.forEach(star => {
-        star.alpha += star.speed;
-        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
-
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
-        ctx.fill();
-      });
-
-      // Отрисовка и логика падающих звезд
-      createShootingStar();
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const s = shootingStars[i];
-        s.x += s.dx;
-        s.y += s.dy;
-        s.alpha -= 0.015;
-
-        if (s.alpha <= 0 || s.x < 0 || s.x > canvas.width || s.y > canvas.height) {
-          shootingStars.splice(i, 1);
-          continue;
-        }
-
-        ctx.beginPath();
-        const gradient = ctx.createLinearGradient(s.x, s.y, s.x - s.dx * 5, s.y - s.dy * 5);
-        gradient.addColorStop(0, `rgba(250, 204, 21, ${s.alpha})`);
-        gradient.addColorStop(1, `rgba(234, 179, 8, 0)`);
-        
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2;
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(s.x - s.dx * (s.length / 10), s.y - s.dy * (s.length / 10));
-        ctx.stroke();
-      }
-
-      requestAnimationFrame(animateSpace);
-    }
-
-    animateSpace();
-  </script>
-</body>
-</html>
+            <h2 id="user-name">Игрок
