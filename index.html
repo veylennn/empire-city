@@ -20,6 +20,7 @@
       background: #050508;
       color: #f8fafc;
       padding: 16px;
+      padding-bottom: 90px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -28,7 +29,7 @@
       overflow-x: hidden;
     }
 
-    /* Анимированный космос */
+    /* Космос */
     #space-bg {
       position: fixed;
       top: 0;
@@ -47,15 +48,15 @@
       gap: 16px;
     }
 
-    /* Карточка персонажа */
+    /* Премиум Карточка Персонажа */
     .glass-card {
-      background: rgba(18, 18, 26, 0.45);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 20px;
-      border: 1px solid rgba(234, 179, 8, 0.3);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(234, 179, 8, 0.03);
+      border: 1px solid rgba(234, 179, 8, 0.35);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
     .header {
@@ -67,107 +68,266 @@
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
     }
 
     .avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #eab308, #ca8a04);
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #facc15, #ca8a04);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 26px;
       color: #000;
-      box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .vip-tag {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      background: #000;
+      color: #facc15;
+      font-size: 9px;
+      font-weight: 900;
+      padding: 2px 5px;
+      border-radius: 6px;
+      border: 1px solid #eab308;
     }
 
     .user-info h2 {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 19px;
+      font-weight: 800;
       color: #ffffff;
       letter-spacing: 0.3px;
     }
 
     .user-info p {
       font-size: 12px;
-      color: #e2e8f0;
-      opacity: 0.75;
+      color: #94a3b8;
+      margin-top: 2px;
     }
 
     .lvl-badge {
-      background: rgba(234, 179, 8, 0.15);
-      border: 1px solid rgba(234, 179, 8, 0.8);
+      background: rgba(234, 179, 8, 0.12);
+      border: 1px solid rgba(234, 179, 8, 0.6);
       color: #fef08a;
       padding: 6px 12px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 800;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 10px rgba(234, 179, 8, 0.15);
+      box-shadow: 0 0 12px rgba(234, 179, 8, 0.2);
     }
 
-    .balance-box {
-      margin-top: 16px;
-      background: rgba(8, 8, 12, 0.5);
-      padding: 14px 16px;
-      border-radius: 14px;
+    /* Шкала Опыта (XP) */
+    .xp-container {
+      margin-top: 14px;
+    }
+    .xp-info {
       display: flex;
       justify-content: space-between;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .xp-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .xp-bar-fill {
+      width: 35%;
+      height: 100%;
+      background: linear-gradient(90deg, #ca8a04, #facc15);
+      box-shadow: 0 0 8px #facc15;
+      border-radius: 10px;
     }
 
-    .balance-title {
+    /* Балансы */
+    .balance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .balance-card {
+      background: rgba(10, 10, 15, 0.55);
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .balance-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
       color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    /* Моноширинный строго финансовый шрифт */
     .balance-amount {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: #facc15;
-      margin-top: 4px;
-      letter-spacing: -0.5px;
-      text-shadow: 0 0 10px rgba(234, 179, 8, 0.25);
+      text-shadow: 0 0 10px rgba(234, 179, 8, 0.2);
     }
 
-    /* Вертикальное Главное Меню */
+    /* Карточки-Баннеры Главного Меню */
     .main-menu-vertical {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 4px;
+      gap: 14px;
     }
 
-    .glass-btn-large {
-      background: rgba(18, 18, 26, 0.35);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+    .menu-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(234, 179, 8, 0.25);
-      color: #ffffff;
+      border-radius: 20px;
       padding: 18px 20px;
-      border-radius: 16px;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-      transition: all 0.15s ease;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .glass-btn-large:active, .glass-btn:active {
+    /* Блик при клике */
+    .menu-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transform: rotate(30deg);
+      transition: opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .menu-card:active {
       transform: scale(0.97);
       border-color: #facc15;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
-      background: rgba(234, 179, 8, 0.15);
+      box-shadow: 0 0 25px rgba(234, 179, 8, 0.4);
+    }
+
+    .menu-card:active::after {
+      opacity: 1;
+    }
+
+    .menu-card-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(234, 179, 8, 0.12);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: inset 0 0 10px rgba(234, 179, 8, 0.1);
+    }
+
+    .menu-text h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .menu-text p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    .badge-mini {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 8px;
+      background: #eab308;
+      color: #000;
+      text-transform: uppercase;
+    }
+
+    .arrow-icon {
+      font-size: 18px;
+      color: #eab308;
+      opacity: 0.8;
+      transition: transform 0.2s;
+    }
+
+    .menu-card:active .arrow-icon {
+      transform: translateX(4px);
+    }
+
+    /* Нижняя панель навигации (Bottom Nav) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(234, 179, 8, 0.25);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0 14px;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .nav-item.active {
+      color: #facc15;
+    }
+
+    .nav-item span {
+      font-size: 18px;
     }
 
     /* Подразделы */
@@ -189,12 +349,12 @@
     }
 
     .glass-btn {
-      background: rgba(18, 18, 26, 0.35);
+      background: rgba(18, 18, 26, 0.4);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(234, 179, 8, 0.2);
       color: #f8fafc;
       padding: 16px;
-      border-radius: 14px;
+      border-radius: 16px;
       font-weight: 600;
       font-size: 14px;
       cursor: pointer;
@@ -203,8 +363,14 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
+    .glass-btn:active {
+      transform: scale(0.96);
+      border-color: #facc15;
+      background: rgba(234, 179, 8, 0.15);
+    }
+
     .btn-back {
-      background: rgba(234, 179, 8, 0.1);
+      background: rgba(234, 179, 8, 0.12);
       border: 1px solid rgba(234, 179, 8, 0.6);
       color: #fef08a;
       padding: 12px;
@@ -213,8 +379,6 @@
       font-size: 14px;
       cursor: pointer;
       text-align: center;
-      margin-bottom: 4px;
-      transition: all 0.15s ease;
     }
 
     .section-title {
@@ -237,11 +401,14 @@
 
   <div class="app-container">
 
-    <!-- Карточка Профиля -->
+    <!-- Премиум Карточка Профиля -->
     <div class="glass-card">
       <div class="header">
         <div class="user-profile">
-          <div class="avatar" id="user-avatar">😎</div>
+          <div class="avatar-wrapper">
+            <div class="avatar" id="user-avatar">😎</div>
+            <div class="vip-tag">VIP</div>
+          </div>
           <div class="user-info">
             <h2 id="user-name">Игрок</h2>
             <p id="user-status">Гражданин EmpireCity</p>
@@ -249,33 +416,71 @@
         </div>
         <div class="lvl-badge">⭐ LVL 1</div>
       </div>
-      
-      <div class="balance-box">
-        <div>
-          <div class="balance-title">Наличные</div>
-          <div class="balance-amount" id="cash">$ 5,000</div>
+
+      <!-- Шкала XP -->
+      <div class="xp-container">
+        <div class="xp-info">
+          <span>Прогресс уровня</span>
+          <span>350 / 1000 XP</span>
         </div>
-        <div style="text-align: right;">
-          <div class="balance-title">Счёт</div>
-          <div class="balance-amount" id="bank">$ 50,000</div>
+        <div class="xp-bar-bg">
+          <div class="xp-bar-fill"></div>
+        </div>
+      </div>
+      
+      <!-- Финансовые Карточки -->
+      <div class="balance-grid">
+        <div class="balance-card">
+          <div class="balance-header">
+            <span>💵</span> Наличные
+          </div>
+          <div class="balance-amount" id="cash">$ 5 000</div>
+        </div>
+        <div class="balance-card">
+          <div class="balance-header">
+            <span>💳</span> Банк
+          </div>
+          <div class="balance-amount" id="bank">$ 50 000</div>
         </div>
       </div>
     </div>
 
-    <!-- ВЕРТИКАЛЬНОЕ ГЛАВНОЕ МЕНЮ (3 Прозрачные Кнопки) -->
+    <!-- ВЕРТИКАЛЬНОЕ ГЛАВНОЕ МЕНЮ (Интерактивные Карточки) -->
     <div id="main-screen" class="main-menu-vertical">
-      <button class="glass-btn-large" onclick="openScreen('screen-profile')">
-        <span>👤 Профиль</span>
-        <span style="color: #eab308;">➔</span>
-      </button>
-      <button class="glass-btn-large" onclick="openScreen('screen-city')">
-        <span>🏙️ Город</span>
-        <span style="color: #eab308;">➔</span>
-      </button>
-      <button class="glass-btn-large" onclick="openScreen('screen-other')">
-        <span>⚙️ Прочее</span>
-        <span style="color: #eab308;">➔</span>
-      </button>
+      
+      <div class="menu-card" onclick="openScreen('screen-profile')">
+        <div class="menu-card-left">
+          <div class="menu-icon-box">👤</div>
+          <div class="menu-text">
+            <h3>Профиль</h3>
+            <p>Статистика, навыки и инвентарь</p>
+          </div>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </div>
+
+      <div class="menu-card" onclick="openScreen('screen-city')">
+        <div class="menu-card-left">
+          <div class="menu-icon-box">🏙️</div>
+          <div class="menu-text">
+            <h3>Город <span class="badge-mini">3 Онлайн</span></h3>
+            <p>Работа, банк, автосалон, недвижимость</p>
+          </div>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </div>
+
+      <div class="menu-card" onclick="openScreen('screen-other')">
+        <div class="menu-card-left">
+          <div class="menu-icon-box">⚙️</div>
+          <div class="menu-text">
+            <h3>Прочее</h3>
+            <p>Настройки, промокоды, поддержка</p>
+          </div>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </div>
+
     </div>
 
     <!-- ЭКРАН 1: ПРОФИЛЬ -->
@@ -314,6 +519,26 @@
 
   </div>
 
+  <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (Bottom Navigation) -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="goHome()">
+      <span>🏠</span>
+      <div>Главная</div>
+    </div>
+    <div class="nav-item" onclick="openScreen('screen-profile')">
+      <span>🎒</span>
+      <div>Инвентарь</div>
+    </div>
+    <div class="nav-item" onclick="alert('Рейтинг игроков скоро!')">
+      <span>🏆</span>
+      <div>Топ</div>
+    </div>
+    <div class="nav-item" onclick="openScreen('screen-other')">
+      <span>⚙️</span>
+      <div>Опции</div>
+    </div>
+  </div>
+
   <script>
     function openScreen(screenId) {
       document.getElementById('main-screen').style.display = 'none';
@@ -340,6 +565,7 @@
       }
     });
 
+    // Анимация космоса
     const canvas = document.getElementById('space-bg');
     const ctx = canvas.getContext('2d');
 
