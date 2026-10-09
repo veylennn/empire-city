@@ -29,14 +29,19 @@
       position: relative;
     }
 
-    #space-bg {
+    #debug-log {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;
+      width: 100%;
+      background: rgba(220, 38, 38, 0.95);
+      color: #fff;
+      font-size: 11px;
+      padding: 10px;
+      z-index: 999999;
+      display: none;
+      word-break: break-all;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 
     .app-container {
@@ -83,10 +88,6 @@
       cursor: pointer;
     }
 
-    .glass-card:active {
-      transform: scale(0.98);
-    }
-
     .header {
       display: flex;
       align-items: center;
@@ -97,10 +98,6 @@
       display: flex;
       align-items: center;
       gap: 12px;
-    }
-
-    .avatar-wrapper {
-      position: relative;
     }
 
     .avatar {
@@ -114,20 +111,6 @@
       font-size: 24px;
       color: #000;
       font-weight: bold;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .vip-tag {
-      position: absolute;
-      bottom: -4px;
-      right: -4px;
-      background: #000;
-      color: #facc15;
-      font-size: 8px;
-      font-weight: 900;
-      padding: 2px 4px;
-      border-radius: 4px;
-      border: 1px solid #eab308;
     }
 
     .user-info h2 {
@@ -141,13 +124,6 @@
       color: #94a3b8;
     }
 
-    .phone-tag {
-      font-size: 11px;
-      color: #facc15;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
     .lvl-badge {
       background: rgba(234, 179, 8, 0.15);
       border: 1px solid rgba(234, 179, 8, 0.7);
@@ -156,35 +132,6 @@
       border-radius: 10px;
       font-size: 12px;
       font-weight: 800;
-    }
-
-    .xp-container {
-      margin-top: 12px;
-    }
-
-    .xp-info {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #94a3b8;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-
-    .xp-bar-bg {
-      width: 100%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .xp-bar-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #ca8a04, #facc15);
-      box-shadow: 0 0 8px #facc15;
-      transition: width 0.2s ease;
     }
 
     .balance-grid {
@@ -201,18 +148,8 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .balance-header {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      color: #94a3b8;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
     .balance-amount {
-      font-family: 'Courier New', Courier, monospace;
+      font-family: monospace;
       font-size: 16px;
       font-weight: 700;
       color: #facc15;
@@ -228,7 +165,6 @@
     .hub-card {
       background: rgba(18, 18, 28, 0.6);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(234, 179, 8, 0.3);
       border-radius: 18px;
       padding: 16px 18px;
@@ -236,12 +172,6 @@
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-    }
-
-    .hub-card:active {
-      transform: scale(0.97);
-      border-color: #facc15;
-      background: rgba(234, 179, 8, 0.2);
     }
 
     .hub-card-left {
@@ -255,7 +185,6 @@
       height: 46px;
       border-radius: 14px;
       background: rgba(234, 179, 8, 0.15);
-      border: 1px solid rgba(234, 179, 8, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -266,107 +195,170 @@
       font-size: 16px;
       font-weight: 800;
       color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .hub-text p {
       font-size: 12px;
       color: #94a3b8;
-      margin-top: 2px;
-    }
-
-    .badge-claim {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 5px;
-      background: #22c55e;
-      color: #000;
-      text-transform: uppercase;
-    }
-
-    .arrow-icon {
-      font-size: 18px;
-      color: #eab308;
     }
 
     .sub-screen {
       display: none;
       flex-direction: column;
       gap: 14px;
-      animation: fadeIn 0.2s ease;
     }
 
     .sub-screen.active {
       display: flex;
     }
 
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .glass-btn {
-      background: rgba(18, 18, 28, 0.6);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(234, 179, 8, 0.25);
-      color: #f8fafc;
-      padding: 16px;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .glass-btn:active {
-      transform: scale(0.96);
-      border-color: #facc15;
-    }
-
-    /* НАДЕЖНЫЕ МОДАЛКИ БЕЗ ПОМЕХ ДЛЯ КЛИКОВ */
-    .modal-overlay {
+    .bottom-bar {
       position: fixed;
-      top: 0;
+      bottom: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
-      z-index: 10000;
-      display: none;
-      align-items: flex-end;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-      opacity: 1;
-    }
-
-    .modal-sheet {
       width: 100%;
-      max-height: 85vh;
-      background: rgba(18, 18, 28, 0.98);
-      border-top: 1px solid rgba(234, 179, 8, 0.5);
-      border-radius: 24px 24px 0 0;
-      padding: 20px;
+      height: 70px;
+      background: rgba(10, 10, 15, 0.98);
+      border-top: 1px solid rgba(234, 179, 8, 0.35);
       display: flex;
-      flex-direction: column;
-      gap: 14px;
-      overflow-y: auto;
-      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.9);
+      align-items: center;
+      justify-content: space-around;
+      z-index: 9999;
     }
 
-    .store-sim-card {
-      background: rgba(10, 10, 15, 0.85);
-      border: 1px solid rgba(234, 179, 8, 0.4);
-      border-radius: 18px;
-      padding: 16px;
+    .tab-item {
       display: flex;
       flex-direction: column;
-      gap
+      align-items: center;
+      gap: 3px;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tab-item.active {
+      color: #facc15;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- БЛОК ДЛЯ ПЕРЕХВАТА ОШИБОК -->
+  <div id="debug-log"></div>
+
+  <div class="app-container">
+    <div class="server-status">
+      <span>EMPIRE CITY STATE</span>
+      <div class="status-online">
+        <span class="dot"></span>
+        <span>142 Онлайн</span>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="header">
+        <div class="user-profile">
+          <div class="avatar" id="user-avatar">😎</div>
+          <div class="user-info">
+            <h2 id="user-name">Игрок</h2>
+            <p id="user-phone">📱 SIM: Не установлена</p>
+          </div>
+        </div>
+        <div class="lvl-badge">⭐ LVL 1</div>
+      </div>
+      <div class="balance-grid">
+        <div class="balance-card">
+          <div style="font-size:11px; color:#94a3b8;">💵 Наличные</div>
+          <div class="balance-amount" id="cash">1 000 ₽</div>
+        </div>
+        <div class="balance-card">
+          <div style="font-size:11px; color:#94a3b8;">💳 Счёт</div>
+          <div class="balance-amount" id="bank">0 ₽</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ГОРОД -->
+    <div id="main-screen" class="sub-screen active">
+      <div class="hub-container">
+        <div class="hub-card" onclick="alert('🎁 Бонус получен!')">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">🎁</div>
+            <div class="hub-text">
+              <h3>Ежедневный Бонус</h3>
+              <p>Заберите +2 500 ₽</p>
+            </div>
+          </div>
+          <span style="color:#eab308;">➔</span>
+        </div>
+
+        <div class="hub-card" onclick="alert('📱 Сотовый Салон')">
+          <div class="hub-card-left">
+            <div class="hub-icon-box">📱</div>
+            <div class="hub-text">
+              <h3>Салон Связи</h3>
+              <p>Сим-карты и тарифы</p>
+            </div>
+          </div>
+          <span style="color:#eab308;">➔</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ИНВЕНТАРЬ -->
+    <div id="screen-inventory" class="sub-screen">
+      <h3 style="color:#eab308;">Инвентарь</h3>
+      <p style="color:#94a3b8; font-size:13px;">Раздел в разработке...</p>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="tab-item active" id="tab-home" onclick="switchTab('home')">
+      <span style="font-size:20px;">🏙️</span>
+      <span>Город</span>
+    </div>
+    <div class="tab-item" id="tab-inventory" onclick="switchTab('inventory')">
+      <span style="font-size:20px;">🎒</span>
+      <span>Инвентарь</span>
+    </div>
+  </div>
+
+  <script>
+    // ПЕРЕХВАТЧИК ОШИБОК JS ДЛЯ ТЕЛЕФОНА
+    window.onerror = function(msg, url, line) {
+      var dbg = document.getElementById('debug-log');
+      if (dbg) {
+        dbg.style.display = 'block';
+        dbg.innerHTML = '⚠️ Ошибка JS: ' + msg + '<br>Строка: ' + line;
+      }
+      return false;
+    };
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.sub-screen').forEach(function(s) { s.classList.remove('active'); });
+
+      if (name === 'home') {
+        document.getElementById('tab-home').classList.add('active');
+        document.getElementById('main-screen').classList.add('active');
+      } else if (name === 'inventory') {
+        document.getElementById('tab-inventory').classList.add('active');
+        document.getElementById('screen-inventory').classList.add('active');
+      }
+    }
+
+    window.onload = function() {
+      try {
+        if (window.Telegram && window.Telegram.WebApp) {
+          window.Telegram.WebApp.expand();
+          window.Telegram.WebApp.ready();
+          if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+            document.getElementById('user-name').innerText = window.Telegram.WebApp.initDataUnsafe.user.first_name;
+          }
+        }
+      } catch(e) {}
+    };
+  </script>
+</body>
+</html>
