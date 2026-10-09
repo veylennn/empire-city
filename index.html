@@ -230,6 +230,87 @@
       margin-top: 2px;
     }
 
+    /* РЯД КНОПКИ ШАНСОВ И ШКАЛЫ ПРОГРЕССА X2 */
+    .top-action-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .btn-chances-small {
+      flex: 1;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      z-index: 20;
+    }
+    .btn-chances-small:active {
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    /* Шкала X2 заряда */
+    .x2-progress-box {
+      flex: 1.2;
+      background: rgba(9, 10, 15, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 10px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .x2-header-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+    }
+    .x2-bar-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .x2-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* Эффект заряженного X2 состояния */
+    .x2-progress-box.charged {
+      border-color: #facc15;
+      box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+      animation: pulseX2 1s infinite alternate;
+    }
+    .x2-progress-box.charged .x2-bar-fill {
+      background: linear-gradient(90deg, #facc15, #f87171);
+    }
+    .x2-progress-box.charged .x2-header-info {
+      color: #facc15;
+    }
+
+    @keyframes pulseX2 {
+      0% { box-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
+      100% { box-shadow: 0 0 20px rgba(250, 204, 21, 0.8); }
+    }
+
     /* СТИЛЬНАЯ SIM-КАРТА С ГОЛОГРАФИЧЕСКИМ ЭФФЕКТОМ */
     .sim-card-container {
       position: relative;
@@ -532,27 +613,6 @@
       color: var(--text-muted);
     }
 
-    .btn-chances-small {
-      width: 50%;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 11px;
-      cursor: pointer;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      position: relative;
-      z-index: 20;
-    }
-    .btn-chances-small:active {
-      background: rgba(56, 189, 248, 0.15);
-    }
-
     .chances-box {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -727,7 +787,7 @@
   <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ -->
   <div class="modal-overlay" id="modal-chances" onclick="handleOverlayClick(event, 'modal-chances')">
     <div class="modal-sheet" id="sheet-chances">
-      <div class="swipe-indicator" id="handle-chances"><div class="swipe-bar"></div></div>
+      <div class="swipe-indicator"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">📊 Вероятность категорий номеров</div>
       <p style="font-size:11px; color:var(--text-muted); text-align:center;">Шансы выпадения при генерации:</p>
       
@@ -759,12 +819,24 @@
   <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ -->
   <div class="modal-overlay" id="modal-buy-sim" onclick="handleOverlayClick(event, 'modal-buy-sim')">
     <div class="modal-sheet" id="sheet-buy-sim">
-      <div class="swipe-indicator" id="handle-buy-sim"><div class="swipe-bar"></div></div>
+      <div class="swipe-indicator"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">Терминал связи</div>
 
-      <button class="btn-chances-small" onclick="openModal('modal-chances')">
-        <span>📊</span> Шансы выпадения
-      </button>
+      <!-- ВЕРХНИЙ РЯД: Кнопка шансов + Шкала X2 заряда -->
+      <div class="top-action-row">
+        <button class="btn-chances-small" onclick="openModal('modal-chances')">
+          <span>📊</span> Шансы
+        </button>
+        <div class="x2-progress-box" id="x2-box">
+          <div class="x2-header-info">
+            <span id="x2-title">⚡ ЗАРЯД X2</span>
+            <span id="x2-counter">0 / 50</span>
+          </div>
+          <div class="x2-bar-container">
+            <div class="x2-bar-fill" id="x2-fill"></div>
+          </div>
+        </div>
+      </div>
 
       <!-- Нуар карта -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
@@ -808,9 +880,11 @@
       cash: 5000,
       bank: 0,
       activePhone: 'Не установлена',
-      sims: []
+      sims: [],
+      spinsCount: 0 // Счетчик прокрутов для шкалы X2
     };
 
+    var MAX_SPINS_FOR_X2 = 50;
     var currentRolledNum = null;
     var currentMarketVal = 150;
     var currentRarityKey = 'common';
@@ -824,6 +898,25 @@
       setTimeout(function() {
         toast.classList.remove('show');
       }, 1000);
+    }
+
+    function updateX2UI() {
+      var box = document.getElementById('x2-box');
+      var fill = document.getElementById('x2-fill');
+      var counter = document.getElementById('x2-counter');
+      var title = document.getElementById('x2-title');
+
+      var percent = Math.min(100, (player.spinsCount / MAX_SPINS_FOR_X2) * 100);
+      fill.style.width = percent + '%';
+      counter.innerText = player.spinsCount + ' / ' + MAX_SPINS_FOR_X2;
+
+      if (player.spinsCount >= MAX_SPINS_FOR_X2) {
+        box.classList.add('charged');
+        title.innerText = '🔥 ФАЗА X2 АКТИВНА!';
+      } else {
+        box.classList.remove('charged');
+        title.innerText = '⚡ ЗАРЯД X2';
+      }
     }
 
     function playSuccessSound() {
@@ -924,6 +1017,7 @@
       document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('user-phone').innerText = '📱 SIM: ' + player.activePhone;
+      updateX2UI();
 
       var inv = document.getElementById('inventory-list');
       if (player.sims.length > 0) {
@@ -994,7 +1088,6 @@
       }
     }
 
-    // ИДЕАЛЬНЫЙ ТРЕКИНГ СВАЙПА ВНИЗ ДЛЯ ШТОРОК
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       let sheet = overlay.querySelector('.modal-sheet');
       let startY = 0;
@@ -1021,7 +1114,7 @@
         isDragging = false;
         sheet.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
         let diff = currentY - startY;
-        if (diff > 100) { // Если свайпнули вниз больше чем на 100px — закрываем
+        if (diff > 100) {
           closeModal(overlay.id);
         }
         sheet.style.transform = 'translateY(0)';
@@ -1076,19 +1169,23 @@
       return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: 'Обычный' };
     }
 
+    // Генерация с учетом X2 фазы (если шкала заполнена, шансы на крутые номера выше)
     function generateRandomPhone() {
+      var isX2Active = (player.spinsCount >= MAX_SPINS_FOR_X2);
+      var boost = isX2Active ? 2.5 : 1.0; // Улучшаем шансы при активном X2
+
       var rand = Math.random();
-      if (rand < 0.003) {
+      if (rand < (0.003 * boost)) {
         var digit = Math.floor(1 + Math.random() * 9);
         return '+7 (777) ' + digit + digit + digit + '-' + digit + digit + '-' + digit + digit;
       }
-      if (rand < 0.015) {
+      if (rand < (0.015 * boost)) {
         return '+7 (777) 555-55-55';
       }
-      if (rand < 0.065) {
+      if (rand < (0.065 * boost)) {
         return '+7 (777) 777-12-12';
       }
-      if (rand < 0.235) {
+      if (rand < (0.235 * boost)) {
         return '+7 (777) 123-44-55';
       }
       var p1 = Math.floor(100 + Math.random() * 900);
@@ -1116,6 +1213,11 @@
       }
 
       player.cash -= 1500;
+      
+      // Увеличиваем счетчик прокрутов для шкалы X2
+      player.spinsCount++;
+      var wasX2 = (player.spinsCount >= MAX_SPINS_FOR_X2);
+
       updateUI();
       isSpinning = true;
 
@@ -1158,6 +1260,13 @@
 
           animateTextSmooth(display, currentRolledNum);
           playRaritySound(currentRarityKey);
+
+          // Если сработал X2 бонус — сбрасываем шкалу и даем уведомление
+          if (wasX2) {
+            showToast('🔥 БОНУС X2 ИСПОЛНЕН! Шкала сброшена.');
+            player.spinsCount = 0;
+            updateX2UI();
+          }
 
           isSpinning = false;
           btnSpin.disabled = false;
