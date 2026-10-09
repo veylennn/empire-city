@@ -161,7 +161,7 @@
     }
 
     .balance-val {
-      font-family: 'Courier New', monospace;
+      font-family: 'Courier New', Courier, monospace;
       font-size: 16px;
       font-weight: 800;
       color: var(--accent-color);
@@ -230,7 +230,7 @@
       margin-top: 2px;
     }
 
-    /* ФИЗИЧЕСКАЯ СИМ-КАРТА И СВЕЧЕНИЕ */
+    /* ФИЗИЧЕСКАЯ СИМ-КАРТА И СВЕЧЕНИЕ С ЖЕСТКОЙ ФИКСАЦИЕЙ РАЗМЕРОВ */
     .sim-card-container {
       position: relative;
       width: 100%;
@@ -252,7 +252,7 @@
 
     .sim-card-model {
       width: 100%;
-      height: 200px; /* Фиксированная высота, чтобы ничего не скакало */
+      height: 210px; /* Жестко фиксируем высоту, исключая любые дергания */
       background: linear-gradient(135deg, #fdfbf7 0%, #f3efe6 100%);
       border-radius: 15px;
       border: 1px solid rgba(212, 175, 55, 0.4);
@@ -269,6 +269,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 22px;
     }
 
     .sim-brand {
@@ -288,11 +289,12 @@
       border-radius: 6px;
     }
 
-    /* Информация под шапкой карточки (Рыночная стоимость и редкость) */
+    /* ПОСТОЯННЫЙ БЛОК ПОД ШАПКОЙ (Никогда не сдвигается) */
     .sim-info-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 20px;
       padding: 0 2px;
     }
 
@@ -311,6 +313,12 @@
       color: #334155;
     }
 
+    .sim-chip-row {
+      display: flex;
+      align-items: center;
+      height: 28px;
+    }
+
     .sim-chip {
       width: 36px;
       height: 26px;
@@ -327,15 +335,15 @@
       border-radius: 2px;
     }
 
-    /* Единый жирный моноширинный шрифт для прокрутки и итогового номера */
+    /* ЕДИНЫЙ ЖИСТКИЙ МОНОШИРИННЫЙ ШРИФТ ВЕЗДЕ */
     .sim-number-display {
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 17px;
-      font-weight: 900;
-      color: #0f172a;
+      font-family: 'Courier New', Courier, monospace !important;
+      font-size: 17px !important;
+      font-weight: 900 !important;
+      color: #0f172a !important;
       letter-spacing: 1px;
       text-align: center;
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.85);
       padding: 10px;
       border-radius: 10px;
       border: 1px solid rgba(0, 0, 0, 0.08);
@@ -343,12 +351,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      white-space: nowrap;
     }
 
     .char-fade {
       opacity: 0;
       transform: translateY(6px);
       animation: charIn 0.3s forwards ease;
+      font-family: 'Courier New', Courier, monospace !important;
+      font-weight: 900 !important;
     }
 
     @keyframes charIn {
@@ -581,7 +592,7 @@
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
 
-      <!-- Физическая карта с фиксированной высотой -->
+      <!-- Физическая карта со стационарным блоком под шапкой -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
         <div class="sim-card-model">
           <div class="sim-card-top">
@@ -589,13 +600,15 @@
             <div class="sim-operator">Россия</div>
           </div>
 
-          <!-- Рыночная стоимость и редкость перенесены прямо под шапку карточки -->
+          <!-- Постоянная зона рыночной стоимости и редкости (фиксированное место под шапкой) -->
           <div class="sim-info-header">
             <div class="market-value-badge" id="market-value-text">Оценка: —</div>
-            <div class="sim-rarity-badge" id="sim-rarity-tag">Обычный</div>
+            <div class="sim-rarity-badge" id="sim-rarity-tag">⚪ Обычный</div>
           </div>
 
-          <div class="sim-chip"></div>
+          <div class="sim-chip-row">
+            <div class="sim-chip"></div>
+          </div>
           
           <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
         </div>
@@ -634,6 +647,7 @@
     var isSpinning = false;
     var audioCtx = null;
 
+    // Базовые звуки кликов
     function playSound(freq) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -648,6 +662,72 @@
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.05);
+      } catch(e){}
+    }
+
+    // Уникальные звуковые паттерны завершения под каждую редкость
+    function playRaritySound(rarity) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        var now = audioCtx.currentTime;
+
+        if (rarity === 'common') {
+          // Обычный: простой мягкий сигнал
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.frequency.setValueAtTime(350, now);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.15);
+        } else if (rarity === 'rare') {
+          // Редкий: двойной синий перелив
+          [440, 550].forEach((f, i) => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(f, now + i * 0.1);
+            gain.gain.setValueAtTime(0.06, now + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.15);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.15);
+          });
+        } else if (rarity === 'epic') {
+          // Эпический: восходящее трио
+          [520, 650, 780].forEach((f, i) => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(f, now + i * 0.08);
+            gain.gain.setValueAtTime(0.07, now + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
+          });
+        } else if (rarity === 'legendary') {
+          // Легендарный: яркий золотой аккорд
+          [600, 750, 900, 1200].forEach((f, i) => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(f, now + i * 0.06);
+            gain.gain.setValueAtTime(0.06, now + i * 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.3);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.3);
+          });
+        } else if (rarity === 'mythic') {
+          // Мифический: мощный глубокий победный тремоло-аккорд
+          [440, 880, 1320, 1760].forEach((f, i) => {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(f, now + i * 0.1);
+            gain.gain.setValueAtTime(0.08, now + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.5);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.5);
+          });
+        }
       } catch(e){}
     }
 
@@ -698,7 +778,7 @@
       resetCardGlow('common');
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
-      document.getElementById('sim-rarity-tag').innerText = 'Обычный';
+      document.getElementById('sim-rarity-tag').innerText = '⚪ Обычный';
       document.getElementById('btn-buy-sim').style.display = 'none';
       document.getElementById('btn-sell-sim').style.display = 'none';
       document.getElementById('btn-spin').style.display = 'block';
@@ -763,14 +843,12 @@
       return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
     }
 
-    // Сохранение единого шрифта при плавной анимации цифр
+    // Жестко принудительный единый шрифт для анимации проявления
     function animateTextSmooth(element, text) {
       element.innerHTML = '';
       for (var i = 0; i < text.length; i++) {
         var span = document.createElement('span');
         span.className = 'char-fade';
-        span.style.fontFamily = "'Courier New', Courier, monospace";
-        span.style.fontWeight = "900";
         span.innerText = text[i];
         span.style.animationDelay = (i * 0.03) + 's';
         element.appendChild(span);
@@ -799,15 +877,13 @@
       btnSpin.style.display = 'none';
       
       resetCardGlow('common');
-      rarityTag.innerText = 'Сканирование...';
+      rarityTag.innerText = '⚪ Сканирование...';
+      valText.innerText = 'Оценка: анализ...';
 
       var count = 0;
       var interval = setInterval(function() {
         var tempNum = generateRandomPhone();
-        display.style.fontFamily = "'Courier New', Courier, monospace";
-        display.style.fontWeight = "900";
         display.innerText = tempNum;
-        valText.innerText = 'Оценка: анализ...';
         playSound(300 + (count % 10) * 20);
         count += 50;
 
@@ -820,14 +896,17 @@
 
           setCardGlow(currentRarityKey);
           rarityTag.innerText = evaluated.name;
+          valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
 
+          // Плавное проявление единым моноширинным шрифтом
           animateTextSmooth(display, currentRolledNum);
 
-          valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
+          // Воспроизведение звука редкости
+          playRaritySound(currentRarityKey);
+
           isSpinning = false;
           btnBuy.style.display = 'block';
           btnSell.style.display = 'block';
-          playSound(1000);
         }
       }, 50);
     }
