@@ -36,6 +36,12 @@
       padding: 16px 16px 90px 16px;
       overflow-x: hidden;
       position: relative;
+      transition: background 0.5s ease;
+    }
+
+    /* Общий фон меняется при активном X2 */
+    body.x2-active-bg {
+      background: radial-gradient(circle at 50% 30%, rgba(250, 204, 21, 0.12) 0%, var(--bg-color) 70%);
     }
 
     body::before {
@@ -269,6 +275,7 @@
       justify-content: space-between;
       position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
     .x2-header-info {
       display: flex;
@@ -293,21 +300,31 @@
       transition: width 0.3s ease;
     }
 
+    /* Эпичный режим X2 (каждый 5 бросок) */
     .x2-progress-box.charged {
       border-color: #facc15;
-      box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
-      animation: pulseX2 1s infinite alternate;
+      background: rgba(250, 204, 21, 0.08);
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+      animation: pulseX2Fast 0.6s infinite alternate;
     }
     .x2-progress-box.charged .x2-bar-fill {
       background: linear-gradient(90deg, #facc15, #f87171);
+      width: 100% !important;
     }
     .x2-progress-box.charged .x2-header-info {
       color: #facc15;
+      text-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
     }
 
-    @keyframes pulseX2 {
-      0% { box-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
-      100% { box-shadow: 0 0 20px rgba(250, 204, 21, 0.8); }
+    @keyframes pulseX2Fast {
+      0% { transform: scale(1); box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+      100% { transform: scale(1.02); box-shadow: 0 0 25px rgba(250, 204, 21, 0.8); }
+    }
+
+    /* Окантовка терминала и кнопки тоже пульсируют золотом при активном X2 */
+    .modal-sheet.x2-active-sheet {
+      border-top: 2px solid #facc15;
+      box-shadow: 0 -10px 40px rgba(250, 204, 21, 0.25);
     }
 
     .sim-card-container {
@@ -342,6 +359,13 @@
       position: relative;
       overflow: hidden;
       color: #fff;
+      transition: border-color 0.3s ease;
+    }
+
+    /* Золотая рамка карточки во время X2 */
+    .sim-card-model.x2-card-glow {
+      border-color: #facc15 !important;
+      box-shadow: inset 0 0 15px rgba(250, 204, 21, 0.3);
     }
 
     .sim-card-model.holo-active::before {
@@ -566,7 +590,7 @@
       max-height: 90vh;
       overflow-y: auto;
       transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
     }
     .modal-overlay.active .modal-sheet {
       transform: translateY(0);
@@ -597,15 +621,24 @@
       font-size: 14px;
       cursor: pointer;
       text-align: center;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
     }
     .btn-main:active { transform: scale(0.97); }
+
+    /* Кнопка генерации горит золотым во время X2 */
+    .btn-main.x2-btn-glow {
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.3), rgba(15, 23, 42, 0.6)) !important;
+      border-color: #facc15 !important;
+      color: #facc15 !important;
+      box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+    }
 
     .btn-main:disabled {
       opacity: 0.3;
       pointer-events: none;
       border-color: rgba(255, 255, 255, 0.1);
       color: var(--text-muted);
+      box-shadow: none !important;
     }
 
     .chances-box {
@@ -815,7 +848,7 @@
   <div class="modal-overlay" id="modal-buy-sim" onclick="handleOverlayClick(event, 'modal-buy-sim')">
     <div class="modal-sheet" id="sheet-buy-sim">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
-      <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">Терминал связи</div>
+      <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;" id="modal-title-text">Терминал связи</div>
 
       <div class="top-action-row">
         <button class="btn-chances-small" onclick="openModal('modal-chances')">
@@ -823,8 +856,8 @@
         </button>
         <div class="x2-progress-box" id="x2-box">
           <div class="x2-header-info">
-            <span id="x2-title">⚡ ЗАРЯД X2</span>
-            <span id="x2-counter">0 / 50</span>
+            <span id="x2-title">⚡ ДО X2</span>
+            <span id="x2-counter">1 / 5</span>
           </div>
           <div class="x2-bar-container">
             <div class="x2-bar-fill" id="x2-fill"></div>
@@ -874,17 +907,15 @@
       bank: 0,
       activePhone: 'Не установлена',
       sims: [],
-      spinsCount: 0
+      spinsCount: 0 // Счетчик от 0 до 4 (каждый 5-й бросок - X2)
     };
 
-    var MAX_SPINS_FOR_X2 = 50;
     var currentRolledNum = null;
     var currentMarketVal = 150;
     var currentRarityKey = 'common';
     var isSpinning = false;
     var audioCtx = null;
 
-    // Уведомление с настраиваемым временем (1.5 секунды)
     function showToast(text, duration = 1500) {
       var toast = document.getElementById('game-toast');
       toast.innerText = text;
@@ -894,22 +925,39 @@
       }, duration);
     }
 
+    // Проверяем, является ли текущий бросок X2 (каждый 5-й, когда spinsCount === 4)
+    function isCurrentSpinX2() {
+      return (player.spinsCount % 5 === 4);
+    }
+
     function updateX2UI() {
       var box = document.getElementById('x2-box');
       var fill = document.getElementById('x2-fill');
       var counter = document.getElementById('x2-counter');
       var title = document.getElementById('x2-title');
+      var sheet = document.getElementById('sheet-buy-sim');
+      var modelBox = document.getElementById('sim-card-model-box');
+      var btnSpin = document.getElementById('btn-spin');
 
-      var percent = Math.min(100, (player.spinsCount / MAX_SPINS_FOR_X2) * 100);
+      var currentStepInCycle = (player.spinsCount % 5) + 1; // от 1 до 5
+      var percent = (currentStepInCycle / 5) * 100;
       fill.style.width = percent + '%';
-      counter.innerText = player.spinsCount + ' / ' + MAX_SPINS_FOR_X2;
+      counter.innerText = currentStepInCycle + ' / 5';
 
-      if (player.spinsCount >= MAX_SPINS_FOR_X2) {
+      if (isCurrentSpinX2()) {
         box.classList.add('charged');
-        title.innerText = '🔥 ФАЗА X2 АКТИВНА!';
+        title.innerText = '🔥 СЛЕДУЮЩИЙ X2!';
+        sheet.classList.add('x2-active-sheet');
+        modelBox.classList.add('x2-card-glow');
+        btnSpin.classList.add('x2-btn-glow');
+        document.body.classList.add('x2-active-bg');
       } else {
         box.classList.remove('charged');
-        title.innerText = '⚡ ЗАРЯД X2';
+        title.innerText = '⚡ БЛИЖАЙШИЙ X2';
+        sheet.classList.remove('x2-active-sheet');
+        modelBox.classList.remove('x2-card-glow');
+        btnSpin.classList.remove('x2-btn-glow');
+        document.body.classList.remove('x2-active-bg');
       }
     }
 
@@ -930,15 +978,24 @@
       } catch(e){}
     }
 
-    function playSound(freq) {
+    function playSound(freq, isX2Scroll) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
         var osc = audioCtx.createOscillator();
         var gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        
+        // Для X2 прокрутки звуки выше, футуристичнее и резче (квадратная волна)
+        if (isX2Scroll) {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime((freq || 440) * 1.5, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        } else {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        }
+
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -1119,7 +1176,7 @@
       var container = document.getElementById('sim-container-glow');
       var modelBox = document.getElementById('sim-card-model-box');
       
-      container.className = 'sim-card-container glow-' + rarity;
+      container.className = 'sim-container-glow glow-' + rarity;
       if (rarity === 'legendary' || rarity === 'mythic') {
         modelBox.classList.add('holo-active');
       } else {
@@ -1143,20 +1200,39 @@
       for (var i = 1; i < tail.length; i++) {
         if (tail[i] !== firstChar) { allSame = false; break; }
       }
-      if (allSame) {
+      var isPureRound = (tail.slice(1) === '000000') || (tail.slice(2) === '00000') || (tail.slice(3) === '0000');
+
+      if ((allSame && firstChar !== '0') || (isPureRound && tail[0] !== '0')) {
         return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: 'Мифический' };
       }
 
       var isPalindrome = tail === tail.split('').reverse().join('');
-      if (isPalindrome || tail.startsWith('000') || tail.startsWith('777') || tail.startsWith('999')) {
+      var isLadderAsc = tail === '1234567' || tail === '0123456' || tail === '3456789' || tail === '1231231';
+      var isLadderDesc = tail === '7654321' || tail === '6543210' || tail === '9876543';
+
+      if (isPalindrome || isLadderAsc || isLadderDesc || tail.startsWith('777') || tail.startsWith('999') || tail.startsWith('000')) {
         return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: 'Легендарный' };
       }
 
-      if (tail.indexOf('555') !== -1 || tail.indexOf('777') !== -1 || tail.indexOf('333') !== -1 || tail.indexOf('000') !== -1 || (tail.slice(0,3) === tail.slice(3,6))) {
+      var hasTriplet = (tail.includes('000') || tail.includes('111') || tail.includes('222') || 
+                        tail.includes('333') || tail.includes('444') || tail.includes('555') || 
+                        tail.includes('666') || tail.includes('777') || tail.includes('888') || tail.includes('999'));
+
+      var hasBlockRhythm = (tail[1] === tail[2] && tail[4] === tail[5]) || 
+                           (tail[2] === tail[3] && tail[5] === tail[6]) ||
+                           (tail.slice(0,3) === tail.slice(3,6));
+
+      if (hasTriplet || hasBlockRhythm) {
         return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: 'Эпический' };
       }
 
-      if ((tail[0] === tail[1] && tail[2] === tail[3]) || (tail[3] === tail[4] && tail[5] === tail[6])) {
+      var hasNiceTail = (tail[5] === tail[6] && tail[3] === tail[4]) || 
+                        (tail[3] === tail[4] && tail[1] === tail[2]) || 
+                        (tail[4] === tail[5] === tail[6]);
+
+      var hasPairEnd = (tail[5] === tail[6]) || (tail[4] === tail[5]);
+
+      if (hasNiceTail || hasPairEnd) {
         return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: 'Редкий' };
       }
 
@@ -1164,8 +1240,7 @@
     }
 
     function generateRandomPhone() {
-      var isX2Active = (player.spinsCount >= MAX_SPINS_FOR_X2);
-      var boost = isX2Active ? 2.5 : 1.0;
+      var boost = isCurrentSpinX2() ? 2.5 : 1.0;
 
       var rand = Math.random();
       if (rand < (0.003 * boost)) {
@@ -1206,8 +1281,7 @@
       }
 
       player.cash -= 1500;
-      player.spinsCount++;
-      var wasX2 = (player.spinsCount >= MAX_SPINS_FOR_X2);
+      var activeX2 = isCurrentSpinX2();
 
       updateUI();
       isSpinning = true;
@@ -1233,35 +1307,48 @@
       var interval = setInterval(function() {
         var tempNum = generateRandomPhone();
         display.innerText = tempNum;
-        playSound(300 + (count % 10) * 20);
+        
+        // Звук прокрутки (специальный кибер-звук если X2 активен)
+        playSound(300 + (count % 10) * 20, activeX2);
+        
         count += 50;
 
         if (count >= 2500) {
           clearInterval(interval);
           currentRolledNum = generateRandomPhone();
           var evaluated = evaluateNumber(currentRolledNum);
-          currentMarketVal = evaluated.val;
+          
+          // Если выпал X2 бросок, удваиваем рыночную стоимость номера!
+          currentMarketVal = activeX2 ? evaluated.val * 2 : evaluated.val;
           currentRarityKey = evaluated.rarity;
 
           setCardGlow(currentRarityKey);
-          setRarityStyle(rarityTag, currentRarityKey, evaluated.name);
-          valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
+          
+          if (activeX2) {
+            setRarityStyle(rarityTag, currentRarityKey, evaluated.name + ' (X2 БОНУС!)');
+          } else {
+            setRarityStyle(rarityTag, currentRarityKey, evaluated.name);
+          }
 
+          valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
           btnSell.innerText = '💰 Продать за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
 
           animateTextSmooth(display, currentRolledNum);
           playRaritySound(currentRarityKey);
 
-          if (wasX2) {
-            showToast('🔥 БОНУС X2 ИСПОЛНЕН! Шкала сброшена.', 1500);
-            player.spinsCount = 0;
-            updateX2UI();
+          if (activeX2) {
+            showToast('🔥 ФАЗА X2 СРАБОТАЛА! Стоимость удвоена!', 1800);
           }
+
+          // Увеличиваем счетчик после завершения броска для следующего цикла
+          player.spinsCount++;
 
           isSpinning = false;
           btnSpin.disabled = false;
           btnBuy.disabled = false;
           btnSell.disabled = false;
+          
+          updateX2UI();
         }
       }, 50);
     }
@@ -1275,7 +1362,6 @@
 
       playSuccessSound();
       
-      // Запускаем праздничный салют конфетти при добавлении карты
       try {
         confetti({
           particleCount: 60,
@@ -1284,7 +1370,6 @@
         });
       } catch(e) {}
 
-      // Выводим требуемое уведомление ровно на 1.5 секунды
       showToast('📱 Ваша новая сим-карта добавлена в инвентарь!', 1500);
       
       currentRolledNum = null;
