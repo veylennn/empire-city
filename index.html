@@ -230,7 +230,7 @@
       margin-top: 2px;
     }
 
-    /* ФИЗИЧЕСКАЯ СИМ-КАРТА С ИДЕАЛЬНОЙ КОМПОНОВКОЙ */
+    /* ФИЗИЧЕСКАЯ СИМ-КАРТА */
     .sim-card-container {
       position: relative;
       width: 100%;
@@ -252,7 +252,7 @@
 
     .sim-card-model {
       width: 100%;
-      height: 215px;
+      height: 185px;
       background: linear-gradient(135deg, #fdfbf7 0%, #f3efe6 100%);
       border-radius: 15px;
       border: 1px solid rgba(212, 175, 55, 0.4);
@@ -288,17 +288,9 @@
       border-radius: 6px;
     }
 
-    /* Верхняя строка: Чип слева, Оценка и Редкость справа */
-    .sim-middle-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 4px 0;
-    }
-
     .sim-chip {
-      width: 36px;
-      height: 26px;
+      width: 38px;
+      height: 28px;
       background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
       border-radius: 5px;
       border: 1px solid #a16207;
@@ -312,29 +304,38 @@
       border-radius: 2px;
     }
 
-    .sim-info-group {
+    /* БЛОК ОЦЕНКИ И ЖИРНОГО ЦВЕТНОГО ТЕКСТА РЕДКОСТИ МЕЖДУ КАРТОЙ И КНОПКАМИ */
+    .external-info-bar {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 3px;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 14px;
+      border-radius: 12px;
     }
 
-    .market-value-badge {
-      font-size: 11px;
+    .external-value {
+      font-size: 13px;
       font-weight: 900;
-      color: #047857;
+      color: #34d399;
     }
 
-    .sim-rarity-badge {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(0,0,0,0.06);
-      color: #334155;
+    /* Жирный цветной текст редкости без значков */
+    .external-rarity {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
     }
 
-    /* СТРОГО ЕДИНЫЙ МОНОШИРИННЫЙ ШРИФТ ДЛЯ ВСЕХ ЭТАПОВ */
+    /* Цвета для редкостей */
+    .color-common { color: #94a3b8; }
+    .color-rare { color: #3b82f6; }
+    .color-epic { color: #a855f7; }
+    .color-legendary { color: #facc15; }
+    .color-mythic { color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.5); }
+
+    /* ЕДИНЫЙ ЖЕСТКИЙ МОНОШИРИННЫЙ ШРИФТ */
     .sim-number-display {
       font-family: 'Courier New', Courier, monospace !important;
       font-size: 17px !important;
@@ -593,29 +594,29 @@
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
 
-      <!-- Физическая карта с гармоничным расположением чипа, оценки и редкости -->
+      <!-- Физическая карта -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
         <div class="sim-card-model">
           <div class="sim-card-top">
-            <div class="sim-brand">EmpireSimCard</div>
+            <div class="sim-brand">EMPIRESIMCARD</div>
             <div class="sim-operator">Россия</div>
           </div>
 
-          <div class="sim-middle-row">
-            <div class="sim-chip"></div>
-            <div class="sim-info-group">
-              <div class="market-value-badge" id="market-value-text">Оценка: —</div>
-              <div class="sim-rarity-badge" id="sim-rarity-tag">⚪ Обычный</div>
-            </div>
-          </div>
+          <div class="sim-chip"></div>
           
           <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
         </div>
       </div>
 
+      <!-- Блок оценки и цветного жирного текста редкости под картой -->
+      <div class="external-info-bar">
+        <div class="external-value" id="market-value-text">Оценка: —</div>
+        <div class="external-rarity color-common" id="sim-rarity-tag">Обычный</div>
+      </div>
+
       <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Прокрутить номер (1 500 ₽)</button>
       <button class="btn-main" id="btn-buy-sim" style="display:none; border-color:var(--accent-color); color:#6ee7b7;" onclick="confirmBuySim()">💳 Приобрести номер</button>
-      <button class="btn-main" id="btn-sell-sim" style="display:none; background:rgba(239, 68, 68, 0.2); border-color:#ef4444; color:#fca5a5;" onclick="confirmSellSim()">💰 Продать за рыночную стоимость</button>
+      <button class="btn-main" id="btn-sell-sim" style="display:none; background:rgba(239, 68, 68, 0.2); border-color:#ef4444; color:#fca5a5;" onclick="confirmSellSim()">💰 Продать за 0 ₽</button>
       <button class="btn-main" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:none;" onclick="closeModal('modal-buy-sim')">Закрыть</button>
     </div>
   </div>
@@ -765,12 +766,17 @@
       playSound(400);
     }
 
+    function setRarityStyle(element, rarityKey, rarityName) {
+      element.className = 'external-rarity color-' + rarityKey;
+      element.innerText = rarityName;
+    }
+
     function openModal(id) {
       document.getElementById(id).classList.add('active');
       resetCardGlow('common');
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
-      document.getElementById('sim-rarity-tag').innerText = '⚪ Обычный';
+      setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
       document.getElementById('btn-buy-sim').style.display = 'none';
       document.getElementById('btn-sell-sim').style.display = 'none';
       document.getElementById('btn-spin').style.display = 'block';
@@ -801,23 +807,23 @@
         if (tail[i] !== firstChar) { allSame = false; break; }
       }
       if (allSame) {
-        return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: '🔴 Мифический' };
+        return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: 'Мифический' };
       }
 
       var isPalindrome = tail === tail.split('').reverse().join('');
       if (isPalindrome || tail.startsWith('000') || tail.startsWith('777')) {
-        return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: '🟡 Легендарный' };
+        return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: 'Легендарный' };
       }
 
       if (tail.indexOf('555') !== -1 || tail.indexOf('777') !== -1 || tail.indexOf('333') !== -1 || (tail.slice(0,3) === tail.slice(3,6))) {
-        return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: '🟣 Эпический' };
+        return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: 'Эпический' };
       }
 
       if (tail[0] === tail[1] && tail[2] === tail[3]) {
-        return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: '🔵 Редкий' };
+        return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: 'Редкий' };
       }
 
-      return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: '⚪ Обычный' };
+      return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: 'Обычный' };
     }
 
     function generateRandomPhone() {
@@ -835,7 +841,6 @@
       return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
     }
 
-    // Использование строго моноширинного шрифта для прокрутки и плавного вывода
     function animateTextSmooth(element, text) {
       element.innerHTML = '';
       for (var i = 0; i < text.length; i++) {
@@ -869,13 +874,13 @@
       btnSpin.style.display = 'none';
       
       resetCardGlow('common');
-      rarityTag.innerText = '⚪ Сканирование...';
+      setRarityStyle(rarityTag, 'common', 'Сканирование...');
       valText.innerText = 'Оценка: анализ...';
 
       var count = 0;
       var interval = setInterval(function() {
         var tempNum = generateRandomPhone();
-        display.innerText = tempNum; // Рендерится сразу в моноширинном шрифте без скачков
+        display.innerText = tempNum;
         playSound(300 + (count % 10) * 20);
         count += 50;
 
@@ -887,8 +892,10 @@
           currentRarityKey = evaluated.rarity;
 
           setCardGlow(currentRarityKey);
-          rarityTag.innerText = evaluated.name;
+          setRarityStyle(rarityTag, currentRarityKey, evaluated.name);
           valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
+
+          btnSell.innerText = '💰 Продать за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
 
           animateTextSmooth(display, currentRolledNum);
           playRaritySound(currentRarityKey);
