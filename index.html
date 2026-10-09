@@ -497,13 +497,18 @@
 
     /* Индикатор свайпа для закрытия */
     .swipe-indicator {
+      width: 100%;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      cursor: grab;
+      touch-action: none;
+    }
+    .swipe-bar {
       width: 40px;
       height: 4px;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.3);
       border-radius: 2px;
-      align-self: center;
-      margin-bottom: 4px;
-      cursor: grab;
     }
 
     .btn-main {
@@ -722,7 +727,7 @@
   <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ -->
   <div class="modal-overlay" id="modal-chances" onclick="handleOverlayClick(event, 'modal-chances')">
     <div class="modal-sheet" id="sheet-chances">
-      <div class="swipe-indicator" onclick="closeModal('modal-chances')"></div>
+      <div class="swipe-indicator" id="handle-chances"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">📊 Вероятность категорий номеров</div>
       <p style="font-size:11px; color:var(--text-muted); text-align:center;">Шансы выпадения при генерации:</p>
       
@@ -754,7 +759,7 @@
   <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ -->
   <div class="modal-overlay" id="modal-buy-sim" onclick="handleOverlayClick(event, 'modal-buy-sim')">
     <div class="modal-sheet" id="sheet-buy-sim">
-      <div class="swipe-indicator" onclick="closeModal('modal-buy-sim')"></div>
+      <div class="swipe-indicator" id="handle-buy-sim"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">Терминал связи</div>
 
       <button class="btn-chances-small" onclick="openModal('modal-chances')">
@@ -983,26 +988,43 @@
       modal.classList.remove('active');
     }
 
-    // Закрытие кликом по фону
     function handleOverlayClick(event, id) {
       if (event.target.id === id) {
         closeModal(id);
       }
     }
 
-    // Поддержка свайпа вниз для закрытия шторки
-    let touchStartY = 0;
-    document.querySelectorAll('.modal-sheet').forEach(sheet => {
+    // ИДЕАЛЬНЫЙ ТРЕКИНГ СВАЙПА ВНИЗ ДЛЯ ШТОРОК
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      let sheet = overlay.querySelector('.modal-sheet');
+      let startY = 0;
+      let currentY = 0;
+      let isDragging = false;
+
       sheet.addEventListener('touchstart', e => {
-        touchStartY = e.touches[0].clientY;
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        sheet.style.transition = 'none';
       }, {passive: true});
 
       sheet.addEventListener('touchmove', e => {
-        let touchEndY = e.touches[0].clientY;
-        if (touchEndY - touchStartY > 90) { // Свайп вниз более 90px
-          let overlay = sheet.closest('.modal-overlay');
-          if (overlay) closeModal(overlay.id);
+        if (!isDragging) return;
+        currentY = e.touches[0].clientY;
+        let diff = currentY - startY;
+        if (diff > 0) {
+          sheet.style.transform = `translateY(${diff}px)`;
         }
+      }, {passive: true});
+
+      sheet.addEventListener('touchend', e => {
+        if (!isDragging) return;
+        isDragging = false;
+        sheet.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+        let diff = currentY - startY;
+        if (diff > 100) { // Если свайпнули вниз больше чем на 100px — закрываем
+          closeModal(overlay.id);
+        }
+        sheet.style.transform = 'translateY(0)';
       }, {passive: true});
     });
 
@@ -1025,12 +1047,10 @@
       modelBox.classList.remove('holo-active');
     }
 
-    // ИСПРАВЛЕННАЯ И СПРАВЕДЛИВАЯ СИСТЕМА ОЦЕНИВАНИЯ НОМЕРОВ
     function evaluateNumber(num) {
       var clean = num.replace(/\D/g, '').slice(1);
-      var tail = clean.slice(3); // последние 7 цифр (XXX-XX-XX)
+      var tail = clean.slice(3);
 
-      // 1. МИФИЧЕСКИЙ: все цифры хвоста абсолютно одинаковые (например, 777-77-77)
       var firstChar = tail[0];
       var allSame = true;
       for (var i = 1; i < tail.length; i++) {
@@ -1040,23 +1060,19 @@
         return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: 'Мифический' };
       }
 
-      // 2. ЛЕГЕНДАРНЫЙ: палиндром (зеркалка типа 123-21-31 или 543-34-45 / блатные нули и семерки в начале)
       var isPalindrome = tail === tail.split('').reverse().join('');
       if (isPalindrome || tail.startsWith('000') || tail.startsWith('777') || tail.startsWith('999')) {
         return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: 'Легендарный' };
       }
 
-      // 3. ЭПИЧЕСКИЙ: наличие триплета (555, 777, 333) или зеркальные половины
       if (tail.indexOf('555') !== -1 || tail.indexOf('777') !== -1 || tail.indexOf('333') !== -1 || tail.indexOf('000') !== -1 || (tail.slice(0,3) === tail.slice(3,6))) {
         return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: 'Эпический' };
       }
 
-      // 4. РЕДКИЙ: парные цифры в блоках (например, XX-YY вида 55-22 или одинаковые пары)
       if ((tail[0] === tail[1] && tail[2] === tail[3]) || (tail[3] === tail[4] && tail[5] === tail[6])) {
         return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: 'Редкий' };
       }
 
-      // 5. ОБЫЧНЫЙ: обычные случайные цифры
       return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: 'Обычный' };
     }
 
@@ -1094,7 +1110,6 @@
     }
 
     function startSimSpin() {
-      // ПУНКТ 3: Уведомление при каждом клике, если средств нет
       if (player.cash < 1500) {
         showToast('❌ Недостаточно средств для генерации!');
         return;
