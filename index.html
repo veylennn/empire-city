@@ -371,7 +371,7 @@
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      overflow: hidden;
+      overflow: hidden; /* ИСПРАВЛЕНО: строго обрезаем голограмму по углам */
       color: #fff;
       transition: border-color 0.3s ease;
     }
@@ -453,18 +453,21 @@
       border: 1px solid rgba(255, 255, 255, 0.06);
       padding: 12px 16px;
       border-radius: 12px;
+      gap: 10px; /* ИСПРАВЛЕНО: предотвращает наплыв текста */
     }
 
     .external-value {
       font-size: 13px;
       font-weight: 900;
       color: #38bdf8;
+      white-space: nowrap;
     }
 
     .external-rarity {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 900;
       letter-spacing: 0.5px;
+      text-align: right;
     }
 
     .color-common { color: #64748b; }
@@ -521,6 +524,7 @@
       flex-direction: column;
       justify-content: space-between;
       position: relative;
+      overflow: hidden; /* ИСПРАВЛЕНО: обрезка углов на мини-карточках */
       cursor: pointer;
       transition: transform 0.1s ease, border-color 0.2s ease;
     }
@@ -536,6 +540,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      z-index: 2;
     }
     .mini-brand {
       font-size: 10px;
@@ -549,6 +554,7 @@
       background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
       border-radius: 3px;
       border: 1px solid #a16207;
+      z-index: 2;
     }
     .mini-number {
       font-family: 'Courier New', Courier, monospace;
@@ -560,6 +566,7 @@
       border-radius: 6px;
       border: 1px solid rgba(56, 189, 248, 0.2);
       text-align: center;
+      z-index: 2;
     }
 
     .sim-actions-panel {
