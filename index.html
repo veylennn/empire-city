@@ -367,7 +367,7 @@
       }
     }
 
-    /* КИБЕР-УВЕДОМЛЕНИЕ (ровно 1 секунда) */
+    /* КИБЕР-УВЕДОМЛЕНИЕ (1 секунда) */
     #game-toast {
       position: fixed;
       top: 20px;
@@ -462,7 +462,7 @@
       color: var(--text-muted);
     }
 
-    /* АККУРАТНАЯ МАЛЕНЬКАЯ КНОПКА ШАНСОВ СЛЕВА НАВЕРХУ */
+    /* ИСПРАВЛЕННАЯ КНОПКА ШАНСОВ (гарантированный клик) */
     .btn-chances-small {
       width: 50%;
       background: rgba(16, 185, 129, 0.1);
@@ -477,6 +477,8 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      position: relative;
+      z-index: 20;
     }
     .btn-chances-small:active {
       background: rgba(16, 185, 129, 0.2);
@@ -1101,9 +1103,11 @@
       document.getElementById('btn-sell-sim').disabled = true;
     }
 
+    // ИСПРАВЛЕННЫЙ МЕТОД: гарантированное зачисление денег ДО проверки баланса нового прокрута
     function sellAndSpinAgain() {
       if (!currentRolledNum) return;
 
+      // 1. Сначала добавляем деньги от проданного номера
       player.cash += currentMarketVal;
       updateUI();
 
@@ -1111,6 +1115,10 @@
       playSuccessSound();
       showToast('💰 Номер успешно продан!');
 
+      // 2. Очищаем текущий номер
+      currentRolledNum = null;
+
+      // 3. Сразу запускаем следующий прокрут (уже с учетом обновленного баланса)
       startSimSpin();
     }
 
