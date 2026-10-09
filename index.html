@@ -265,7 +265,6 @@
       color: #fff;
     }
 
-    /* Голографический переливающийся слой для Легендарных и Мифических карт */
     .sim-card-model.holo-active::before {
       content: '';
       position: absolute;
@@ -378,7 +377,6 @@
       z-index: 2;
     }
 
-    /* Эффект матричного цифрового шума при генерации */
     .scanning-matrix {
       filter: blur(0.4px);
       animation: matrixGlitch 0.08s infinite alternate;
@@ -454,18 +452,26 @@
       animation: floatUp 0.6s forwards ease-out;
     }
 
-    /* МОДАЛКИ */
+    /* МОДАЛКИ С ПЛАВНЫМ ВЫЕЗДОМ И ПОДДЕРЖКОЙ СВАЙПА ВНИЗ */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0);
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
       z-index: 10000;
-      display: none;
+      display: flex;
       align-items: flex-end;
+      pointer-events: none;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease;
     }
-    .modal-overlay.active { display: flex; }
+    .modal-overlay.active {
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      pointer-events: auto;
+    }
 
     #modal-chances.modal-overlay {
       z-index: 20000 !important;
@@ -482,6 +488,22 @@
       gap: 12px;
       max-height: 90vh;
       overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.active .modal-sheet {
+      transform: translateY(0);
+    }
+
+    /* Индикатор свайпа для закрытия */
+    .swipe-indicator {
+      width: 40px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      align-self: center;
+      margin-bottom: 4px;
+      cursor: grab;
     }
 
     .btn-main {
@@ -698,8 +720,9 @@
   </div>
 
   <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ -->
-  <div class="modal-overlay" id="modal-chances">
-    <div class="modal-sheet">
+  <div class="modal-overlay" id="modal-chances" onclick="handleOverlayClick(event, 'modal-chances')">
+    <div class="modal-sheet" id="sheet-chances">
+      <div class="swipe-indicator" onclick="closeModal('modal-chances')"></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">📊 Вероятность категорий номеров</div>
       <p style="font-size:11px; color:var(--text-muted); text-align:center;">Шансы выпадения при генерации:</p>
       
@@ -725,21 +748,20 @@
           <span style="color:#fff;">0.3%</span>
         </div>
       </div>
-
-      <button class="btn-main" onclick="closeModal('modal-chances')">Закрыть</button>
     </div>
   </div>
 
   <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ -->
-  <div class="modal-overlay" id="modal-buy-sim">
-    <div class="modal-sheet">
+  <div class="modal-overlay" id="modal-buy-sim" onclick="handleOverlayClick(event, 'modal-buy-sim')">
+    <div class="modal-sheet" id="sheet-buy-sim">
+      <div class="swipe-indicator" onclick="closeModal('modal-buy-sim')"></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">Терминал связи</div>
 
       <button class="btn-chances-small" onclick="openModal('modal-chances')">
         <span>📊</span> Шансы выпадения
       </button>
 
-      <!-- Нуар карта с поддержкой голографии (.holo-active) -->
+      <!-- Нуар карта -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
         <div class="sim-card-model" id="sim-card-model-box">
           <div class="sim-card-top">
@@ -760,8 +782,7 @@
 
       <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Сгенерировать чип (1 500 ₽)</button>
       <button class="btn-main" id="btn-buy-sim" disabled style="border-color:#38bdf8; color:#38bdf8;" onclick="confirmBuySim()">💳 Забрать в архив</button>
-      <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellAndSpinAgain()">💰 Продать за 0 ₽ и крутить снова</button>
-      <button class="btn-main" style="background:rgba(255,255,255,0.03); color:var(--text-muted); border:none;" onclick="closeModal('modal-buy-sim')">Закрыть</button>
+      <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellAndSpinAgain()">💰 Продать и крутить снова</button>
     </div>
   </div>
 
@@ -800,7 +821,6 @@
       }, 1000);
     }
 
-    // Уникальные аудио-эффекты через Web Audio API
     function playSuccessSound() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -943,7 +963,8 @@
     }
 
     function openModal(id) {
-      document.getElementById(id).classList.add('active');
+      var modal = document.getElementById(id);
+      modal.classList.add('active');
       if (id === 'modal-buy-sim') {
         resetCardGlow('common');
         document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
@@ -953,23 +974,43 @@
         document.getElementById('btn-spin').disabled = false;
         document.getElementById('btn-buy-sim').disabled = true;
         document.getElementById('btn-sell-sim').disabled = true;
-        document.getElementById('btn-sell-sim').innerText = '💰 Продать за 0 ₽ и крутить снова';
       }
       playSound(450);
     }
 
     function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
+      var modal = document.getElementById(id);
+      modal.classList.remove('active');
     }
 
-    // Управление свечением и голографическим эффектом
+    // Закрытие кликом по фону
+    function handleOverlayClick(event, id) {
+      if (event.target.id === id) {
+        closeModal(id);
+      }
+    }
+
+    // Поддержка свайпа вниз для закрытия шторки
+    let touchStartY = 0;
+    document.querySelectorAll('.modal-sheet').forEach(sheet => {
+      sheet.addEventListener('touchstart', e => {
+        touchStartY = e.touches[0].clientY;
+      }, {passive: true});
+
+      sheet.addEventListener('touchmove', e => {
+        let touchEndY = e.touches[0].clientY;
+        if (touchEndY - touchStartY > 90) { // Свайп вниз более 90px
+          let overlay = sheet.closest('.modal-overlay');
+          if (overlay) closeModal(overlay.id);
+        }
+      }, {passive: true});
+    });
+
     function setCardGlow(rarity) {
       var container = document.getElementById('sim-container-glow');
       var modelBox = document.getElementById('sim-card-model-box');
       
       container.className = 'sim-card-container glow-' + rarity;
-      
-      // Если выпала легендарка или мифика — включаем голографический блик
       if (rarity === 'legendary' || rarity === 'mythic') {
         modelBox.classList.add('holo-active');
       } else {
@@ -984,10 +1025,12 @@
       modelBox.classList.remove('holo-active');
     }
 
+    // ИСПРАВЛЕННАЯ И СПРАВЕДЛИВАЯ СИСТЕМА ОЦЕНИВАНИЯ НОМЕРОВ
     function evaluateNumber(num) {
       var clean = num.replace(/\D/g, '').slice(1);
-      var tail = clean.slice(3);
+      var tail = clean.slice(3); // последние 7 цифр (XXX-XX-XX)
 
+      // 1. МИФИЧЕСКИЙ: все цифры хвоста абсолютно одинаковые (например, 777-77-77)
       var firstChar = tail[0];
       var allSame = true;
       for (var i = 1; i < tail.length; i++) {
@@ -997,19 +1040,23 @@
         return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: 'Мифический' };
       }
 
+      // 2. ЛЕГЕНДАРНЫЙ: палиндром (зеркалка типа 123-21-31 или 543-34-45 / блатные нули и семерки в начале)
       var isPalindrome = tail === tail.split('').reverse().join('');
-      if (isPalindrome || tail.startsWith('000') || tail.startsWith('777')) {
+      if (isPalindrome || tail.startsWith('000') || tail.startsWith('777') || tail.startsWith('999')) {
         return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: 'Легендарный' };
       }
 
-      if (tail.indexOf('555') !== -1 || tail.indexOf('777') !== -1 || tail.indexOf('333') !== -1 || (tail.slice(0,3) === tail.slice(3,6))) {
+      // 3. ЭПИЧЕСКИЙ: наличие триплета (555, 777, 333) или зеркальные половины
+      if (tail.indexOf('555') !== -1 || tail.indexOf('777') !== -1 || tail.indexOf('333') !== -1 || tail.indexOf('000') !== -1 || (tail.slice(0,3) === tail.slice(3,6))) {
         return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: 'Эпический' };
       }
 
-      if (tail[0] === tail[1] && tail[2] === tail[3]) {
+      // 4. РЕДКИЙ: парные цифры в блоках (например, XX-YY вида 55-22 или одинаковые пары)
+      if ((tail[0] === tail[1] && tail[2] === tail[3]) || (tail[3] === tail[4] && tail[5] === tail[6])) {
         return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: 'Редкий' };
       }
 
+      // 5. ОБЫЧНЫЙ: обычные случайные цифры
       return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: 'Обычный' };
     }
 
@@ -1034,7 +1081,6 @@
       return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
     }
 
-    // Анимация матричного сканирования и посимвольного появления
     function animateTextSmooth(element, text) {
       element.innerHTML = '';
       element.classList.remove('scanning-matrix');
@@ -1048,6 +1094,7 @@
     }
 
     function startSimSpin() {
+      // ПУНКТ 3: Уведомление при каждом клике, если средств нет
       if (player.cash < 1500) {
         showToast('❌ Недостаточно средств для генерации!');
         return;
@@ -1072,7 +1119,6 @@
       setRarityStyle(rarityTag, 'common', 'Сканирование...');
       valText.innerText = 'Оценка: анализ...';
 
-      // Включаем эффект матричного сканирования во время прокрутки
       display.classList.add('scanning-matrix');
 
       var count = 0;
@@ -1137,9 +1183,7 @@
       currentRolledNum = null;
 
       if (player.cash < 1500) {
-        setTimeout(function() {
-          showToast('❌ Недостаточно средств для нового прокрута!');
-        }, 1100);
+        showToast('❌ Недостаточно средств для нового прокрута!');
         return;
       }
 
