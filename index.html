@@ -36,7 +36,6 @@
       position: relative;
     }
 
-    /* Фоновый канвас для кибер-анимации */
     #cyber-bg {
       position: fixed;
       top: 0;
@@ -55,7 +54,6 @@
       gap: 14px;
     }
 
-    /* Статус сервера */
     .server-status {
       display: flex;
       align-items: center;
@@ -81,7 +79,6 @@
       box-shadow: 0 0 10px var(--accent-color);
     }
 
-    /* Карточка профиля */
     .profile-card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
@@ -142,7 +139,6 @@
       font-weight: 800;
     }
 
-    /* Балансы */
     .balance-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -173,7 +169,18 @@
       text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
     }
 
-    /* Карточки меню (Хаб) */
+    /* Экраны приложения */
+    .screen {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
     .hub-card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
@@ -224,19 +231,85 @@
       margin-top: 2px;
     }
 
-    /* Экраны приложения */
-    .screen {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      animation: fadeIn 0.2s ease;
-    }
-
-    .screen.active {
+    /* СТИЛИЗАЦИЯ ФИЗИЧЕСКОЙ СИМ-КАРТЫ (Бело-кремовая с золотым чипом) */
+    .sim-card-model {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #fdfbf7 0%, #f3efe6 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      padding: 18px;
       display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      color: #1a1a1a;
     }
 
-    /* Мини-игра */
+    .sim-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sim-brand {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+
+    .sim-operator {
+      font-size: 10px;
+      font-weight: 800;
+      background: rgba(16, 185, 129, 0.15);
+      color: #047857;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    /* Золотой чип */
+    .sim-chip {
+      width: 42px;
+      height: 32px;
+      background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
+      border-radius: 6px;
+      border: 1px solid #a16207;
+      position: relative;
+      box-shadow: inset 0 0 4px rgba(255,255,255,0.6);
+    }
+    .sim-chip::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 6px; right: 6px; bottom: 6px;
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 3px;
+    }
+
+    .sim-number-display {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: 1px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .market-value-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      color: #047857;
+    }
+
+    /* Мини-игра с банками */
     .game-area {
       position: relative;
       width: 100%;
@@ -261,7 +334,32 @@
       font-size: 16px;
       pointer-events: none;
       animation: floatUp 0.6s forwards ease-out;
-      text-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+    }
+
+    /* Модалки / Шторки */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      z-index: 10000;
+      display: none;
+      align-items: flex-end;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-sheet {
+      width: 100%;
+      background: #0f1017;
+      border-top: 1px solid var(--border-color);
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .btn-main {
@@ -275,18 +373,12 @@
       cursor: pointer;
       text-align: center;
     }
+    .btn-main:active { transform: scale(0.97); }
 
-    .btn-main:active {
-      transform: scale(0.97);
-    }
-
-    /* Нижняя навигация */
     .bottom-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 65px;
+      bottom: 0; left: 0;
+      width: 100%; height: 65px;
       background: rgba(10, 15, 20, 0.95);
       backdrop-filter: blur(16px);
       border-top: 1px solid var(--border-color);
@@ -307,21 +399,16 @@
       font-weight: 700;
       width: 50%;
     }
-
-    .tab-item.active {
-      color: var(--accent-color);
-    }
+    .tab-item.active { color: var(--accent-color); }
 
     @keyframes popIn {
       0% { transform: scale(0); }
       100% { transform: scale(1); }
     }
-
     @keyframes floatUp {
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-30px); }
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
@@ -330,12 +417,10 @@
 </head>
 <body>
 
-  <!-- Кибер-фон с частицами -->
   <canvas id="cyber-bg"></canvas>
 
   <div class="app-container">
 
-    <!-- Статус сервера -->
     <div class="server-status">
       <span>EMPIRE CITY STATE // NET-01</span>
       <div class="status-online">
@@ -344,14 +429,14 @@
       </div>
     </div>
 
-    <!-- Карточка профиля -->
+    <!-- Профиль -->
     <div class="profile-card">
       <div class="profile-header">
         <div class="user-info">
           <div class="avatar" id="user-avatar">😎</div>
           <div class="user-details">
             <h2 id="user-name">Оператор</h2>
-            <p>ID: 777-EMPIRE</p>
+            <p id="user-phone">📱 SIM: Не установлена</p>
           </div>
         </div>
         <div class="lvl-badge">LVL 1</div>
@@ -369,7 +454,7 @@
       </div>
     </div>
 
-    <!-- ЭКРАН: ГОРОД (ГЛАВНОЕ МЕНЮ) -->
+    <!-- ЭКРАН 1: ГОРОД (ГЛАВНОЕ МЕНЮ СО ВСЕМИ КНОПКАМИ) -->
     <div id="screen-home" class="screen active">
       <div class="hub-card" onclick="claimBonus()">
         <div class="hub-left">
@@ -392,26 +477,137 @@
         </div>
         <span style="color:var(--accent-color);">➔</span>
       </div>
+
+      <div class="hub-card" onclick="openScreen('screen-sim-store')">
+        <div class="hub-left">
+          <div class="hub-icon">📱</div>
+          <div class="hub-text">
+            <h3>Салон Сотовой Связи</h3>
+            <p>Покупка SIM-карт и пополнение баланса</p>
+          </div>
+        </div>
+        <span style="color:var(--accent-color);">➔</span>
+      </div>
+
+      <div class="hub-card" onclick="alert('🏦 Центральный Банк в разработке 🚧')">
+        <div class="hub-left">
+          <div class="hub-icon">🏦</div>
+          <div class="hub-text">
+            <h3>Центральный Банк</h3>
+            <p>Депозиты и переводы средств</p>
+          </div>
+        </div>
+        <span style="color:var(--accent-color);">➔</span>
+      </div>
+
+      <div class="hub-card" onclick="alert('🔨 Городской Аукцион в разработке 🚧')">
+        <div class="hub-left">
+          <div class="hub-icon">🔨</div>
+          <div class="hub-text">
+            <h3>Городской Аукцион</h3>
+            <p>Торги редкими лотами и номерами</p>
+          </div>
+        </div>
+        <span style="color:var(--accent-color);">➔</span>
+      </div>
+
+      <div class="hub-card" onclick="alert('🚘 Автосалон в разработке 🚧')">
+        <div class="hub-left">
+          <div class="hub-icon">🚘</div>
+          <div class="hub-text">
+            <h3>Автосалон</h3>
+            <p>Приобретение элитных машин</p>
+          </div>
+        </div>
+        <span style="color:var(--accent-color);">➔</span>
+      </div>
+
+      <div class="hub-card" onclick="alert('🏠 Недвижимость в разработке 🚧')">
+        <div class="hub-left">
+          <div class="hub-icon">🏠</div>
+          <div class="hub-text">
+            <h3>Недвижимость</h3>
+            <p>Покупка квартир и пентхаусов</p>
+          </div>
+        </div>
+        <span style="color:var(--accent-color);">➔</span>
+      </div>
     </div>
 
-    <!-- ЭКРАН: РАБОТА (СБОР БАНОК) -->
+    <!-- ЭКРАН 2: САЛОН СОТОВОЙ СВЯЗИ (Отдельное меню с 2 кнопками) -->
+    <div id="screen-sim-store" class="screen">
+      <div style="font-size:14px; color:var(--accent-color); font-weight:800;">📱 Салон Сотовой Связи «EmpireTelecom»</div>
+      <p style="font-size:11px; color:var(--text-muted);">Приобретайте премиальные SIM-карты и управляйте связью.</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <button class="hub-card" onclick="openModal('modal-buy-sim')">
+          <div class="hub-left">
+            <div class="hub-icon">💳</div>
+            <div class="hub-text">
+              <h3>Купить SIM-карту</h3>
+              <p>Фиксированная стоимость: 1 500 ₽</p>
+            </div>
+          </div>
+          <span style="color:var(--accent-color);">➔</span>
+        </button>
+
+        <button class="hub-card" onclick="alert('💰 Пополнение баланса SIM в разработке')">
+          <div class="hub-left">
+            <div class="hub-icon">💵</div>
+            <div class="hub-text">
+              <h3>Пополнить баланс</h3>
+              <p>Управление счётом активной сим-карты</p>
+            </div>
+          </div>
+          <span style="color:var(--accent-color);">➔</span>
+        </button>
+      </div>
+
+      <button class="btn-main" style="margin-top: 15px;" onclick="openScreen('screen-home')">⬅️ Вернуться в Город</button>
+    </div>
+
+    <!-- ЭКРАН 3: РАБОТА (СБОР БАНОК) -->
     <div id="screen-work" class="screen">
       <div style="font-size:13px; color:var(--accent-color); font-weight:800;">🥫 Уличный Сбор</div>
-      <p style="font-size:11px; color:var(--text-muted);">Кликайте по банкам, чтобы заработать первые деньги.</p>
+      <p style="font-size:11px; color:var(--text-muted);">Кликайте по банкам для заработка.</p>
       
       <div class="game-area" id="game-area"></div>
 
       <button class="btn-main" onclick="openScreen('screen-home')">⬅️ Вернуться в Город</button>
     </div>
 
-    <!-- ЭКРАН: ИНВЕНТАРЬ -->
+    <!-- ЭКРАН 4: ИНВЕНТАРЬ -->
     <div id="screen-inventory" class="screen">
       <div style="font-size:13px; color:var(--accent-color); font-weight:800;">🎒 Хранилище активов</div>
       <div id="inventory-list" style="font-size:12px; color:var(--text-muted); padding-top: 10px;">
-        Ваш инвентарь пока пуст.
+        У вас пока нет купленных SIM-карт.
       </div>
     </div>
 
+  </div>
+
+  <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ С ФИЗИЧЕСКОЙ КАРТОЙ -->
+  <div class="modal-overlay" id="modal-buy-sim">
+    <div class="modal-sheet">
+      <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
+
+      <!-- Физическая пластиковая карта (Бело-кремовая с чипом) -->
+      <div class="sim-card-model">
+        <div class="sim-card-top">
+          <div class="sim-brand">EmpireSimCard</div>
+          <div class="sim-operator">Россия</div>
+        </div>
+        <div class="sim-chip"></div>
+        <div>
+          <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
+          <div class="market-value-badge" id="market-value-text">Оценка: —</div>
+        </div>
+      </div>
+
+      <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Прокрутить номер (1 500 ₽)</button>
+      <button class="btn-main" id="btn-buy-sim" style="display:none; border-color:var(--accent-color); color:#6ee7b7;" onclick="confirmBuySim()">💳 Приобрести за 1 500 ₽</button>
+      <button class="btn-main" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:none;" onclick="closeModal('modal-buy-sim')">Закрыть</button>
+    </div>
   </div>
 
   <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
@@ -427,15 +623,18 @@
   </div>
 
   <script>
-    // Состояние игрока
     var player = {
-      cash: 1000,
-      bank: 0
+      cash: 5000,
+      bank: 0,
+      activePhone: 'Не установлена',
+      sims: []
     };
 
+    var currentRolledNum = null;
+    var currentMarketVal = 150;
+    var isSpinning = false;
     var audioCtx = null;
 
-    // Звуковой движок (Web Audio API)
     function playSound(freq) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -453,21 +652,28 @@
       } catch(e){}
     }
 
-    // Обновление интерфейса
     function updateUI() {
       document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('user-phone').innerText = '📱 SIM: ' + player.activePhone;
+
+      var inv = document.getElementById('inventory-list');
+      if (player.sims.length > 0) {
+        inv.innerHTML = '<b>Ваши SIM-карты:</b><br>' + player.sims.map(function(s) {
+          return '• ' + s.number + ' <span style="color:var(--accent-color);">(' + s.val.toLocaleString('ru-RU') + ' ₽)</span>';
+        }).join('<br>');
+      } else {
+        inv.innerText = 'У вас пока нет купленных SIM-карт.';
+      }
     }
 
-    // Ежедневный бонус
     function claimBonus() {
       player.cash += 2500;
       playSound(520);
       updateUI();
-      alert('🎁 Бонус успешно зачислен: +2 500 ₽!');
+      alert('🎁 Бонус зачислен: +2 500 ₽!');
     }
 
-    // Переключение вкладок
     function switchTab(tab) {
       document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
       document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
@@ -488,7 +694,87 @@
       playSound(400);
     }
 
-    // Спавн банок для мини-игры
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+      playSound(450);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // Система оценки стоимости номеров
+    function evaluateNumber(num) {
+      if (num.indexOf('777-77-77') !== -1) return 10000000; // 10 млн за легенду
+      if (num.indexOf('000-00-00') !== -1 || num.indexOf('555-55-55') !== -1) return 1500000;
+      if (num.indexOf('777-') !== -1) return 150000; // красивые семерки
+      if (num[11] === num[12] && num[12] === num[13]) return 25000; // парные хвосты
+      return Math.floor(150 + Math.random() * 350); // обычный рандом 150-500 ₽
+    }
+
+    function generateRandomPhone() {
+      var rand = Math.random();
+      if (rand < 0.02) return '+7 (777) 777-77-77';
+      if (rand < 0.1) return '+7 (777) 555-55-55';
+      var p1 = Math.floor(100 + Math.random() * 900);
+      var p2 = Math.floor(10 + Math.random() * 90);
+      var p3 = Math.floor(10 + Math.random() * 90);
+      return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
+    }
+
+    function startSimSpin() {
+      if (player.cash < 1500) {
+        alert('❌ Недостаточно средств! Нужно 1 500 ₽');
+        return;
+      }
+
+      player.cash -= 1500;
+      updateUI();
+      isSpinning = true;
+
+      var display = document.getElementById('spin-display');
+      var valText = document.getElementById('market-value-text');
+      var btnBuy = document.getElementById('btn-buy-sim');
+      btnBuy.style.display = 'none';
+
+      var count = 0;
+      var interval = setInterval(function() {
+        var tempNum = generateRandomPhone();
+        display.innerText = tempNum;
+        valText.innerText = 'Оценка: анализ...';
+        playSound(300 + count * 5);
+        count += 50;
+
+        if (count >= 1200) {
+          clearInterval(interval);
+          currentRolledNum = generateRandomPhone();
+          currentMarketVal = evaluateNumber(currentRolledNum);
+          
+          display.innerText = currentRolledNum;
+          valText.innerText = 'Оценка рыночной стоимости: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
+          isSpinning = false;
+          btnBuy.style.display = 'block';
+          playSound(900);
+        }
+      }, 50);
+    }
+
+    function confirmBuySim() {
+      if (!currentRolledNum) return;
+
+      player.sims.push({ number: currentRolledNum, val: currentMarketVal });
+      player.activePhone = currentRolledNum;
+      updateUI();
+
+      alert('🎉 Поздравляем! Номер ' + currentRolledNum + ' активирован!');
+      currentRolledNum = null;
+      document.getElementById('btn-buy-sim').style.display = 'none';
+      document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+      document.getElementById('market-value-text').innerText = 'Оценка: —';
+      closeModal('modal-buy-sim');
+    }
+
+    // Мини-игра с банками
     function spawnCan() {
       var area = document.getElementById('game-area');
       var screenWork = document.getElementById('screen-work');
@@ -525,11 +811,8 @@
     }
     setInterval(spawnCan, 1000);
 
-    // Инициализация при старте
     window.onload = function() {
       updateUI();
-      
-      // Подтягиваем данные из Telegram
       try {
         if (window.Telegram && window.Telegram.WebApp) {
           var tg = window.Telegram.WebApp;
@@ -543,7 +826,6 @@
         }
       } catch(e) {}
 
-      // Кибер-сетка из частиц на заднем фоне
       var canvas = document.getElementById('cyber-bg');
       if (canvas) {
         var ctx = canvas.getContext('2d');
