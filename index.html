@@ -230,7 +230,7 @@
       margin-top: 2px;
     }
 
-    /* ФИЗИЧЕСКАЯ СИМ-КАРТА (Чистый пластик без внутренних надписей) */
+    /* ФИЗИЧЕСКАЯ СИМ-КАРТА */
     .sim-card-container {
       position: relative;
       width: 100%;
@@ -304,7 +304,7 @@
       border-radius: 2px;
     }
 
-    /* ОТДЕЛЬНЫЙ ВНЕШНИЙ БЛОК МЕЖДУ КАРТОЙ И КНОПКАМИ */
+    /* ВНЕШНИЙ СТАТИЧНЫЙ БЛОК */
     .external-info-bar {
       display: flex;
       justify-content: space-between;
@@ -321,7 +321,6 @@
       color: #34d399;
     }
 
-    /* ЖИРНЫЙ ЦВЕТНОЙ ТЕКСТ РЕДКОСТИ БЕЗ КАКИХ-ЛИБО ШАРИКОВ */
     .external-rarity {
       font-size: 13px;
       font-weight: 900;
@@ -334,7 +333,7 @@
     .color-legendary { color: #facc15; }
     .color-mythic { color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.5); }
 
-    /* ЕДИНЫЙ ЖЕСТКИЙ МОНОШИРИННЫЙ ШРИФТ */
+    /* МОНОШИРИННЫЙ ШРИФТ ДЛЯ НОМЕРА */
     .sim-number-display {
       font-family: 'Courier New', Courier, monospace !important;
       font-size: 17px !important;
@@ -368,6 +367,29 @@
         opacity: 1;
         transform: translateY(0);
       }
+    }
+
+    /* КИБЕР-УВЕДОМЛЕНИЯ ВНУТРИ ИГРЫ */
+    #game-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--accent-color);
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 99999;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-align: center;
+      pointer-events: none;
+    }
+    #game-toast.show {
+      transform: translateX(-50%) translateY(0);
     }
 
     .game-area {
@@ -431,8 +453,17 @@
       font-size: 14px;
       cursor: pointer;
       text-align: center;
+      transition: opacity 0.2s;
     }
     .btn-main:active { transform: scale(0.97); }
+
+    /* Неактивные кнопки во время прокрутки (делают меню статичным без прыжков) */
+    .btn-main:disabled {
+      opacity: 0.3;
+      pointer-events: none;
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
 
     .bottom-bar {
       position: fixed;
@@ -477,6 +508,9 @@
 <body>
 
   <canvas id="cyber-bg"></canvas>
+
+  <!-- Внутриигровое всплывающее уведомление -->
+  <div id="game-toast">Уведомление</div>
 
   <div class="app-container">
 
@@ -588,12 +622,12 @@
 
   </div>
 
-  <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ -->
+  <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ (СТАТИЧНОЕ МЕНЮ С КНОПКАМИ) -->
   <div class="modal-overlay" id="modal-buy-sim">
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
 
-      <!-- Физическая карта (только бренд, чип и номер) -->
+      <!-- Физическая карта -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
         <div class="sim-card-model">
           <div class="sim-card-top">
@@ -607,15 +641,16 @@
         </div>
       </div>
 
-      <!-- ВНЕШНИЙ БЛОК: Оценка и цветной жирный текст редкости СТРОГО ПОД КАРТОЙ -->
+      <!-- Внешний блок оценки и редкости -->
       <div class="external-info-bar">
         <div class="external-value" id="market-value-text">Оценка: —</div>
         <div class="external-rarity color-common" id="sim-rarity-tag">Обычный</div>
       </div>
 
+      <!-- КНОПКИ ВСЕГДА НА МЕСТЕ (статичные), управляются через disabled -->
       <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Прокрутить номер (1 500 ₽)</button>
-      <button class="btn-main" id="btn-buy-sim" style="display:none; border-color:var(--accent-color); color:#6ee7b7;" onclick="confirmBuySim()">💳 Приобрести номер</button>
-      <button class="btn-main" id="btn-sell-sim" style="display:none; background:rgba(239, 68, 68, 0.2); border-color:#ef4444; color:#fca5a5;" onclick="confirmSellSim()">💰 Продать за 0 ₽</button>
+      <button class="btn-main" id="btn-buy-sim" disabled style="border-color:var(--accent-color); color:#6ee7b7;" onclick="confirmBuySim()">💳 Приобрести номер</button>
+      <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.2); border-color:#ef4444; color:#fca5a5;" onclick="confirmSellSim()">💰 Продать за 0 ₽</button>
       <button class="btn-main" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:none;" onclick="closeModal('modal-buy-sim')">Закрыть</button>
     </div>
   </div>
@@ -645,6 +680,16 @@
     var currentRarityKey = 'common';
     var isSpinning = false;
     var audioCtx = null;
+
+    // Функция красивого внутриигрового уведомления (вместо системного alert)
+    function showToast(text) {
+      var toast = document.getElementById('game-toast');
+      toast.innerText = text;
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2500);
+    }
 
     function playSound(freq) {
       try {
@@ -742,7 +787,7 @@
       player.cash += 2500;
       playSound(520);
       updateUI();
-      alert('🎁 Бонус зачислен: +2 500 ₽!');
+      showToast('🎁 Бонус зачислен: +2 500 ₽!');
     }
 
     function switchTab(tab) {
@@ -776,9 +821,12 @@
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-      document.getElementById('btn-buy-sim').style.display = 'none';
-      document.getElementById('btn-sell-sim').style.display = 'none';
-      document.getElementById('btn-spin').style.display = 'block';
+      
+      // Сброс состояния кнопок (крутить можно, купить/продать заблокированы до прокрута)
+      document.getElementById('btn-spin').disabled = false;
+      document.getElementById('btn-buy-sim').disabled = true;
+      document.getElementById('btn-sell-sim').disabled = true;
+      document.getElementById('btn-sell-sim').innerText = '💰 Продать за 0 ₽';
       playSound(450);
     }
 
@@ -853,7 +901,7 @@
 
     function startSimSpin() {
       if (player.cash < 1500) {
-        alert('❌ Недостаточно средств! Нужно 1 500 ₽');
+        showToast('❌ Недостаточно средств! Нужно 1 500 ₽');
         return;
       }
 
@@ -864,13 +912,14 @@
       var display = document.getElementById('spin-display');
       var valText = document.getElementById('market-value-text');
       var rarityTag = document.getElementById('sim-rarity-tag');
+      var btnSpin = document.getElementById('btn-spin');
       var btnBuy = document.getElementById('btn-buy-sim');
       var btnSell = document.getElementById('btn-sell-sim');
-      var btnSpin = document.getElementById('btn-spin');
       
-      btnBuy.style.display = 'none';
-      btnSell.style.display = 'none';
-      btnSpin.style.display = 'none';
+      // Блокируем кнопки на время прокрутки (меню статично, ничего не прыгает)
+      btnSpin.disabled = true;
+      btnBuy.disabled = true;
+      btnSell.disabled = true;
       
       resetCardGlow('common');
       setRarityStyle(rarityTag, 'common', 'Сканирование...');
@@ -900,8 +949,9 @@
           playRaritySound(currentRarityKey);
 
           isSpinning = false;
-          btnBuy.style.display = 'block';
-          btnSell.style.display = 'block';
+          btnSpin.disabled = false;
+          btnBuy.disabled = false;
+          btnSell.disabled = false;
         }
       }, 50);
     }
@@ -913,8 +963,16 @@
       player.activePhone = currentRolledNum;
       updateUI();
 
-      alert('🎉 Номер ' + currentRolledNum + ' добавлен в инвентарь и активирован!');
-      closeModal('modal-buy-sim');
+      showToast('🎉 Номер ' + currentRolledNum + ' добавлен в инвентарь!');
+      
+      // Сбрасываем рулетку, но ОСТАЕМСЯ В МОДАЛКЕ
+      currentRolledNum = null;
+      document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+      document.getElementById('market-value-text').innerText = 'Оценка: —';
+      setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
+      resetCardGlow('common');
+      document.getElementById('btn-buy-sim').disabled = true;
+      document.getElementById('btn-sell-sim').disabled = true;
     }
 
     function confirmSellSim() {
@@ -923,8 +981,16 @@
       player.cash += currentMarketVal;
       updateUI();
 
-      alert('💰 Номер продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!');
-      closeModal('modal-buy-sim');
+      showToast('💰 Номер продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!');
+
+      // Сбрасываем рулетку, но ОСТАЕМСЯ В МОДАЛКЕ (никуда не выкидывает)
+      currentRolledNum = null;
+      document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+      document.getElementById('market-value-text').innerText = 'Оценка: —';
+      setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
+      resetCardGlow('common');
+      document.getElementById('btn-buy-sim').disabled = true;
+      document.getElementById('btn-sell-sim').disabled = true;
     }
 
     // Мини-игра с банками
