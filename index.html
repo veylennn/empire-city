@@ -230,7 +230,7 @@
       margin-top: 2px;
     }
 
-    /* ФИЗИЧЕСКАЯ СИМ-КАРТА И СВЕЧЕНИЕ С ЖЕСТКОЙ ФИКСАЦИЕЙ РАЗМЕРОВ */
+    /* ФИЗИЧЕСКАЯ СИМ-КАРТА С ИДЕАЛЬНОЙ КОМПОНОВКОЙ */
     .sim-card-container {
       position: relative;
       width: 100%;
@@ -252,7 +252,7 @@
 
     .sim-card-model {
       width: 100%;
-      height: 210px; /* Жестко фиксируем высоту, исключая любые дергания */
+      height: 215px;
       background: linear-gradient(135deg, #fdfbf7 0%, #f3efe6 100%);
       border-radius: 15px;
       border: 1px solid rgba(212, 175, 55, 0.4);
@@ -269,7 +269,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 22px;
     }
 
     .sim-brand {
@@ -289,34 +288,12 @@
       border-radius: 6px;
     }
 
-    /* ПОСТОЯННЫЙ БЛОК ПОД ШАПКОЙ (Никогда не сдвигается) */
-    .sim-info-header {
+    /* Верхняя строка: Чип слева, Оценка и Редкость справа */
+    .sim-middle-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 20px;
-      padding: 0 2px;
-    }
-
-    .market-value-badge {
-      font-size: 11px;
-      font-weight: 900;
-      color: #047857;
-    }
-
-    .sim-rarity-badge {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(0,0,0,0.06);
-      color: #334155;
-    }
-
-    .sim-chip-row {
-      display: flex;
-      align-items: center;
-      height: 28px;
+      margin: 4px 0;
     }
 
     .sim-chip {
@@ -335,7 +312,29 @@
       border-radius: 2px;
     }
 
-    /* ЕДИНЫЙ ЖИСТКИЙ МОНОШИРИННЫЙ ШРИФТ ВЕЗДЕ */
+    .sim-info-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+    }
+
+    .market-value-badge {
+      font-size: 11px;
+      font-weight: 900;
+      color: #047857;
+    }
+
+    .sim-rarity-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.06);
+      color: #334155;
+    }
+
+    /* СТРОГО ЕДИНЫЙ МОНОШИРИННЫЙ ШРИФТ ДЛЯ ВСЕХ ЭТАПОВ */
     .sim-number-display {
       font-family: 'Courier New', Courier, monospace !important;
       font-size: 17px !important;
@@ -352,6 +351,7 @@
       align-items: center;
       justify-content: center;
       white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     .char-fade {
@@ -360,6 +360,7 @@
       animation: charIn 0.3s forwards ease;
       font-family: 'Courier New', Courier, monospace !important;
       font-weight: 900 !important;
+      font-variant-numeric: tabular-nums;
     }
 
     @keyframes charIn {
@@ -592,7 +593,7 @@
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
 
-      <!-- Физическая карта со стационарным блоком под шапкой -->
+      <!-- Физическая карта с гармоничным расположением чипа, оценки и редкости -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
         <div class="sim-card-model">
           <div class="sim-card-top">
@@ -600,14 +601,12 @@
             <div class="sim-operator">Россия</div>
           </div>
 
-          <!-- Постоянная зона рыночной стоимости и редкости (фиксированное место под шапкой) -->
-          <div class="sim-info-header">
-            <div class="market-value-badge" id="market-value-text">Оценка: —</div>
-            <div class="sim-rarity-badge" id="sim-rarity-tag">⚪ Обычный</div>
-          </div>
-
-          <div class="sim-chip-row">
+          <div class="sim-middle-row">
             <div class="sim-chip"></div>
+            <div class="sim-info-group">
+              <div class="market-value-badge" id="market-value-text">Оценка: —</div>
+              <div class="sim-rarity-badge" id="sim-rarity-tag">⚪ Обычный</div>
+            </div>
           </div>
           
           <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
@@ -647,7 +646,6 @@
     var isSpinning = false;
     var audioCtx = null;
 
-    // Базовые звуки кликов
     function playSound(freq) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -665,7 +663,6 @@
       } catch(e){}
     }
 
-    // Уникальные звуковые паттерны завершения под каждую редкость
     function playRaritySound(rarity) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -673,7 +670,6 @@
         var now = audioCtx.currentTime;
 
         if (rarity === 'common') {
-          // Обычный: простой мягкий сигнал
           var osc = audioCtx.createOscillator();
           var gain = audioCtx.createGain();
           osc.frequency.setValueAtTime(350, now);
@@ -682,7 +678,6 @@
           osc.connect(gain); gain.connect(audioCtx.destination);
           osc.start(now); osc.stop(now + 0.15);
         } else if (rarity === 'rare') {
-          // Редкий: двойной синий перелив
           [440, 550].forEach((f, i) => {
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
@@ -693,7 +688,6 @@
             osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.15);
           });
         } else if (rarity === 'epic') {
-          // Эпический: восходящее трио
           [520, 650, 780].forEach((f, i) => {
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
@@ -704,7 +698,6 @@
             osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
           });
         } else if (rarity === 'legendary') {
-          // Легендарный: яркий золотой аккорд
           [600, 750, 900, 1200].forEach((f, i) => {
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
@@ -716,7 +709,6 @@
             osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.3);
           });
         } else if (rarity === 'mythic') {
-          // Мифический: мощный глубокий победный тремоло-аккорд
           [440, 880, 1320, 1760].forEach((f, i) => {
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
@@ -843,7 +835,7 @@
       return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
     }
 
-    // Жестко принудительный единый шрифт для анимации проявления
+    // Использование строго моноширинного шрифта для прокрутки и плавного вывода
     function animateTextSmooth(element, text) {
       element.innerHTML = '';
       for (var i = 0; i < text.length; i++) {
@@ -883,7 +875,7 @@
       var count = 0;
       var interval = setInterval(function() {
         var tempNum = generateRandomPhone();
-        display.innerText = tempNum;
+        display.innerText = tempNum; // Рендерится сразу в моноширинном шрифте без скачков
         playSound(300 + (count % 10) * 20);
         count += 50;
 
@@ -898,10 +890,7 @@
           rarityTag.innerText = evaluated.name;
           valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
 
-          // Плавное проявление единым моноширинным шрифтом
           animateTextSmooth(display, currentRolledNum);
-
-          // Воспроизведение звука редкости
           playRaritySound(currentRarityKey);
 
           isSpinning = false;
