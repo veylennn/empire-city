@@ -169,7 +169,6 @@
       text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
     }
 
-    /* Экраны приложения */
     .screen {
       display: none;
       flex-direction: column;
@@ -231,14 +230,32 @@
       margin-top: 2px;
     }
 
-    /* СТИЛИЗАЦИЯ ФИЗИЧЕСКОЙ СИМ-КАРТЫ (Бело-кремовая с золотым чипом) */
+    /* ФИЗИЧЕСКАЯ СИМ-КАРТА С СЕЙЧАС ДИНАМИЧЕСКИМ СВЕЧЕНИЕМ */
+    .sim-card-container {
+      position: relative;
+      width: 100%;
+      border-radius: 18px;
+      padding: 4px;
+      transition: box-shadow 0.5s ease;
+    }
+
+    .glow-common { box-shadow: 0 0 25px rgba(148, 163, 184, 0.4); }
+    .glow-rare { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+    .glow-epic { box-shadow: 0 0 35px rgba(168, 85, 247, 0.7); }
+    .glow-legendary { box-shadow: 0 0 40px rgba(250, 204, 21, 0.8); }
+    .glow-mythic { box-shadow: 0 0 50px rgba(239, 68, 68, 0.9); animation: pulseMythic 1s infinite alternate; }
+
+    @keyframes pulseMythic {
+      0% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+      100% { box-shadow: 0 0 60px rgba(239, 68, 68, 1); }
+    }
+
     .sim-card-model {
       width: 100%;
       height: 180px;
       background: linear-gradient(135deg, #fdfbf7 0%, #f3efe6 100%);
-      border-radius: 16px;
+      border-radius: 15px;
       border: 1px solid rgba(212, 175, 55, 0.4);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
       padding: 18px;
       display: flex;
       flex-direction: column;
@@ -271,7 +288,6 @@
       border-radius: 6px;
     }
 
-    /* Золотой чип */
     .sim-chip {
       width: 42px;
       height: 32px;
@@ -279,7 +295,6 @@
       border-radius: 6px;
       border: 1px solid #a16207;
       position: relative;
-      box-shadow: inset 0 0 4px rgba(255,255,255,0.6);
     }
     .sim-chip::after {
       content: '';
@@ -296,10 +311,27 @@
       color: #0f172a;
       letter-spacing: 1px;
       text-align: center;
-      background: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.7);
       padding: 10px;
       border-radius: 10px;
       border: 1px solid rgba(0, 0, 0, 0.08);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .char-fade {
+      opacity: 0;
+      transform: translateY(6px);
+      animation: charIn 0.3s forwards ease;
+    }
+
+    @keyframes charIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .market-value-badge {
@@ -309,7 +341,6 @@
       color: #047857;
     }
 
-    /* Мини-игра с банками */
     .game-area {
       position: relative;
       width: 100%;
@@ -336,7 +367,6 @@
       animation: floatUp 0.6s forwards ease-out;
     }
 
-    /* Модалки / Шторки */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -445,7 +475,7 @@
       <div class="balance-grid">
         <div class="balance-card">
           <div class="balance-label">💵 Наличные</div>
-          <div class="balance-val" id="cash">1 000 ₽</div>
+          <div class="balance-val" id="cash">5 000 ₽</div>
         </div>
         <div class="balance-card">
           <div class="balance-label">💳 Счёт</div>
@@ -454,7 +484,7 @@
       </div>
     </div>
 
-    <!-- ЭКРАН 1: ГОРОД (ГЛАВНОЕ МЕНЮ СО ВСЕМИ КНОПКАМИ) -->
+    <!-- ЭКРАН 1: ГОРОД -->
     <div id="screen-home" class="screen active">
       <div class="hub-card" onclick="claimBonus()">
         <div class="hub-left">
@@ -488,56 +518,12 @@
         </div>
         <span style="color:var(--accent-color);">➔</span>
       </div>
-
-      <div class="hub-card" onclick="alert('🏦 Центральный Банк в разработке 🚧')">
-        <div class="hub-left">
-          <div class="hub-icon">🏦</div>
-          <div class="hub-text">
-            <h3>Центральный Банк</h3>
-            <p>Депозиты и переводы средств</p>
-          </div>
-        </div>
-        <span style="color:var(--accent-color);">➔</span>
-      </div>
-
-      <div class="hub-card" onclick="alert('🔨 Городской Аукцион в разработке 🚧')">
-        <div class="hub-left">
-          <div class="hub-icon">🔨</div>
-          <div class="hub-text">
-            <h3>Городской Аукцион</h3>
-            <p>Торги редкими лотами и номерами</p>
-          </div>
-        </div>
-        <span style="color:var(--accent-color);">➔</span>
-      </div>
-
-      <div class="hub-card" onclick="alert('🚘 Автосалон в разработке 🚧')">
-        <div class="hub-left">
-          <div class="hub-icon">🚘</div>
-          <div class="hub-text">
-            <h3>Автосалон</h3>
-            <p>Приобретение элитных машин</p>
-          </div>
-        </div>
-        <span style="color:var(--accent-color);">➔</span>
-      </div>
-
-      <div class="hub-card" onclick="alert('🏠 Недвижимость в разработке 🚧')">
-        <div class="hub-left">
-          <div class="hub-icon">🏠</div>
-          <div class="hub-text">
-            <h3>Недвижимость</h3>
-            <p>Покупка квартир и пентхаусов</p>
-          </div>
-        </div>
-        <span style="color:var(--accent-color);">➔</span>
-      </div>
     </div>
 
-    <!-- ЭКРАН 2: САЛОН СОТОВОЙ СВЯЗИ (Отдельное меню с 2 кнопками) -->
+    <!-- ЭКРАН 2: САЛОН СВЯЗИ -->
     <div id="screen-sim-store" class="screen">
       <div style="font-size:14px; color:var(--accent-color); font-weight:800;">📱 Салон Сотовой Связи «EmpireTelecom»</div>
-      <p style="font-size:11px; color:var(--text-muted);">Приобретайте премиальные SIM-карты и управляйте связью.</p>
+      <p style="font-size:11px; color:var(--text-muted);">Приобретайте премиальные SIM-карты.</p>
       
       <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
         <button class="hub-card" onclick="openModal('modal-buy-sim')">
@@ -545,18 +531,7 @@
             <div class="hub-icon">💳</div>
             <div class="hub-text">
               <h3>Купить SIM-карту</h3>
-              <p>Фиксированная стоимость: 1 500 ₽</p>
-            </div>
-          </div>
-          <span style="color:var(--accent-color);">➔</span>
-        </button>
-
-        <button class="hub-card" onclick="alert('💰 Пополнение баланса SIM в разработке')">
-          <div class="hub-left">
-            <div class="hub-icon">💵</div>
-            <div class="hub-text">
-              <h3>Пополнить баланс</h3>
-              <p>Управление счётом активной сим-карты</p>
+              <p>Стоимость прокрута: 1 500 ₽</p>
             </div>
           </div>
           <span style="color:var(--accent-color);">➔</span>
@@ -566,13 +541,11 @@
       <button class="btn-main" style="margin-top: 15px;" onclick="openScreen('screen-home')">⬅️ Вернуться в Город</button>
     </div>
 
-    <!-- ЭКРАН 3: РАБОТА (СБОР БАНОК) -->
+    <!-- ЭКРАН 3: РАБОТА -->
     <div id="screen-work" class="screen">
       <div style="font-size:13px; color:var(--accent-color); font-weight:800;">🥫 Уличный Сбор</div>
       <p style="font-size:11px; color:var(--text-muted);">Кликайте по банкам для заработка.</p>
-      
       <div class="game-area" id="game-area"></div>
-
       <button class="btn-main" onclick="openScreen('screen-home')">⬅️ Вернуться в Город</button>
     </div>
 
@@ -586,31 +559,33 @@
 
   </div>
 
-  <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ С ФИЗИЧЕСКОЙ КАРТОЙ -->
+  <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ -->
   <div class="modal-overlay" id="modal-buy-sim">
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
 
-      <!-- Физическая пластиковая карта (Бело-кремовая с чипом) -->
-      <div class="sim-card-model">
-        <div class="sim-card-top">
-          <div class="sim-brand">EmpireSimCard</div>
-          <div class="sim-operator">Россия</div>
-        </div>
-        <div class="sim-chip"></div>
-        <div>
-          <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
-          <div class="market-value-badge" id="market-value-text">Оценка: —</div>
+      <!-- Контейнер с динамической подсветкой редкости -->
+      <div class="sim-card-container glow-common" id="sim-container-glow">
+        <div class="sim-card-model">
+          <div class="sim-card-top">
+            <div class="sim-brand">EmpireSimCard</div>
+            <div class="sim-operator" id="sim-rarity-tag">Обычный</div>
+          </div>
+          <div class="sim-chip"></div>
+          <div>
+            <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
+            <div class="market-value-badge" id="market-value-text">Оценка: —</div>
+          </div>
         </div>
       </div>
 
       <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Прокрутить номер (1 500 ₽)</button>
-      <button class="btn-main" id="btn-buy-sim" style="display:none; border-color:var(--accent-color); color:#6ee7b7;" onclick="confirmBuySim()">💳 Приобрести за 1 500 ₽</button>
+      <button class="btn-main" id="btn-buy-sim" style="display:none; border-color:var(--accent-color); color:#6ee7b7;" onclick="confirmBuySim()">💳 Приобрести номер</button>
       <button class="btn-main" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:none;" onclick="closeModal('modal-buy-sim')">Закрыть</button>
     </div>
   </div>
 
-  <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
+  <!-- НИЖНЯЯ ПАНЕЛЬ -->
   <div class="bottom-bar">
     <div class="tab-item active" id="tab-home" onclick="switchTab('home')">
       <span style="font-size:20px;">🏙️</span>
@@ -632,6 +607,7 @@
 
     var currentRolledNum = null;
     var currentMarketVal = 150;
+    var currentRarityKey = 'common';
     var isSpinning = false;
     var audioCtx = null;
 
@@ -696,6 +672,7 @@
 
     function openModal(id) {
       document.getElementById(id).classList.add('active');
+      resetCardGlow('common');
       playSound(450);
     }
 
@@ -703,23 +680,77 @@
       document.getElementById(id).classList.remove('active');
     }
 
-    // Система оценки стоимости номеров
+    function setCardGlow(rarity) {
+      var container = document.getElementById('sim-container-glow');
+      container.className = 'sim-card-container glow-' + rarity;
+    }
+
+    function resetCardGlow(rarity) {
+      var container = document.getElementById('sim-container-glow');
+      container.className = 'sim-card-container glow-' + rarity;
+    }
+
+    // УМНАЯ СИСТЕМА ОЦЕНКИ И РЕДКОСТЕЙ НОМЕРОВ
     function evaluateNumber(num) {
-      if (num.indexOf('777-77-77') !== -1) return 10000000; // 10 млн за легенду
-      if (num.indexOf('000-00-00') !== -1 || num.indexOf('555-55-55') !== -1) return 1500000;
-      if (num.indexOf('777-') !== -1) return 150000; // красивые семерки
-      if (num[11] === num[12] && num[12] === num[13]) return 25000; // парные хвосты
-      return Math.floor(150 + Math.random() * 350); // обычный рандом 150-500 ₽
+      // Извлекаем только цифры из хвоста номера для проверки паттернов
+      var clean = num.replace(/\D/g, '').slice(1); // убираем 7, оставляем 777XXXX
+      var tail = clean.slice(3); // последние 7 цифр хвоста
+
+      // 1. МИФИЧЕСКИЙ: все 7 цифр одинаковые (например 777-77-77, 111-11-11, 999-99-99)
+      var firstChar = tail[0];
+      var allSame = true;
+      for (var i = 1; i < tail.length; i++) {
+        if (tail[i] !== firstChar) { allSame = false; break; }
+      }
+      if (allSame) {
+        return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: '🔴 Мифический' };
+      }
+
+      // 2. ЛЕГЕНДАРНЫЙ: палиндромы или зеркальные блоки (например симметрия)
+      var isPalindrome = tail === tail.split('').reverse().join('');
+      if (isPalindrome || tail.startsWith('000') || tail.startsWith('777')) {
+        return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: '🟡 Легендарный' };
+      }
+
+      // 3. ЭПИЧЕСКИЙ: тройные или парные блоки (например 555-..., ...-22-22)
+      if (tail.indexOf('555') !== -1 || tail.indexOf('777') !== -1 || tail.indexOf('333') !== -1 || (tail.slice(0,3) === tail.slice(3,6))) {
+        return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: '🟣 Эпический' };
+      }
+
+      // 4. РЕДКИЙ: парные цифры
+      if (tail[0] === tail[1] && tail[2] === tail[3]) {
+        return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: '🔵 Редкий' };
+      }
+
+      // 5. ОБЫЧНЫЙ: стандартный рандом
+      return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: '⚪ Обычный' };
     }
 
     function generateRandomPhone() {
+      // Маленький шанс выпадения мифического или легендарного для азарта
       var rand = Math.random();
-      if (rand < 0.02) return '+7 (777) 777-77-77';
-      if (rand < 0.1) return '+7 (777) 555-55-55';
+      if (rand < 0.005) {
+        var digit = Math.floor(1 + Math.random() * 9);
+        return '+7 (777) ' + digit + digit + digit + '-' + digit + digit + '-' + digit + digit;
+      }
+      if (rand < 0.03) {
+        return '+7 (777) 555-55-55';
+      }
       var p1 = Math.floor(100 + Math.random() * 900);
       var p2 = Math.floor(10 + Math.random() * 90);
       var p3 = Math.floor(10 + Math.random() * 90);
       return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
+    }
+
+    function animateTextSmooth(element, text) {
+      element.innerHTML = '';
+      for (var i = 0; i < text.length; i++) {
+        var span = document.createElement('span');
+        span.className = 'char-fade';
+        span.innerText = text[i];
+        span.style.animationDelay = (i * 0.03) + 's';
+        element.appendChild(span);
+      }
     }
 
     function startSimSpin() {
@@ -734,27 +765,36 @@
 
       var display = document.getElementById('spin-display');
       var valText = document.getElementById('market-value-text');
+      var rarityTag = document.getElementById('sim-rarity-tag');
       var btnBuy = document.getElementById('btn-buy-sim');
       btnBuy.style.display = 'none';
+      resetCardGlow('common');
+      rarityTag.innerText = 'Сканирование...';
 
       var count = 0;
       var interval = setInterval(function() {
         var tempNum = generateRandomPhone();
         display.innerText = tempNum;
         valText.innerText = 'Оценка: анализ...';
-        playSound(300 + count * 5);
+        playSound(300 + (count % 10) * 20);
         count += 50;
 
-        if (count >= 1200) {
+        if (count >= 2500) {
           clearInterval(interval);
           currentRolledNum = generateRandomPhone();
-          currentMarketVal = evaluateNumber(currentRolledNum);
-          
-          display.innerText = currentRolledNum;
-          valText.innerText = 'Оценка рыночной стоимости: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
+          var evaluated = evaluateNumber(currentRolledNum);
+          currentMarketVal = evaluated.val;
+          currentRarityKey = evaluated.rarity;
+
+          setCardGlow(currentRarityKey);
+          rarityTag.innerText = evaluated.name;
+
+          animateTextSmooth(display, currentRolledNum);
+
+          valText.innerText = 'Рыночная стоимость: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
           isSpinning = false;
           btnBuy.style.display = 'block';
-          playSound(900);
+          playSound(1000);
         }
       }, 50);
     }
@@ -771,6 +811,8 @@
       document.getElementById('btn-buy-sim').style.display = 'none';
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
+      document.getElementById('sim-rarity-tag').innerText = 'Обычный';
+      resetCardGlow('common');
       closeModal('modal-buy-sim');
     }
 
