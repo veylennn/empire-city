@@ -877,7 +877,7 @@
         <div class="external-rarity color-common" id="sim-rarity-tag">Обычный</div>
       </div>
 
-      <button class="btn-main" id="btn-spin" onclick="tryStartSimSpin()">🔒 Сгенерировать чип (1 500 ₽)</button>
+      <button class="btn-main" id="btn-spin" onclick="tryStartSimSpin()">🎲 Сгенерировать чип (1 500 ₽)</button>
       <button class="btn-main" id="btn-buy-sim" disabled style="border-color:#38bdf8; color:#38bdf8;" onclick="confirmBuySim()">📱 Забрать себе</button>
       <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellCurrentSim()">💰 Продать номер</button>
     </div>
@@ -908,14 +908,21 @@
     var currentMarketVal = 150;
     var currentRarityKey = 'common';
     var isSpinning = false;
-    var hasActiveRoll = false; // Флаг: висит ли нераспределенная симка на экране
+    var hasActiveRoll = false; 
     var audioCtx = null;
+    var toastTimeout = null;
 
     function showToast(text, duration = 1500) {
       var toast = document.getElementById('game-toast');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      
+      toast.classList.remove('show');
+      void toast.offsetWidth; // Перезапуск анимации для повторных кликов
+
       toast.innerText = text;
       toast.classList.add('show');
-      setTimeout(function() {
+      
+      toastTimeout = setTimeout(function() {
         toast.classList.remove('show');
       }, duration);
     }
@@ -955,11 +962,10 @@
       }
     }
 
-    // Проверка перед генерацией: заблокирована ли кнопка из-за активной симки
     function tryStartSimSpin() {
       if (hasActiveRoll) {
         playSound(220);
-        showToast('⚠️ Сначала определитесь с судьбой текущего чипа: заберите его в архив или продайте!', 2200);
+        showToast('⚠️ Недоступно. Заберите номер или продайте', 2000);
         return;
       }
       startSimSpin();
@@ -1192,7 +1198,7 @@
     function resetCardGlow(rarity) {
       var container = document.getElementById('sim-container-glow');
       var modelBox = document.getElementById('sim-card-model-box');
-      container.className = 'sim-container-container glow-' + rarity;
+      container.className = 'sim-card-container glow-' + rarity;
       modelBox.classList.remove('holo-active');
     }
 
@@ -1290,7 +1296,7 @@
 
       updateUI();
       isSpinning = true;
-      hasActiveRoll = true; // Блокируем новые спины до выбора
+      hasActiveRoll = true; 
 
       var display = document.getElementById('spin-display');
       var valText = document.getElementById('market-value-text');
@@ -1300,7 +1306,7 @@
       var btnSell = document.getElementById('btn-sell-sim');
       
       btnSpin.disabled = true;
-      btnSpin.innerText = '🔒 Терминал занят...';
+      btnSpin.innerText = '🔒 Сканирование...';
       btnBuy.disabled = true;
       btnSell.disabled = true;
       
@@ -1346,9 +1352,8 @@
           player.spinsCount++;
           isSpinning = false;
           
-          // Кнопка генерации остается заблокированной с замочком, пока не выберут действие
           btnSpin.disabled = false;
-          btnSpin.innerText = '🔒 Решите судьбу чипа';
+          btnSpin.innerText = '🔒 Требуется решение';
           btnBuy.disabled = false;
           btnSell.disabled = false;
           
@@ -1376,7 +1381,6 @@
 
       showToast('📱 Ваша новая сим-карта добавлена в инвентарь!', 1500);
       
-      // Снимаем блокировку
       hasActiveRoll = false;
       currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
@@ -1398,7 +1402,6 @@
       playSuccessSound();
       showToast('💰 Номер успешно продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!', 1500);
 
-      // Снимаем блокировку
       hasActiveRoll = false;
       currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
