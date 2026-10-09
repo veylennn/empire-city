@@ -416,6 +416,7 @@
       animation: floatUp 0.6s forwards ease-out;
     }
 
+    /* СЛОИ МОДАЛОК */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -427,6 +428,11 @@
       align-items: flex-end;
     }
     .modal-overlay.active { display: flex; }
+
+    /* Модалка шансов поверх всего остального */
+    #modal-chances.modal-overlay {
+      z-index: 20000 !important;
+    }
 
     .modal-sheet {
       width: 100%;
@@ -462,7 +468,6 @@
       color: var(--text-muted);
     }
 
-    /* ИСПРАВЛЕННАЯ КНОПКА ШАНСОВ (гарантированный клик) */
     .btn-chances-small {
       width: 50%;
       background: rgba(16, 185, 129, 0.1);
@@ -657,7 +662,7 @@
 
   </div>
 
-  <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ -->
+  <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ (С самым высоким z-index) -->
   <div class="modal-overlay" id="modal-chances">
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">📊 Шансы выпадения номеров</div>
@@ -695,7 +700,7 @@
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
 
-      <!-- Кнопка шансов слева наверх -->
+      <!-- Кнопка шансов -->
       <button class="btn-chances-small" onclick="openModal('modal-chances')">
         <span>📊</span> Шансы выпадения
       </button>
@@ -1029,7 +1034,7 @@
 
     function startSimSpin() {
       if (player.cash < 1500) {
-        showToast('❌ Недостаточно средств! Нужно 1 500 ₽');
+        showToast('❌ Недостаточно средств для нового прокрута!');
         return;
       }
 
@@ -1103,11 +1108,11 @@
       document.getElementById('btn-sell-sim').disabled = true;
     }
 
-    // ИСПРАВЛЕННЫЙ МЕТОД: гарантированное зачисление денег ДО проверки баланса нового прокрута
+    // ПРОДАТЬ И КРУТИТЬ СНОВА С ПРОВЕРКОЙ БАЛАНСА И УВЕДОМЛЕНИЕМ
     function sellAndSpinAgain() {
       if (!currentRolledNum) return;
 
-      // 1. Сначала добавляем деньги от проданного номера
+      // 1. Начисляем деньги от продажи
       player.cash += currentMarketVal;
       updateUI();
 
@@ -1115,10 +1120,18 @@
       playSuccessSound();
       showToast('💰 Номер успешно продан!');
 
-      // 2. Очищаем текущий номер
       currentRolledNum = null;
 
-      // 3. Сразу запускаем следующий прокрут (уже с учетом обновленного баланса)
+      // 2. Проверяем, хватает ли теперь на прокрут (1500 ₽)
+      if (player.cash < 1500) {
+        // Уведомление для невнимательных игроков
+        setTimeout(function() {
+          showToast('❌ Недостаточно средств для нового прокрута!');
+        }, 1100);
+        return;
+      }
+
+      // 3. Запускаем следующий прокрут
       startSimSpin();
     }
 
