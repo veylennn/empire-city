@@ -29,7 +29,6 @@
       position: relative;
     }
 
-    /* ЖЕСТКИЙ СЛОЙ ФОНА КОСМОСА (КЛИКИ ИГНОРИРУЮТСЯ) */
     #space-bg {
       position: fixed;
       top: 0;
@@ -37,7 +36,7 @@
       width: 100vw;
       height: 100vh;
       z-index: 0;
-      pointer-events: none !important;
+      pointer-events: none;
     }
 
     .app-container {
@@ -48,7 +47,6 @@
       gap: 14px;
     }
 
-    /* Шапка Сервера */
     .server-status {
       display: flex;
       align-items: center;
@@ -74,7 +72,6 @@
       box-shadow: 0 0 8px #22c55e;
     }
 
-    /* Карточка Профиля */
     .glass-card {
       background: rgba(18, 18, 28, 0.65);
       backdrop-filter: blur(16px);
@@ -192,4 +189,28 @@
 
     .balance-grid {
       display: grid;
-      grid
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .balance-card {
+      background: rgba(10, 10, 15, 0.7);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .balance-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .balance-amount {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
