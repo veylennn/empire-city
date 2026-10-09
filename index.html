@@ -475,6 +475,121 @@
       z-index: 2;
     }
 
+    /* СТИЛИ ДЛЯ ИНВЕНТАРЯ С МИНИ-СИМКАМИ */
+    .inventory-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .mini-sim-wrapper {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 12px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .mini-sim-card {
+      width: 100%;
+      height: 105px;
+      background: linear-gradient(135deg, #111827 0%, #030712 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.2s ease;
+    }
+    .mini-sim-card:active {
+      transform: scale(0.98);
+    }
+    .mini-sim-card.active-equipped {
+      border-color: #38bdf8;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    }
+
+    .mini-sim-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mini-brand {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #38bdf8;
+    }
+    .mini-chip {
+      width: 26px;
+      height: 18px;
+      background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
+      border-radius: 3px;
+      border: 1px solid #a16207;
+    }
+    .mini-number {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      font-weight: 900;
+      color: #e2e8f0;
+      background: rgba(3, 7, 18, 0.85);
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      text-align: center;
+    }
+
+    /* Выдвижная панель действий из модельки */
+    .sim-actions-panel {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, margin-top 0.3s ease;
+      margin-top: 0;
+    }
+    .mini-sim-wrapper.expanded .sim-actions-panel {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    .action-row-btns {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-action-item {
+      flex: 1;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      padding: 10px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .btn-action-item:active {
+      background: rgba(56, 189, 248, 0.25);
+    }
+    .btn-action-item.btn-sell-mini {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+    .btn-action-item.btn-sell-mini:active {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
     .scanning-matrix {
       filter: blur(0.4px);
       animation: matrixGlitch 0.08s infinite alternate;
@@ -798,9 +913,9 @@
 
     <!-- ЭКРАН 4: ИНВЕНТАРЬ -->
     <div id="screen-inventory" class="screen">
-      <div style="font-size:13px; color:#38bdf8; font-weight:800;">🎒 Защищенный Архив</div>
-      <div id="inventory-list" style="font-size:12px; color:var(--text-muted); padding-top: 10px;">
-        У вас пока нет активных SIM-карт.
+      <div style="font-size:13px; color:#38bdf8; font-weight:800;">🎒 Ваш Инвентарь (SIM-карты)</div>
+      <div class="inventory-grid" id="inventory-list">
+        <div style="font-size:12px; color:var(--text-muted); padding-top: 10px;">У вас пока нет активных SIM-карт.</div>
       </div>
     </div>
 
@@ -891,7 +1006,7 @@
     </div>
     <div class="tab-item" id="tab-inventory" onclick="switchTab('inventory')">
       <span style="font-size:20px;">🎒</span>
-      <span>Архив</span>
+      <span>Инвентарь</span>
     </div>
   </div>
 
@@ -911,13 +1026,14 @@
     var hasActiveRoll = false; 
     var audioCtx = null;
     var toastTimeout = null;
+    var expandedSimIndex = null; // Индекс открытой симки в инвентаре
 
     function showToast(text, duration = 1500) {
       var toast = document.getElementById('game-toast');
       if (toastTimeout) clearTimeout(toastTimeout);
       
       toast.classList.remove('show');
-      void toast.offsetWidth; // Перезапуск анимации для повторных кликов
+      void toast.offsetWidth;
 
       toast.innerText = text;
       toast.classList.add('show');
@@ -1081,12 +1197,80 @@
 
       var inv = document.getElementById('inventory-list');
       if (player.sims.length > 0) {
-        inv.innerHTML = '<b>Инвентарь (SIM-карты):</b><br>' + player.sims.map(function(s) {
-          return '• ' + s.number + ' <span style="color:#38bdf8;">(' + s.val.toLocaleString('ru-RU') + ' ₽)</span>';
-        }).join('<br>');
+        inv.innerHTML = player.sims.map(function(s, index) {
+          var isEquipped = (player.activePhone === s.number);
+          var isExpanded = (expandedSimIndex === index);
+          
+          return `
+            <div class="mini-sim-wrapper ${isExpanded ? 'expanded' : ''}">
+              <div class="mini-sim-card ${isEquipped ? 'active-equipped' : ''}" onclick="toggleSimCard(${index})">
+                <div class="mini-sim-top">
+                  <div class="mini-brand">EMPIRE SECURE</div>
+                  <div class="mini-chip"></div>
+                </div>
+                <div class="mini-number">${s.number}</div>
+              </div>
+              <div class="sim-actions-panel">
+                <div class="action-row-btns">
+                  ${isEquipped ? 
+                    `<button class="btn-action-item" onclick="unequipSim(${index})">❌ Снять</button>` : 
+                    `<button class="btn-action-item" onclick="equipSim(${index})">📱 Использовать</button>`
+                  }
+                  <button class="btn-action-item" onclick="topUpSim(${index})">💳 Пополнить</button>
+                  <button class="btn-action-item btn-sell-mini" onclick="sellSimFromInv(${index})">💰 Продать за ${s.val.toLocaleString('ru-RU')} ₽</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
       } else {
-        inv.innerText = 'У вас пока нет активных SIM-карт.';
+        inv.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding-top: 10px;">У вас пока нет активных SIM-карт.</div>';
       }
+    }
+
+    function toggleSimCard(index) {
+      if (expandedSimIndex === index) {
+        expandedSimIndex = null;
+      } else {
+        expandedSimIndex = index;
+      }
+      playSound(400);
+      updateUI();
+    }
+
+    function equipSim(index) {
+      player.activePhone = player.sims[index].number;
+      playSound(520);
+      showToast('📱 Сим-карта установлена как основная!');
+      updateUI();
+    }
+
+    function unequipSim(index) {
+      player.activePhone = 'Не установлена';
+      playSound(350);
+      showToast('❌ Сим-карта снята');
+      updateUI();
+    }
+
+    function topUpSim(index) {
+      playSound(300);
+      showToast('⚡ Функция пополнения баланса находится в разработке', 2000);
+    }
+
+    function sellSimFromInv(index) {
+      var sim = player.sims[index];
+      player.cash += sim.val;
+      
+      if (player.activePhone === sim.number) {
+        player.activePhone = 'Не установлена';
+      }
+
+      player.sims.splice(index, 1);
+      expandedSimIndex = null;
+      
+      playSuccessSound();
+      showToast('💰 Номер успешно продан за ' + sim.val.toLocaleString('ru-RU') + ' ₽!');
+      updateUI();
     }
 
     function claimBonus() {
