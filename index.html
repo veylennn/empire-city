@@ -29,7 +29,6 @@
       position: relative;
     }
 
-    /* Фон Космоса */
     #space-bg {
       position: fixed;
       top: 0;
@@ -48,7 +47,6 @@
       gap: 14px;
     }
 
-    /* Шапка Сервера */
     .server-status {
       display: flex;
       align-items: center;
@@ -74,7 +72,6 @@
       box-shadow: 0 0 8px #22c55e;
     }
 
-    /* Карточка Профиля */
     .glass-card {
       background: rgba(18, 18, 28, 0.65);
       backdrop-filter: blur(16px);
@@ -330,7 +327,6 @@
       border-color: #facc15;
     }
 
-    /* ПОЛНЫЙ ФИКС ШТОРКИ МОДАЛОК */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -411,6 +407,20 @@
       text-shadow: 0 0 12px rgba(250, 204, 21, 0.5);
     }
 
+    .rarity-badge {
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .rarity-gold { background: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid #facc15; }
+    .rarity-silver { background: rgba(226, 232, 240, 0.2); color: #e2e8f0; border: 1px solid #e2e8f0; }
+    .rarity-bronze { background: rgba(217, 119, 6, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+    .rarity-common { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid #64748b; }
+
     .cans-game-area {
       position: relative;
       width: 100%;
@@ -468,7 +478,6 @@
       margin-top: 8px;
     }
 
-    /* ФИКС НАВИГАЦИОННОЙ ПАНЕЛИ */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -632,7 +641,7 @@
             <div class="hub-icon-box">📱</div>
             <div class="hub-text">
               <h3>Салон Сотовой Связи</h3>
-              <p>Управление SIM, баланс и прокрутка номеров</p>
+              <p>Управление SIM, тарифы и прокрутка номеров</p>
             </div>
           </div>
           <span class="arrow-icon">➔</span>
@@ -759,10 +768,10 @@
     <div class="modal-sheet">
       <div class="section-title" style="font-size: 15px;">📱 Салон Сотовой Связи «EmpireMobile»</div>
       
-      <!-- КАРТОЧКА СИМ-КАРТЫ -->
+      <!-- КАРТОЧКА СИМ-КАРТЫ И ТАРИФОВ -->
       <div class="store-sim-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; color: #94a3b8; font-weight: 800; text-transform: uppercase;">1. Активная SIM-карта</span>
+          <span style="font-size: 11px; color: #94a3b8; font-weight: 800; text-transform: uppercase;">1. Управление SIM & Тарифом</span>
           <span style="font-size: 10px; background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 2px 6px; border-radius: 4px; font-weight: 800;" id="sim-status-badge">ПОДКЛЮЧЕНО</span>
         </div>
 
@@ -775,18 +784,32 @@
           ⚠️ У вас нет купленных SIM-карт. Выбейте номер ниже!
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 12px;">
           <div>
             <div style="font-size: 11px; color: #94a3b8;">Баланс SIM:</div>
             <div style="font-size: 18px; font-weight: 900; color: #4ade80; font-family: monospace;" id="sim-balance-display">0 ₽</div>
           </div>
           <button class="glass-btn" style="padding: 8px 14px; border-color: #22c55e; color: #4ade80;" onclick="topUpSim()">+500 ₽</button>
         </div>
+
+        <!-- ВЫБОР ТАРИФНОГО ПЛАНА -->
+        <div style="margin-top: 4px;">
+          <div style="font-size: 11px; color: #94a3b8; font-weight: 700; margin-bottom: 6px;">Текущий Тарифный План:</div>
+          <select class="select-sim-dropdown" style="border-color: rgba(234,179,8,0.5);" id="tariff-dropdown" onchange="changeTariff(this.value)">
+            <option value="economy">🟢 «Эконом» (100 ₽/день) — 20 ₽ / вход на Аукцион</option>
+            <option value="unlimited">⚡ «Безлимит Про» (1 500 ₽/день) — Бесплатный трафик</option>
+            <option value="vip">👑 «VIP Блатной» (5 000 ₽/день) — Безлимит + VIP статус</option>
+          </select>
+        </div>
       </div>
 
-      <!-- РУЛЕТКА НОМЕРОВ -->
+      <!-- РУЛЕТКА НОМЕРОВ С ОПРЕДЕЛЕНИЕМ РЕДКОСТИ -->
       <div class="spin-box">
-        <div style="font-size: 11px; color: #94a3b8; font-weight: 800; text-transform: uppercase;">2. Рулетка Номеров (+7-777-...)</div>
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+          <span style="font-size: 11px; color: #94a3b8; font-weight: 800; text-transform: uppercase;">2. Рулетка Номеров</span>
+          <span class="rarity-badge rarity-common" id="spin-rarity-badge">Обычный</span>
+        </div>
+
         <div class="spin-number-display" id="spin-display">+7 (777) ???-??-??</div>
         
         <div style="display: flex; gap: 10px; width: 100%;">
@@ -841,11 +864,14 @@
       lvl: 1,
       phone: 'Не установлена',
       hasSmartphone: false,
+      tariff: 'economy', // economy, unlimited, vip
       simBalances: {},
+      simRarities: {}, // "+7...": "gold" / "silver" / "bronze" / "common"
       sims: []
     };
 
     let currentRolledNumber = null;
+    let currentRolledRarity = 'common';
     let isSpinning = false;
 
     // ЗВУКОВОЙ ДВИЖОК
@@ -898,10 +924,8 @@
     function updateUI() {
       document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('xp-text').innerText = `${player.xp} / ${player.maxXp} XP`;
-      document.getElementById('lvl-badge').innerText = `⭐ LVL ${player.lvl}`;
-      document.getElementById('user-phone').innerText = `📱 SIM: ${player.phone}`;
-      document.getElementById('inv-phone-status').innerText = `📱 Смартфон: ${player.hasSmartphone ? 'Есть' : 'Нет'}`;
+      document.getElementById('xp-text').innerText = `${player.xp} /${player.maxXp} XP`;
+      document.getElementById('lvl-badge').innerText = `⭐ LVL ${player.lvl}`;              const activeRarity = player.simRarities[player.phone] \vert{}\vert{} 'common';       const rarityIcon = activeRarity === 'gold' ? '🥇 ' : activeRarity === 'silver' ? '🥈 ' : activeRarity === 'bronze' ? '🥉 ' : '';       document.getElementById('user-phone').innerText = `📱 SIM: ${rarityIcon}${player.phone}`;              document.getElementById('inv-phone-status').innerText = `📱 Смартфон: ${player.hasSmartphone ? 'Есть' : 'Нет'}`;
       
       const percent = Math.min((player.xp / player.maxXp) * 100, 100);
       document.getElementById('xp-bar').style.width = percent + '%';
@@ -916,6 +940,9 @@
       const dropdown = document.getElementById('sim-dropdown');
       const balanceDisplay = document.getElementById('sim-balance-display');
       const statusBadge = document.getElementById('sim-status-badge');
+      const tariffDropdown = document.getElementById('tariff-dropdown');
+
+      if (tariffDropdown) tariffDropdown.value = player.tariff;
 
       if (player.sims.length === 0) {
         selectContainer.style.display = 'none';
@@ -937,14 +964,10 @@
       player.sims.forEach(sim => {
         const opt = document.createElement('option');
         opt.value = sim;
-        opt.innerText = sim + (player.phone === sim ? ' (Активна)' : '');
-        if (player.phone === sim) opt.selected = true;
-        dropdown.appendChild(opt);
-      });
-
-      const currentSelectedSim = dropdown.value || player.phone;
-      const currentBal = player.simBalances[currentSelectedSim] || 0;
-      balanceDisplay.innerText = currentBal.toLocaleString('ru-RU') + ' ₽';
+        const rarity = player.simRarities[sim] || 'common';
+        const tag = rarity === 'gold' ? '🥇 VIP' : rarity === 'silver' ? '🥈 СЕРЕБРО' : rarity === 'bronze' ? '🥉 БРОНЗА' : '';
+        opt.innerText = `${sim}${tag}${player.phone === sim ? ' (Активна)' : ''}`;         if (player.phone === sim) opt.selected = true;         dropdown.appendChild(opt);       });        const currentSelectedSim = dropdown.value \vert{}\vert{} player.phone;       const currentBal = player.simBalances[currentSelectedSim] \vert{}\vert{} 0;       balanceDisplay.innerText = currentBal.toLocaleString('ru-RU') + ' ₽';     }      function changeTariff(newTariff) {       player.tariff = newTariff;       const names = { economy: 'Эконом', unlimited: 'Безлимит Про', vip: 'VIP Блатной' };       alert(`✅ Вы переключили тарифный план на: ${names[newTariff]}`);
+      updateUI();
     }
 
     function onSelectSimDropdown(simNumber) {
@@ -973,6 +996,12 @@
       const activeSim = player.phone;
       if (!activeSim || activeSim === 'Не установлена') {
         alert('❌ У вас не установлена активная SIM-карта!\nУстановите ее в Салоне связи или Инвентаре.');
+        return;
+      }
+
+      if (player.tariff === 'unlimited' || player.tariff === 'vip') {
+        updateUI();
+        alert('🔨 Вы вошли на Городской Аукцион! (Безлимитный интернет)');
         return;
       }
 
@@ -1017,46 +1046,7 @@
       player.cash -= 500;
       player.simBalances[activeSim] = (player.simBalances[activeSim] || 0) + 500;
       updateUI();
-      alert(`✅ Баланс SIM-карты ${activeSim} пополнен на +500 ₽!`);
-    }
-
-    function activatePromo() {
-      const input = document.querySelector('#screen-options .input-box');
-      if (!input) return;
-
-      const code = input.value.trim().toUpperCase();
-
-      if (code === 'TEST') {
-        addReward(500000, 15000);
-        player.hasSmartphone = true;
-        if (player.phone && player.phone !== 'Не установлена') {
-          player.simBalances[player.phone] = (player.simBalances[player.phone] || 0) + 1000;
-        }
-        alert('🚀 Активирован промокод TEST:\n+500 000 ₽\n+15 000 XP\n+ Смартфон');
-        input.value = '';
-      } else if (code === 'RESET') {
-        player.cash = 1000;
-        player.bank = 0;
-        player.xp = 0;
-        player.maxXp = 500;
-        player.lvl = 1;
-        player.phone = 'Не установлена';
-        player.hasSmartphone = false;
-        player.simBalances = {};
-        player.sims = [];
-        updateUI();
-        alert('🔄 Прогресс сброшен!');
-        input.value = '';
-      } else {
-        alert('❌ Промокод не найден!');
-      }
-    }
-
-    function generateRandomPhone() {
-      const part1 = Math.floor(100 + Math.random() * 900);
-      const part2 = Math.floor(10 + Math.random() * 90);
-      const part3 = Math.floor(10 + Math.random() * 90);
-      return `+7 (777) ${part1}-${part2}-${part3}`;
+      alert(`✅ Баланс SIM-карты ${activeSim} пополнен на +500 ₽!`);     }      function activatePromo() {       const input = document.querySelector('#screen-options .input-box');       if (!input) return;        const code = input.value.trim().toUpperCase();        if (code === 'TEST') {         addReward(500000, 15000);         player.hasSmartphone = true;         if (player.phone && player.phone !== 'Не установлена') {           player.simBalances[player.phone] = (player.simBalances[player.phone] \vert{}\vert{} 0) + 1000;         }         alert('🚀 Активирован промокод TEST:\n+500 000 ₽\n+15 000 XP\n+ Смартфон');         input.value = '';       } else if (code === 'RESET') {         player.cash = 1000;         player.bank = 0;         player.xp = 0;         player.maxXp = 500;         player.lvl = 1;         player.phone = 'Не установлена';         player.hasSmartphone = false;         player.tariff = 'economy';         player.simBalances = {};         player.simRarities = {};         player.sims = [];         updateUI();         alert('🔄 Прогресс сброшен!');         input.value = '';       } else {         alert('❌ Промокод не найден!');       }     }      // ДЕТЕКТОР РЕДКОСТИ НОМЕРОВ     function evaluateNumberRarity(numberStr) {       const digitsOnly = numberStr.replace(/\D/g, '').slice(1); // без первой семерки       const lastDigits = digitsOnly.slice(-7);        if (/(\d)\1{4,}/.test(lastDigits) \vert{}\vert{} lastDigits.includes('7777')) {         return 'gold';       }       if (/(\d)\1{2}/.test(lastDigits) \vert{}\vert{} lastDigits.endsWith('000') \vert{}\vert{} lastDigits.endsWith('500')) {         return 'silver';       }       if (/(\d)(\d)\1\2/.test(lastDigits)) {         return 'bronze';       }       return 'common';     }      function updateRarityBadge(rarity) {       const badge = document.getElementById('spin-rarity-badge');       badge.className = 'rarity-badge';        if (rarity === 'gold') {         badge.classList.add('rarity-gold');         badge.innerText = '🥇 VIP Золотой';       } else if (rarity === 'silver') {         badge.classList.add('rarity-silver');         badge.innerText = '🥈 Серебряный';       } else if (rarity === 'bronze') {         badge.classList.add('rarity-bronze');         badge.innerText = '🥉 Бронзовый';       } else {         badge.classList.add('rarity-common');         badge.innerText = '⚪ Обычный';       }     }      function generateRandomPhone() {       const rand = Math.random();       let part1, part2, part3;        if (rand < 0.05) {         part1 = '777'; part2 = '77'; part3 = '77'; // Золотой       } else if (rand < 0.2) {         part1 = '500'; part2 = '20'; part3 = '20'; // Серебряный       } else {         part1 = Math.floor(100 + Math.random() * 900);         part2 = Math.floor(10 + Math.random() * 90);         part3 = Math.floor(10 + Math.random() * 90);       }       return `+7 (777) ${part1}-${part2}-${part3}`;
     }
 
     function startPhoneSpin() {
@@ -1076,14 +1066,19 @@
 
       let counter = 0;
       const interval = setInterval(() => {
-        display.innerText = generateRandomPhone();
+        const generated = generateRandomPhone();
+        display.innerText = generated;
+        const rarity = evaluateNumberRarity(generated);
+        updateRarityBadge(rarity);
         playSoftTick(1 + Math.random() * 0.3);
         counter += 50;
 
         if (counter >= 1500) {
           clearInterval(interval);
           currentRolledNumber = generateRandomPhone();
+          currentRolledRarity = evaluateNumberRarity(currentRolledNumber);
           display.innerText = currentRolledNumber;
+          updateRarityBadge(currentRolledRarity);
           playWinSound();
           isSpinning = false;
           buyBtn.style.display = 'block';
@@ -1105,16 +1100,18 @@
       player.cash -= 1500;
       player.sims.push(currentRolledNumber);
       player.simBalances[currentRolledNumber] = 0;
+      player.simRarities[currentRolledNumber] = currentRolledRarity;
 
       if (player.phone === 'Не установлена') {
         player.phone = currentRolledNumber;
       }
 
-      alert(`🎉 Поздравляем! Номер ${currentRolledNumber} добавлен в ваш Инвентарь!`);
+      alert(`🎉 Поздравляем! Номер ${currentRolledNumber} (${currentRolledRarity.toUpperCase()}) добавлен в ваш Инвентарь!`);
       
       currentRolledNumber = null;
       document.getElementById('btn-buy-sim').style.display = 'none';
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+      updateRarityBadge('common');
       updateUI();
     }
 
@@ -1131,179 +1128,9 @@
       player.sims.forEach((sim, index) => {
         const item = document.createElement('div');
         item.className = 'sim-card-item';
+        const rarity = player.simRarities[sim] || 'common';
+        const tag = rarity === 'gold' ? '🥇 VIP' : rarity === 'silver' ? '🥈 СЕРЕБРО' : rarity === 'bronze' ? '🥉 БРОНЗА' : '';
+
         item.innerHTML = `
           <div>
-            <div style="font-weight: 800; font-size: 13px; color: #facc15;">📱 ${sim}</div>
-            <div style="font-size: 10px; color: #94a3b8;">${player.phone === sim ? '🟢 Активна' : '⚪ В запасе'}</div>
-          </div>
-          <div style="display: flex; gap: 6px;">
-            <button style="background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;" onclick="useSim(${index})">Использовать</button>
-            <button style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;" onclick="sellSimOptions(${index})">Продать</button>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function useSim(index) {
-      player.phone = player.sims[index];
-      updateUI();
-      alert(`✅ Сим-карта ${player.phone} установлена!`);
-    }
-
-    function sellSimOptions(index) {
-      const sim = player.sims[index];
-      const choice = confirm(`Выберите вариант продажи для ${sim}:\n\n Нажмите OK — Продать государству за 750 ₽\n Нажмите Отмена — Попробовать выставить на аукцион`);
-      
-      if (choice) {
-        player.cash += 750;
-        if (player.phone === sim) player.phone = 'Не установлена';
-        delete player.simBalances[sim];
-        player.sims.splice(index, 1);
-        updateUI();
-        alert(`💰 Сим-карта ${sim} продана государству за 750 ₽`);
-      } else {
-        alert('🔨 Продажа на аукционе [В разработке 🚧]');
-      }
-    }
-
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) {
-        modal.classList.add('active');
-      }
-    }
-
-    function closeModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) {
-        modal.classList.remove('active');
-      }
-    }
-
-    // Сбор банок
-    const canEmojis = ['🥫', '🥤', '🍺'];
-    function spawnCan() {
-      const area = document.getElementById('cans-area');
-      if (!area || !document.getElementById('screen-cans-game').classList.contains('active')) return;
-      if (area.children.length >= 5) return;
-
-      const isRare = Math.random() < 0.05;
-      const can = document.createElement('div');
-      can.className = 'can-item';
-      can.innerText = isRare ? '🍯' : canEmojis[Math.floor(Math.random() * canEmojis.length)];
-      
-      const x = Math.random() * (area.clientWidth - 50);
-      const y = Math.random() * (area.clientHeight - 50);
-      can.style.left = x + 'px';
-      can.style.top = y + 'px';
-
-      can.onclick = function () {
-        playCanSound();
-        const earned = isRare ? 200 : Math.floor(Math.random() * 26) + 15;
-        const xpEarned = isRare ? 10 : 2;
-        addReward(earned, xpEarned);
-
-        const floatText = document.createElement('div');
-        floatText.className = 'floating-text';
-        floatText.innerText = `+${earned} ₽`;
-        if (isRare) floatText.style.color = '#facc15';
-        floatText.style.left = x + 'px';
-        floatText.style.top = y + 'px';
-        area.appendChild(floatText);
-
-        setTimeout(() => floatText.remove(), 600);
-        can.remove();
-      };
-
-      area.appendChild(can);
-    }
-    setInterval(spawnCan, 900);
-
-    function openScreen(screenId) {
-      document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
-      const target = document.getElementById(screenId);
-      if (target) target.classList.add('active');
-    }
-
-    function goHome() {
-      switchTab('home');
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
-
-      if (tabName === 'home') {
-        document.getElementById('tab-home').classList.add('active');
-        document.getElementById('main-screen').classList.add('active');
-      } else if (tabName === 'inventory') {
-        document.getElementById('tab-inventory').classList.add('active');
-        document.getElementById('screen-inventory').classList.add('active');
-      } else if (tabName === 'top') {
-        document.getElementById('tab-top').classList.add('active');
-        document.getElementById('screen-top').classList.add('active');
-      } else if (tabName === 'options') {
-        document.getElementById('tab-options').classList.add('active');
-        document.getElementById('screen-options').classList.add('active');
-      }
-    }
-
-    function claimDailyReward() {
-      addReward(2500, 30);
-      alert('🎁 Вы забрали ежедневный бонус: +2 500 ₽ и +30 XP!');
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      updateUI();
-      try {
-        if (window.Telegram && window.Telegram.WebApp) {
-          const tg = window.Telegram.WebApp;
-          tg.expand();
-          tg.ready();
-
-          if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            const name = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-            document.getElementById('user-name').innerText = name;
-            document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
-          }
-        }
-      } catch (e) {}
-    });
-
-    const canvas = document.getElementById('space-bg');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    const stars = Array.from({ length: 70 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 1.5,
-      alpha: Math.random(),
-      speed: Math.random() * 0.02 + 0.005
-    }));
-
-    function animateSpace() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      stars.forEach(star => {
-        star.alpha += star.speed;
-        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
-
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
-        ctx.fill();
-      });
-      requestAnimationFrame(animateSpace);
-    }
-    animateSpace();
-  </script>
-</body>
-</html>
+            <div style="font-weight:
