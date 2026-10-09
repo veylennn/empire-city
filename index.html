@@ -41,7 +41,7 @@
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
+      height: 100vh; свежий
       z-index: 0;
       pointer-events: none;
     }
@@ -367,7 +367,7 @@
       }
     }
 
-    /* КИБЕР-УВЕДОМЛЕНИЕ (ровно 0.7 секунд) */
+    /* КИБЕР-УВЕДОМЛЕНИЕ (ровно 1 секунда) */
     #game-toast {
       position: fixed;
       top: 20px;
@@ -460,6 +460,27 @@
       pointer-events: none;
       border-color: rgba(255, 255, 255, 0.1);
       color: var(--text-muted);
+    }
+
+    /* КОМПАКТНАЯ КНОПКА ШАНСОВ СЛЕВА В МЕНЮ КАРТЫ */
+    .btn-chances-small {
+      width: 52%;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 11px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-chances-small:active {
+      background: rgba(16, 185, 129, 0.2);
     }
 
     .chances-box {
@@ -612,17 +633,6 @@
           </div>
           <span style="color:var(--accent-color);">➔</span>
         </button>
-
-        <button class="hub-card" onclick="openModal('modal-chances')">
-          <div class="hub-left">
-            <div class="hub-icon">📊</div>
-            <div class="hub-text">
-              <h3>Шансы выпадения номеров</h3>
-              <p>Таблица редкостей и ценностей</p>
-            </div>
-          </div>
-          <span style="color:var(--accent-color);">➔</span>
-        </button>
       </div>
 
       <button class="btn-main" style="margin-top: 15px;" onclick="openScreen('screen-home')">⬅️ Вернуться в Город</button>
@@ -684,6 +694,12 @@
     <div class="modal-sheet">
       <div style="font-size:15px; color:var(--accent-color); font-weight:800; text-align:center;">Активация SIM-карты</div>
 
+      <!-- Маленькая кнопка шансов слева НАД белой симкой -->
+      <button class="btn-chances-small" onclick="openModal('modal-chances')">
+        <span>📊</span> Шансы выпадения
+      </button>
+
+      <!-- Физическая карта -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
         <div class="sim-card-model">
           <div class="sim-card-top">
@@ -693,505 +709,4 @@
 
           <div class="sim-chip"></div>
           
-          <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
-        </div>
-      </div>
-
-      <div class="external-info-bar">
-        <div class="external-value" id="market-value-text">Оценка: —</div>
-        <div class="external-rarity color-common" id="sim-rarity-tag">Обычный</div>
-      </div>
-
-      <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Прокрутить номер (1 500 ₽)</button>
-      <button class="btn-main" id="btn-buy-sim" disabled style="border-color:var(--accent-color); color:#6ee7b7;" onclick="confirmBuySim()">💳 Приобрести номер</button>
-      <!-- Обновленная кнопка продажи с автоматическим крутом -->
-      <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.2); border-color:#ef4444; color:#fca5a5;" onclick="sellAndSpinAgain()">💰 Продать за 0 ₽ и крутить снова</button>
-      <button class="btn-main" style="background:rgba(255,255,255,0.05); color:var(--text-muted); border:none;" onclick="closeModal('modal-buy-sim')">Закрыть</button>
-    </div>
-  </div>
-
-  <!-- НИЖНЯЯ ПАНЕЛЬ -->
-  <div class="bottom-bar">
-    <div class="tab-item active" id="tab-home" onclick="switchTab('home')">
-      <span style="font-size:20px;">🏙️</span>
-      <span>Город</span>
-    </div>
-    <div class="tab-item" id="tab-inventory" onclick="switchTab('inventory')">
-      <span style="font-size:20px;">🎒</span>
-      <span>Инвентарь</span>
-    </div>
-  </div>
-
-  <script>
-    var player = {
-      cash: 5000,
-      bank: 0,
-      activePhone: 'Не установлена',
-      sims: []
-    };
-
-    var currentRolledNum = null;
-    var currentMarketVal = 150;
-    var currentRarityKey = 'common';
-    var isSpinning = false;
-    var audioCtx = null;
-
-    // Уведомление ровно на 0.7 секунд
-    function showToast(text) {
-      var toast = document.getElementById('game-toast');
-      toast.innerText = text;
-      toast.classList.add('show');
-      setTimeout(function() {
-        toast.classList.remove('show');
-      }, 700);
-    }
-
-    function playSuccessSound() {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        var now = audioCtx.currentTime;
-        [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
-          let osc = audioCtx.createOscillator();
-          let gain = audioCtx.createGain();
-          osc.frequency.setValueAtTime(f, now + i * 0.08);
-          gain.gain.setValueAtTime(0.06, now + i * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
-          osc.connect(gain); gain.connect(audioCtx.destination);
-          osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
-        });
-      } catch(e){}
-    }
-
-    function triggerFireworks() {
-      var canvas = document.getElementById('cyber-bg');
-      var ctx = canvas.getContext('2d');
-      var cx = canvas.width / 2;
-      var cy = 100;
-      var particles = [];
-
-      for (var i = 0; i < 40; i++) {
-        var angle = Math.random() * Math.PI * 2;
-        var speed = Math.random() * 6 + 2;
-        particles.push({
-          x: cx, y: cy,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          alpha: 1,
-          color: ['#10b981', '#3b82f6', '#facc15', '#a855f7', '#ef4444'][Math.floor(Math.random() * 5)]
-        });
-      }
-
-      function updateFw() {
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += 0.2;
-          p.alpha -= 0.03;
-        });
-        particles = particles.filter(p => p.alpha > 0);
-        if (particles.length > 0) {
-          requestAnimationFrame(updateFw);
-        }
-      }
-      updateFw();
-    }
-
-    function playSound(freq) {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.05);
-      } catch(e){}
-    }
-
-    function playRaritySound(rarity) {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        var now = audioCtx.currentTime;
-
-        if (rarity === 'common') {
-          var osc = audioCtx.createOscillator();
-          var gain = audioCtx.createGain();
-          osc.frequency.setValueAtTime(350, now);
-          gain.gain.setValueAtTime(0.05, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-          osc.connect(gain); gain.connect(audioCtx.destination);
-          osc.start(now); osc.stop(now + 0.15);
-        } else if (rarity === 'rare') {
-          [440, 550].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.frequency.setValueAtTime(f, now + i * 0.1);
-            gain.gain.setValueAtTime(0.06, now + i * 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.15);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.15);
-          });
-        } else if (rarity === 'epic') {
-          [520, 650, 780].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.frequency.setValueAtTime(f, now + i * 0.08);
-            gain.gain.setValueAtTime(0.07, now + i * 0.08);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
-          });
-        } else if (rarity === 'legendary') {
-          [600, 750, 900, 1200].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(f, now + i * 0.06);
-            gain.gain.setValueAtTime(0.06, now + i * 0.06);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.3);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.3);
-          });
-        } else if (rarity === 'mythic') {
-          [440, 880, 1320, 1760].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(f, now + i * 0.1);
-            gain.gain.setValueAtTime(0.08, now + i * 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.5);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.5);
-          });
-        }
-      } catch(e){}
-    }
-
-    function updateUI() {
-      document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('user-phone').innerText = '📱 SIM: ' + player.activePhone;
-
-      var inv = document.getElementById('inventory-list');
-      if (player.sims.length > 0) {
-        inv.innerHTML = '<b>Ваши SIM-карты:</b><br>' + player.sims.map(function(s) {
-          return '• ' + s.number + ' <span style="color:var(--accent-color);">(' + s.val.toLocaleString('ru-RU') + ' ₽)</span>';
-        }).join('<br>');
-      } else {
-        inv.innerText = 'У вас пока нет купленных SIM-карт.';
-      }
-    }
-
-    function claimBonus() {
-      player.cash += 2500;
-      playSound(520);
-      updateUI();
-      showToast('🎁 Бонус зачислен: +2 500 ₽!');
-    }
-
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
-      document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-
-      if (tab === 'home') {
-        document.getElementById('tab-home').classList.add('active');
-        document.getElementById('screen-home').classList.add('active');
-      } else if (tab === 'inventory') {
-        document.getElementById('tab-inventory').classList.add('active');
-        document.getElementById('screen-inventory').classList.add('active');
-      }
-      playSound(350);
-    }
-
-    function openScreen(id) {
-      document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-      document.getElementById(id).classList.add('active');
-      playSound(400);
-    }
-
-    function setRarityStyle(element, rarityKey, rarityName) {
-      element.className = 'external-rarity color-' + rarityKey;
-      element.innerText = rarityName;
-    }
-
-    function openModal(id) {
-      document.getElementById(id).classList.add('active');
-      if (id === 'modal-buy-sim') {
-        resetCardGlow('common');
-        document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
-        document.getElementById('market-value-text').innerText = 'Оценка: —';
-        setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-        
-        document.getElementById('btn-spin').disabled = false;
-        document.getElementById('btn-buy-sim').disabled = true;
-        document.getElementById('btn-sell-sim').disabled = true;
-        document.getElementById('btn-sell-sim').innerText = '💰 Продать за 0 ₽ и крутить снова';
-      }
-      playSound(450);
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-    }
-
-    function setCardGlow(rarity) {
-      var container = document.getElementById('sim-container-glow');
-      container.className = 'sim-card-container glow-' + rarity;
-    }
-
-    function resetCardGlow(rarity) {
-      var container = document.getElementById('sim-container-glow');
-      container.className = 'sim-card-container glow-' + rarity;
-    }
-
-    function evaluateNumber(num) {
-      var clean = num.replace(/\D/g, '').slice(1);
-      var tail = clean.slice(3);
-
-      var firstChar = tail[0];
-      var allSame = true;
-      for (var i = 1; i < tail.length; i++) {
-        if (tail[i] !== firstChar) { allSame = false; break; }
-      }
-      if (allSame) {
-        return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: 'Мифический' };
-      }
-
-      var isPalindrome = tail === tail.split('').reverse().join('');
-      if (isPalindrome || tail.startsWith('000') || tail.startsWith('777')) {
-        return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: 'Легендарный' };
-      }
-
-      if (tail.indexOf('555') !== -1 || tail.indexOf('777') !== -1 || tail.indexOf('333') !== -1 || (tail.slice(0,3) === tail.slice(3,6))) {
-        return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: 'Эпический' };
-      }
-
-      if (tail[0] === tail[1] && tail[2] === tail[3]) {
-        return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: 'Редкий' };
-      }
-
-      return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: 'Обычный' };
-    }
-
-    function generateRandomPhone() {
-      var rand = Math.random();
-      if (rand < 0.003) {
-        var digit = Math.floor(1 + Math.random() * 9);
-        return '+7 (777) ' + digit + digit + digit + '-' + digit + digit + '-' + digit + digit;
-      }
-      if (rand < 0.015) {
-        return '+7 (777) 555-55-55';
-      }
-      if (rand < 0.065) {
-        return '+7 (777) 777-12-12';
-      }
-      if (rand < 0.235) {
-        return '+7 (777) 123-44-55';
-      }
-      var p1 = Math.floor(100 + Math.random() * 900);
-      var p2 = Math.floor(10 + Math.random() * 90);
-      var p3 = Math.floor(10 + Math.random() * 90);
-      return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
-    }
-
-    function animateTextSmooth(element, text) {
-      element.innerHTML = '';
-      for (var i = 0; i < text.length; i++) {
-        var span = document.createElement('span');
-        span.className = 'char-fade';
-        span.innerText = text[i];
-        span.style.animationDelay = (i * 0.03) + 's';
-        element.appendChild(span);
-      }
-    }
-
-    function startSimSpin() {
-      if (player.cash < 1500) {
-        showToast('❌ Недостаточно средств! Нужно 1 500 ₽');
-        return;
-      }
-
-      player.cash -= 1500;
-      updateUI();
-      isSpinning = true;
-
-      var display = document.getElementById('spin-display');
-      var valText = document.getElementById('market-value-text');
-      var rarityTag = document.getElementById('sim-rarity-tag');
-      var btnSpin = document.getElementById('btn-spin');
-      var btnBuy = document.getElementById('btn-buy-sim');
-      var btnSell = document.getElementById('btn-sell-sim');
-      
-      btnSpin.disabled = true;
-      btnBuy.disabled = true;
-      btnSell.disabled = true;
-      
-      resetCardGlow('common');
-      setRarityStyle(rarityTag, 'common', 'Сканирование...');
-      valText.innerText = 'Оценка: анализ...';
-
-      var count = 0;
-      var interval = setInterval(function() {
-        var tempNum = generateRandomPhone();
-        display.innerText = tempNum;
-        playSound(300 + (count % 10) * 20);
-        count += 50;
-
-        if (count >= 2500) {
-          clearInterval(interval);
-          currentRolledNum = generateRandomPhone();
-          var evaluated = evaluateNumber(currentRolledNum);
-          currentMarketVal = evaluated.val;
-          currentRarityKey = evaluated.rarity;
-
-          setCardGlow(currentRarityKey);
-          setRarityStyle(rarityTag, currentRarityKey, evaluated.name);
-          valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
-
-          btnSell.innerText = '💰 Продать за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽ и крутить снова';
-
-          animateTextSmooth(display, currentRolledNum);
-          playRaritySound(currentRarityKey);
-
-          isSpinning = false;
-          btnSpin.disabled = false;
-          btnBuy.disabled = false;
-          btnSell.disabled = false;
-        }
-      }, 50);
-    }
-
-    function confirmBuySim() {
-      if (!currentRolledNum) return;
-
-      player.sims.push({ number: currentRolledNum, val: currentMarketVal });
-      player.activePhone = currentRolledNum;
-      updateUI();
-
-      triggerFireworks();
-      playSuccessSound();
-      showToast('🎉 Номер добавлен в ваш инвентарь!');
-      
-      currentRolledNum = null;
-      document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
-      document.getElementById('market-value-text').innerText = 'Оценка: —';
-      setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-      resetCardGlow('common');
-      document.getElementById('btn-buy-sim').disabled = true;
-      document.getElementById('btn-sell-sim').disabled = true;
-    }
-
-    // Продать и сразу запустить следующий прокрут за 1500 ₽
-    function sellAndSpinAgain() {
-      if (!currentRolledNum) return;
-
-      player.cash += currentMarketVal;
-      updateUI();
-
-      triggerFireworks();
-      playSuccessSound();
-      showToast('💰 Номер успешно продан!');
-
-      // Сразу запускаем новый прокрут
-      startSimSpin();
-    }
-
-    // Мини-игра с банками
-    function spawnCan() {
-      var area = document.getElementById('game-area');
-      var screenWork = document.getElementById('screen-work');
-      if (!area || !screenWork.classList.contains('active')) return;
-      if (area.children.length >= 4) return;
-
-      var can = document.createElement('div');
-      can.className = 'can-item';
-      can.innerText = '🥫';
-      
-      var x = Math.random() * (area.clientWidth - 40);
-      var y = Math.random() * (area.clientHeight - 40);
-      can.style.left = x + 'px';
-      can.style.top = y + 'px';
-
-      can.onclick = function() {
-        playSound(650);
-        var reward = Math.floor(Math.random() * 20) + 15;
-        player.cash += reward;
-        updateUI();
-
-        var floatText = document.createElement('div');
-        floatText.className = 'floating-text';
-        floatText.innerText = '+' + reward + ' ₽';
-        floatText.style.left = x + 'px';
-        floatText.style.top = y + 'px';
-        area.appendChild(floatText);
-
-        setTimeout(function() { floatText.remove(); }, 600);
-        can.remove();
-      };
-
-      area.appendChild(can);
-    }
-    setInterval(spawnCan, 1000);
-
-    window.onload = function() {
-      updateUI();
-      try {
-        if (window.Telegram && window.Telegram.WebApp) {
-          var tg = window.Telegram.WebApp;
-          tg.expand();
-          tg.ready();
-          if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            var user = tg.initDataUnsafe.user;
-            document.getElementById('user-name').innerText = user.first_name;
-            document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
-          }
-        }
-      } catch(e) {}
-
-      var canvas = document.getElementById('cyber-bg');
-      if (canvas) {
-        var ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        var particles = Array.from({length: 35}, function() {
-          return {
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: Math.random() * 1.5,
-            vy: (Math.random() - 0.5) * 0.3,
-            vx: (Math.random() - 0.5) * 0.3,
-            alpha: Math.random() * 0.5 + 0.2
-          };
-        });
-
-        function animate() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          particles.forEach(function(p) {
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.x < 0) p.x = canvas.width;
-            if (p.x > canvas.width) p.x = 0;
-            if (p.y < 0) p.y = canvas.height;
-            if (p.y > canvas.height) p.y = 0;
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(16, 185, 129, ' + p.alpha + ')';
-            ctx.fill();
-          });
-          requestAnimationFrame(animate);
-        }
-        animate();
-      }
-    };
-  </script>
-</body>
-</html>
+          <div
