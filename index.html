@@ -39,7 +39,7 @@
       transition: background 0.5s ease;
     }
 
-    /* Общий фон меняется при активном X2 */
+    /* Фон меняется при активном X2 */
     body.x2-active-bg {
       background: radial-gradient(circle at 50% 30%, rgba(250, 204, 21, 0.12) 0%, var(--bg-color) 70%);
     }
@@ -300,7 +300,6 @@
       transition: width 0.3s ease;
     }
 
-    /* Эпичный режим X2 (каждый 5 бросок) */
     .x2-progress-box.charged {
       border-color: #facc15;
       background: rgba(250, 204, 21, 0.08);
@@ -321,7 +320,6 @@
       100% { transform: scale(1.02); box-shadow: 0 0 25px rgba(250, 204, 21, 0.8); }
     }
 
-    /* Окантовка терминала и кнопки тоже пульсируют золотом при активном X2 */
     .modal-sheet.x2-active-sheet {
       border-top: 2px solid #facc15;
       box-shadow: 0 -10px 40px rgba(250, 204, 21, 0.25);
@@ -362,7 +360,6 @@
       transition: border-color 0.3s ease;
     }
 
-    /* Золотая рамка карточки во время X2 */
     .sim-card-model.x2-card-glow {
       border-color: #facc15 !important;
       box-shadow: inset 0 0 15px rgba(250, 204, 21, 0.3);
@@ -625,7 +622,6 @@
     }
     .btn-main:active { transform: scale(0.97); }
 
-    /* Кнопка генерации горит золотым во время X2 */
     .btn-main.x2-btn-glow {
       background: linear-gradient(135deg, rgba(250, 204, 21, 0.3), rgba(15, 23, 42, 0.6)) !important;
       border-color: #facc15 !important;
@@ -907,7 +903,7 @@
       bank: 0,
       activePhone: 'Не установлена',
       sims: [],
-      spinsCount: 0 // Счетчик от 0 до 4 (каждый 5-й бросок - X2)
+      spinsCount: 0
     };
 
     var currentRolledNum = null;
@@ -925,7 +921,6 @@
       }, duration);
     }
 
-    // Проверяем, является ли текущий бросок X2 (каждый 5-й, когда spinsCount === 4)
     function isCurrentSpinX2() {
       return (player.spinsCount % 5 === 4);
     }
@@ -939,7 +934,7 @@
       var modelBox = document.getElementById('sim-card-model-box');
       var btnSpin = document.getElementById('btn-spin');
 
-      var currentStepInCycle = (player.spinsCount % 5) + 1; // от 1 до 5
+      var currentStepInCycle = (player.spinsCount % 5) + 1;
       var percent = (currentStepInCycle / 5) * 100;
       fill.style.width = percent + '%';
       counter.innerText = currentStepInCycle + ' / 5';
@@ -985,7 +980,6 @@
         var osc = audioCtx.createOscillator();
         var gain = audioCtx.createGain();
         
-        // Для X2 прокрутки звуки выше, футуристичнее и резче (квадратная волна)
         if (isX2Scroll) {
           osc.type = 'square';
           osc.frequency.setValueAtTime((freq || 440) * 1.5, audioCtx.currentTime);
@@ -1307,10 +1301,7 @@
       var interval = setInterval(function() {
         var tempNum = generateRandomPhone();
         display.innerText = tempNum;
-        
-        // Звук прокрутки (специальный кибер-звук если X2 активен)
         playSound(300 + (count % 10) * 20, activeX2);
-        
         count += 50;
 
         if (count >= 2500) {
@@ -1318,7 +1309,6 @@
           currentRolledNum = generateRandomPhone();
           var evaluated = evaluateNumber(currentRolledNum);
           
-          // Если выпал X2 бросок, удваиваем рыночную стоимость номера!
           currentMarketVal = activeX2 ? evaluated.val * 2 : evaluated.val;
           currentRarityKey = evaluated.rarity;
 
@@ -1340,9 +1330,7 @@
             showToast('🔥 ФАЗА X2 СРАБОТАЛА! Стоимость удвоена!', 1800);
           }
 
-          // Увеличиваем счетчик после завершения броска для следующего цикла
           player.spinsCount++;
-
           isSpinning = false;
           btnSpin.disabled = false;
           btnBuy.disabled = false;
