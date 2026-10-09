@@ -3,10 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>EmpireCity</title>
+  <title>EmpireCity State</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
+    :root {
+      --bg-color: #0b0f12;
+      --card-bg: rgba(18, 24, 32, 0.7);
+      --border-color: rgba(16, 185, 129, 0.3);
+      --accent-color: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.4);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -19,15 +29,15 @@
     body {
       width: 100vw;
       height: 100vh;
-      background: #090a0f;
-      color: #f8fafc;
+      background: var(--bg-color);
+      color: var(--text-main);
       padding: 16px 16px 90px 16px;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Анимированный фон (звезды) */
-    #space-bg {
+    /* Фоновый канвас для кибер-анимации */
+    #cyber-bg {
       position: fixed;
       top: 0;
       left: 0;
@@ -45,13 +55,13 @@
       gap: 14px;
     }
 
-    /* Верхний статус */
+    /* Статус сервера */
     .server-status {
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 11px;
-      color: #94a3b8;
+      color: var(--text-muted);
       font-weight: 800;
       letter-spacing: 0.5px;
     }
@@ -60,26 +70,26 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      color: #22c55e;
+      color: var(--accent-color);
     }
 
     .dot {
       width: 8px;
       height: 8px;
-      background-color: #22c55e;
+      background-color: var(--accent-color);
       border-radius: 50%;
-      box-shadow: 0 0 8px #22c55e;
+      box-shadow: 0 0 10px var(--accent-color);
     }
 
-    /* Карточка карточки профиля */
+    /* Карточка профиля */
     .profile-card {
-      background: rgba(18, 18, 28, 0.7);
+      background: var(--card-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
       padding: 18px;
-      border: 1px solid rgba(234, 179, 8, 0.35);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
     .profile-header {
@@ -98,7 +108,7 @@
       width: 50px;
       height: 50px;
       border-radius: 16px;
-      background: linear-gradient(135deg, #facc15, #ca8a04);
+      background: linear-gradient(135deg, #10b981, #047857);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -106,6 +116,7 @@
       font-weight: bold;
       color: #000;
       border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .user-details h2 {
@@ -116,22 +127,22 @@
 
     .user-details p {
       font-size: 11px;
-      color: #facc15;
+      color: var(--accent-color);
       font-weight: 700;
       margin-top: 2px;
     }
 
     .lvl-badge {
-      background: rgba(234, 179, 8, 0.15);
-      border: 1px solid rgba(234, 179, 8, 0.6);
-      color: #fef08a;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.6);
+      color: #6ee7b7;
       padding: 6px 12px;
       border-radius: 10px;
       font-size: 12px;
       font-weight: 800;
     }
 
-    /* Баланс */
+    /* Балансы */
     .balance-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -140,15 +151,15 @@
     }
 
     .balance-card {
-      background: rgba(10, 10, 15, 0.6);
+      background: rgba(10, 15, 20, 0.7);
       padding: 10px 12px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .balance-label {
       font-size: 10px;
-      color: #94a3b8;
+      color: var(--text-muted);
       text-transform: uppercase;
       font-weight: 700;
     }
@@ -157,29 +168,30 @@
       font-family: 'Courier New', monospace;
       font-size: 16px;
       font-weight: 800;
-      color: #facc15;
+      color: var(--accent-color);
       margin-top: 3px;
+      text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
     }
 
-    /* Меню действий */
+    /* Карточки меню (Хаб) */
     .hub-card {
-      background: rgba(18, 18, 28, 0.65);
+      background: var(--card-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(234, 179, 8, 0.25);
+      border: 1px solid var(--border-color);
       border-radius: 18px;
       padding: 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      transition: transform 0.1s, border-color 0.2s;
+      transition: transform 0.1s, border-color 0.2s, background 0.2s;
     }
 
     .hub-card:active {
       transform: scale(0.97);
-      border-color: #facc15;
-      background: rgba(234, 179, 8, 0.15);
+      border-color: var(--accent-color);
+      background: rgba(16, 185, 129, 0.1);
     }
 
     .hub-left {
@@ -192,8 +204,8 @@
       width: 44px;
       height: 44px;
       border-radius: 14px;
-      background: rgba(234, 179, 8, 0.12);
-      border: 1px solid rgba(234, 179, 8, 0.3);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -208,11 +220,11 @@
 
     .hub-text p {
       font-size: 11px;
-      color: #94a3b8;
+      color: var(--text-muted);
       margin-top: 2px;
     }
 
-    /* Экраны и страницы */
+    /* Экраны приложения */
     .screen {
       display: none;
       flex-direction: column;
@@ -224,13 +236,13 @@
       display: flex;
     }
 
-    /* Мини-игра "Сбор Банок" */
+    /* Мини-игра */
     .game-area {
       position: relative;
       width: 100%;
       height: 300px;
-      background: rgba(10, 10, 15, 0.8);
-      border: 1px solid rgba(234, 179, 8, 0.3);
+      background: rgba(10, 15, 20, 0.8);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
       overflow: hidden;
     }
@@ -244,58 +256,18 @@
 
     .floating-text {
       position: absolute;
-      color: #4ade80;
+      color: #34d399;
       font-weight: 900;
       font-size: 16px;
       pointer-events: none;
       animation: floatUp 0.6s forwards ease-out;
-    }
-
-    /* Шторка (Модалка) */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      z-index: 10000;
-      display: none;
-      align-items: flex-end;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal-sheet {
-      width: 100%;
-      background: #0f1017;
-      border-top: 1px solid rgba(234, 179, 8, 0.5);
-      border-radius: 24px 24px 0 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .spin-display {
-      font-family: 'Courier New', monospace;
-      font-size: 20px;
-      font-weight: 900;
-      color: #facc15;
-      text-align: center;
-      padding: 15px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 14px;
-      border: 1px solid rgba(234, 179, 8, 0.2);
+      text-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
     }
 
     .btn-main {
-      background: linear-gradient(135deg, rgba(234, 179, 8, 0.3), rgba(202, 138, 4, 0.15));
-      border: 1px solid rgba(234, 179, 8, 0.6);
-      color: #fef08a;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(4, 120, 87, 0.15));
+      border: 1px solid rgba(16, 185, 129, 0.6);
+      color: #6ee7b7;
       padding: 14px;
       border-radius: 14px;
       font-weight: 800;
@@ -308,16 +280,16 @@
       transform: scale(0.97);
     }
 
-    /* Нижний Навбар */
+    /* Нижняя навигация */
     .bottom-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
       height: 65px;
-      background: rgba(10, 10, 15, 0.95);
+      background: rgba(10, 15, 20, 0.95);
       backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(234, 179, 8, 0.25);
+      border-top: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: space-around;
@@ -329,7 +301,7 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      color: #64748b;
+      color: var(--text-muted);
       cursor: pointer;
       font-size: 11px;
       font-weight: 700;
@@ -337,7 +309,7 @@
     }
 
     .tab-item.active {
-      color: #facc15;
+      color: var(--accent-color);
     }
 
     @keyframes popIn {
@@ -358,30 +330,31 @@
 </head>
 <body>
 
-  <canvas id="space-bg"></canvas>
+  <!-- Кибер-фон с частицами -->
+  <canvas id="cyber-bg"></canvas>
 
   <div class="app-container">
 
     <!-- Статус сервера -->
     <div class="server-status">
-      <span>EMPIRE CITY STATE</span>
+      <span>EMPIRE CITY STATE // NET-01</span>
       <div class="status-online">
         <span class="dot"></span>
-        <span>142 Онлайн</span>
+        <span>ONLINE</span>
       </div>
     </div>
 
-    <!-- Карточка игрока -->
+    <!-- Карточка профиля -->
     <div class="profile-card">
       <div class="profile-header">
         <div class="user-info">
           <div class="avatar" id="user-avatar">😎</div>
           <div class="user-details">
-            <h2 id="user-name">Игрок</h2>
-            <p id="user-phone">📱 SIM: Не установлена</p>
+            <h2 id="user-name">Оператор</h2>
+            <p>ID: 777-EMPIRE</p>
           </div>
         </div>
-        <div class="lvl-badge" id="lvl-badge">⭐ LVL 1</div>
+        <div class="lvl-badge">LVL 1</div>
       </div>
 
       <div class="balance-grid">
@@ -396,17 +369,17 @@
       </div>
     </div>
 
-    <!-- ЭКРАН 1: ГОРОД (ГЛАВНОЕ МЕНЮ) -->
+    <!-- ЭКРАН: ГОРОД (ГЛАВНОЕ МЕНЮ) -->
     <div id="screen-home" class="screen active">
       <div class="hub-card" onclick="claimBonus()">
         <div class="hub-left">
           <div class="hub-icon">🎁</div>
           <div class="hub-text">
             <h3>Ежедневный Бонус</h3>
-            <p>Забрать +2 500 ₽</p>
+            <p>Получить +2 500 ₽ на счёт</p>
           </div>
         </div>
-        <span style="color:#eab308;">➔</span>
+        <span style="color:var(--accent-color);">➔</span>
       </div>
 
       <div class="hub-card" onclick="openScreen('screen-work')">
@@ -417,54 +390,31 @@
             <p>Мини-игра: Сбор жестяных банок</p>
           </div>
         </div>
-        <span style="color:#eab308;">➔</span>
-      </div>
-
-      <div class="hub-card" onclick="openModal('modal-sim')">
-        <div class="hub-left">
-          <div class="hub-icon">📱</div>
-          <div class="hub-text">
-            <h3>Салон Связи</h3>
-            <p>Рулетка номеров и SIM-карты</p>
-          </div>
-        </div>
-        <span style="color:#eab308;">➔</span>
+        <span style="color:var(--accent-color);">➔</span>
       </div>
     </div>
 
-    <!-- ЭКРАН 2: СБОР БАНОК -->
+    <!-- ЭКРАН: РАБОТА (СБОР БАНОК) -->
     <div id="screen-work" class="screen">
-      <div style="font-size:13px; color:#eab308; font-weight:800;">🥫 Работа: Сбор банок</div>
-      <p style="font-size:11px; color:#94a3b8;">Нажимайте на появляющиеся банки, чтобы сдавать их за деньги!</p>
+      <div style="font-size:13px; color:var(--accent-color); font-weight:800;">🥫 Уличный Сбор</div>
+      <p style="font-size:11px; color:var(--text-muted);">Кликайте по банкам, чтобы заработать первые деньги.</p>
       
       <div class="game-area" id="game-area"></div>
 
       <button class="btn-main" onclick="openScreen('screen-home')">⬅️ Вернуться в Город</button>
     </div>
 
-    <!-- ЭКРАН 3: ИНВЕНТАРЬ -->
+    <!-- ЭКРАН: ИНВЕНТАРЬ -->
     <div id="screen-inventory" class="screen">
-      <div style="font-size:13px; color:#eab308; font-weight:800;">🎒 Ваш Инвентарь</div>
-      <div id="inventory-list" style="font-size:12px; color:#94a3b8;">
-        У вас пока нет купленных предметов или SIM-карт.
+      <div style="font-size:13px; color:var(--accent-color); font-weight:800;">🎒 Хранилище активов</div>
+      <div id="inventory-list" style="font-size:12px; color:var(--text-muted); padding-top: 10px;">
+        Ваш инвентарь пока пуст.
       </div>
     </div>
 
   </div>
 
-  <!-- ШТОРКА САЛОНА СВЯЗИ -->
-  <div class="modal-overlay" id="modal-sim">
-    <div class="modal-sheet">
-      <div style="font-size:15px; color:#eab308; font-weight:800;">📱 Рулетка Номеров</div>
-      <div class="spin-display" id="spin-display">+7 (777) ???-??-??</div>
-
-      <button class="btn-main" id="btn-spin" onclick="spinNumber()">🎲 Вращать (500 ₽)</button>
-      <button class="btn-main" id="btn-buy" style="display:none; border-color:#22c55e; color:#4ade80;" onclick="buyNumber()">💳 Купить номер (1 500 ₽)</button>
-      <button class="btn-main" style="background:rgba(255,255,255,0.05); color:#94a3b8; border:none;" onclick="closeModal('modal-sim')">Закрыть</button>
-    </div>
-  </div>
-
-  <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+  <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
   <div class="bottom-bar">
     <div class="tab-item active" id="tab-home" onclick="switchTab('home')">
       <span style="font-size:20px;">🏙️</span>
@@ -477,27 +427,24 @@
   </div>
 
   <script>
-    // Данные игрока
+    // Состояние игрока
     var player = {
       cash: 1000,
-      bank: 0,
-      phone: 'Не установлена',
-      sims: []
+      bank: 0
     };
 
-    var currentRolled = null;
     var audioCtx = null;
 
-    // Генерация коротких звуков
+    // Звуковой движок (Web Audio API)
     function playSound(freq) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
         var osc = audioCtx.createOscillator();
         var gain = audioCtx.createGain();
-        osc.type = 'sine';
+        osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -506,26 +453,18 @@
       } catch(e){}
     }
 
-    // Обновление экрана
+    // Обновление интерфейса
     function updateUI() {
       document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('user-phone').innerText = '📱 SIM: ' + player.phone;
-
-      var invList = document.getElementById('inventory-list');
-      if (player.sims.length > 0) {
-        invList.innerHTML = '<b>Мои SIM-карты:</b><br>' + player.sims.map(function(s) { return '• ' + s; }).join('<br>');
-      } else {
-        invList.innerText = 'У вас пока нет купленных предметов или SIM-карт.';
-      }
     }
 
     // Ежедневный бонус
     function claimBonus() {
       player.cash += 2500;
-      playSound(600);
+      playSound(520);
       updateUI();
-      alert('🎁 Вы получили +2 500 ₽!');
+      alert('🎁 Бонус успешно зачислен: +2 500 ₽!');
     }
 
     // Переключение вкладок
@@ -540,61 +479,16 @@
         document.getElementById('tab-inventory').classList.add('active');
         document.getElementById('screen-inventory').classList.add('active');
       }
+      playSound(350);
     }
 
     function openScreen(id) {
       document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
       document.getElementById(id).classList.add('active');
+      playSound(400);
     }
 
-    function openModal(id) {
-      document.getElementById(id).classList.add('active');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-    }
-
-    // Рулетка номеров
-    function spinNumber() {
-      if (player.cash < 500) return alert('❌ Нужно 500 ₽!');
-      player.cash -= 500;
-      updateUI();
-
-      var display = document.getElementById('spin-display');
-      var btnBuy = document.getElementById('btn-buy');
-      btnBuy.style.display = 'none';
-
-      var count = 0;
-      var interval = setInterval(function() {
-        var num = '+7 (777) ' + Math.floor(100 + Math.random() * 900) + '-' + Math.floor(10 + Math.random() * 90) + '-' + Math.floor(10 + Math.random() * 90);
-        display.innerText = num;
-        playSound(300 + count * 10);
-        count += 50;
-
-        if (count >= 1200) {
-          clearInterval(interval);
-          currentRolled = num;
-          btnBuy.style.display = 'block';
-          playSound(800);
-        }
-      }, 50);
-    }
-
-    function buyNumber() {
-      if (!currentRolled) return;
-      if (player.cash < 1500) return alert('❌ Нужно 1 500 ₽!');
-
-      player.cash -= 1500;
-      player.sims.push(currentRolled);
-      player.phone = currentRolled;
-      updateUI();
-
-      alert('🎉 Номер ' + currentRolled + ' успешно куплен!');
-      closeModal('modal-sim');
-    }
-
-    // Спавн банок
+    // Спавн банок для мини-игры
     function spawnCan() {
       var area = document.getElementById('game-area');
       var screenWork = document.getElementById('screen-work');
@@ -611,7 +505,7 @@
       can.style.top = y + 'px';
 
       can.onclick = function() {
-        playSound(500);
+        playSound(650);
         var reward = Math.floor(Math.random() * 20) + 15;
         player.cash += reward;
         updateUI();
@@ -631,40 +525,60 @@
     }
     setInterval(spawnCan, 1000);
 
-    // Запуск приложения
+    // Инициализация при старте
     window.onload = function() {
       updateUI();
-      if (window.Telegram && window.Telegram.WebApp) {
-        var tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-          document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
-          document.getElementById('user-avatar').innerText = tg.initDataUnsafe.user.first_name.charAt(0).toUpperCase();
+      
+      // Подтягиваем данные из Telegram
+      try {
+        if (window.Telegram && window.Telegram.WebApp) {
+          var tg = window.Telegram.WebApp;
+          tg.expand();
+          tg.ready();
+          if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            var user = tg.initDataUnsafe.user;
+            document.getElementById('user-name').innerText = user.first_name;
+            document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
+          }
         }
-      }
+      } catch(e) {}
 
-      // Анимация звезд на фоне
-      var canvas = document.getElementById('space-bg');
+      // Кибер-сетка из частиц на заднем фоне
+      var canvas = document.getElementById('cyber-bg');
       if (canvas) {
         var ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        var stars = Array.from({length: 40}, function() {
-          return { x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.5, a: Math.random() };
+        
+        var particles = Array.from({length: 35}, function() {
+          return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.5,
+            vy: (Math.random() - 0.5) * 0.3,
+            vx: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.5 + 0.2
+          };
         });
 
-        function draw() {
+        function animate() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          stars.forEach(function(s) {
+          particles.forEach(function(p) {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+
             ctx.beginPath();
-            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255,255,255,' + s.a + ')';
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(16, 185, 129, ' + p.alpha + ')';
             ctx.fill();
           });
-          requestAnimationFrame(draw);
+          requestAnimationFrame(animate);
         }
-        draw();
+        animate();
       }
     };
   </script>
