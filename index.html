@@ -36,7 +36,6 @@
       position: relative;
     }
 
-    /* Фоновый нуар-градиент */
     body::before {
       content: '';
       position: fixed;
@@ -80,7 +79,6 @@
       box-shadow: 0 0 10px #38bdf8;
     }
 
-    /* Профиль в стиле Нуар */
     .profile-card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
@@ -232,7 +230,7 @@
       margin-top: 2px;
     }
 
-    /* СТИЛЬНАЯ SIM-КАРТА (Dark Carbon & Steel) */
+    /* СТИЛЬНАЯ SIM-КАРТА С ГОЛОГРАФИЧЕСКИМ ЭФФЕКТОМ */
     .sim-card-container {
       position: relative;
       width: 100%;
@@ -265,6 +263,29 @@
       position: relative;
       overflow: hidden;
       color: #fff;
+    }
+
+    /* Голографический переливающийся слой для Легендарных и Мифических карт */
+    .sim-card-model.holo-active::before {
+      content: '';
+      position: absolute;
+      top: -150%; left: -150%; width: 400%; height: 400%;
+      background: linear-gradient(
+        45deg,
+        transparent 45%,
+        rgba(250, 204, 21, 0.15) 50%,
+        rgba(248, 113, 113, 0.15) 55%,
+        rgba(56, 189, 248, 0.15) 60%,
+        transparent 65%
+      );
+      animation: holoShine 3s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes holoShine {
+      0% { transform: translateY(-50%) translateX(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) translateX(-50%) rotate(360deg); }
     }
 
     .sim-card-top {
@@ -355,6 +376,17 @@
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
       z-index: 2;
+    }
+
+    /* Эффект матричного цифрового шума при генерации */
+    .scanning-matrix {
+      filter: blur(0.4px);
+      animation: matrixGlitch 0.08s infinite alternate;
+    }
+
+    @keyframes matrixGlitch {
+      0% { opacity: 0.8; transform: skewX(-1deg); }
+      100% { opacity: 1; transform: skewX(1deg); }
     }
 
     .char-fade {
@@ -707,9 +739,9 @@
         <span>📊</span> Шансы выпадения
       </button>
 
-      <!-- Нуар карта -->
+      <!-- Нуар карта с поддержкой голографии (.holo-active) -->
       <div class="sim-card-container glow-common" id="sim-container-glow">
-        <div class="sim-card-model">
+        <div class="sim-card-model" id="sim-card-model-box">
           <div class="sim-card-top">
             <div class="sim-brand">EMPIRE SECURE</div>
             <div class="sim-operator">RU</div>
@@ -728,7 +760,7 @@
 
       <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Сгенерировать чип (1 500 ₽)</button>
       <button class="btn-main" id="btn-buy-sim" disabled style="border-color:#38bdf8; color:#38bdf8;" onclick="confirmBuySim()">💳 Забрать в архив</button>
-      <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellAndSpinAgain()">💰 Продать и крутить снова</button>
+      <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellAndSpinAgain()">💰 Продать за 0 ₽ и крутить снова</button>
       <button class="btn-main" style="background:rgba(255,255,255,0.03); color:var(--text-muted); border:none;" onclick="closeModal('modal-buy-sim')">Закрыть</button>
     </div>
   </div>
@@ -768,6 +800,7 @@
       }, 1000);
     }
 
+    // Уникальные аудио-эффекты через Web Audio API
     function playSuccessSound() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -848,15 +881,15 @@
             osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.3);
           });
         } else if (rarity === 'mythic') {
-          [440, 880, 1320, 1760].forEach((f, i) => {
+          [440, 880, 1320, 1760, 2200].forEach((f, i) => {
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'square';
-            osc.frequency.setValueAtTime(f, now + i * 0.1);
-            gain.gain.setValueAtTime(0.08, now + i * 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.5);
+            osc.frequency.setValueAtTime(f, now + i * 0.08);
+            gain.gain.setValueAtTime(0.08, now + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.4);
             osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.5);
+            osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.4);
           });
         }
       } catch(e){}
@@ -929,14 +962,26 @@
       document.getElementById(id).classList.remove('active');
     }
 
+    // Управление свечением и голографическим эффектом
     function setCardGlow(rarity) {
       var container = document.getElementById('sim-container-glow');
+      var modelBox = document.getElementById('sim-card-model-box');
+      
       container.className = 'sim-card-container glow-' + rarity;
+      
+      // Если выпала легендарка или мифика — включаем голографический блик
+      if (rarity === 'legendary' || rarity === 'mythic') {
+        modelBox.classList.add('holo-active');
+      } else {
+        modelBox.classList.remove('holo-active');
+      }
     }
 
     function resetCardGlow(rarity) {
       var container = document.getElementById('sim-container-glow');
+      var modelBox = document.getElementById('sim-card-model-box');
       container.className = 'sim-card-container glow-' + rarity;
+      modelBox.classList.remove('holo-active');
     }
 
     function evaluateNumber(num) {
@@ -989,8 +1034,10 @@
       return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
     }
 
+    // Анимация матричного сканирования и посимвольного появления
     function animateTextSmooth(element, text) {
       element.innerHTML = '';
+      element.classList.remove('scanning-matrix');
       for (var i = 0; i < text.length; i++) {
         var span = document.createElement('span');
         span.className = 'char-fade';
@@ -1024,6 +1071,9 @@
       resetCardGlow('common');
       setRarityStyle(rarityTag, 'common', 'Сканирование...');
       valText.innerText = 'Оценка: анализ...';
+
+      // Включаем эффект матричного сканирования во время прокрутки
+      display.classList.add('scanning-matrix');
 
       var count = 0;
       var interval = setInterval(function() {
