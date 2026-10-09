@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>EmpireCity // Midnight Noir</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Подключаем библиотеку конфетти для праздничного салюта -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -39,7 +38,6 @@
       transition: background 0.5s ease;
     }
 
-    /* Фон меняется при активном X2 */
     body.x2-active-bg {
       background: radial-gradient(circle at 50% 30%, rgba(250, 204, 21, 0.12) 0%, var(--bg-color) 70%);
     }
@@ -879,7 +877,7 @@
         <div class="external-rarity color-common" id="sim-rarity-tag">Обычный</div>
       </div>
 
-      <button class="btn-main" id="btn-spin" onclick="startSimSpin()">🎲 Сгенерировать чип (1 500 ₽)</button>
+      <button class="btn-main" id="btn-spin" onclick="tryStartSimSpin()">🔒 Сгенерировать чип (1 500 ₽)</button>
       <button class="btn-main" id="btn-buy-sim" disabled style="border-color:#38bdf8; color:#38bdf8;" onclick="confirmBuySim()">📱 Забрать себе</button>
       <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellCurrentSim()">💰 Продать номер</button>
     </div>
@@ -910,6 +908,7 @@
     var currentMarketVal = 150;
     var currentRarityKey = 'common';
     var isSpinning = false;
+    var hasActiveRoll = false; // Флаг: висит ли нераспределенная симка на экране
     var audioCtx = null;
 
     function showToast(text, duration = 1500) {
@@ -944,7 +943,7 @@
         title.innerText = '🔥 СЛЕДУЮЩИЙ X2!';
         sheet.classList.add('x2-active-sheet');
         modelBox.classList.add('x2-card-glow');
-        btnSpin.classList.add('x2-btn-glow');
+        if (!hasActiveRoll) btnSpin.classList.add('x2-btn-glow');
         document.body.classList.add('x2-active-bg');
       } else {
         box.classList.remove('charged');
@@ -954,6 +953,16 @@
         btnSpin.classList.remove('x2-btn-glow');
         document.body.classList.remove('x2-active-bg');
       }
+    }
+
+    // Проверка перед генерацией: заблокирована ли кнопка из-за активной симки
+    function tryStartSimSpin() {
+      if (hasActiveRoll) {
+        playSound(220);
+        showToast('⚠️ Сначала определитесь с судьбой текущего чипа: заберите его в архив или продайте!', 2200);
+        return;
+      }
+      startSimSpin();
     }
 
     function playSuccessSound() {
@@ -1110,14 +1119,16 @@
       var modal = document.getElementById(id);
       modal.classList.add('active');
       if (id === 'modal-buy-sim') {
-        resetCardGlow('common');
-        document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
-        document.getElementById('market-value-text').innerText = 'Оценка: —';
-        setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-        
-        document.getElementById('btn-spin').disabled = false;
-        document.getElementById('btn-buy-sim').disabled = true;
-        document.getElementById('btn-sell-sim').disabled = true;
+        if (!hasActiveRoll) {
+          resetCardGlow('common');
+          document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+          document.getElementById('market-value-text').innerText = 'Оценка: —';
+          setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
+          document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
+          document.getElementById('btn-spin').disabled = false;
+          document.getElementById('btn-buy-sim').disabled = true;
+          document.getElementById('btn-sell-sim').disabled = true;
+        }
       }
       playSound(450);
     }
@@ -1181,7 +1192,7 @@
     function resetCardGlow(rarity) {
       var container = document.getElementById('sim-container-glow');
       var modelBox = document.getElementById('sim-card-model-box');
-      container.className = 'sim-card-container glow-' + rarity;
+      container.className = 'sim-container-container glow-' + rarity;
       modelBox.classList.remove('holo-active');
     }
 
@@ -1279,6 +1290,7 @@
 
       updateUI();
       isSpinning = true;
+      hasActiveRoll = true; // Блокируем новые спины до выбора
 
       var display = document.getElementById('spin-display');
       var valText = document.getElementById('market-value-text');
@@ -1288,6 +1300,7 @@
       var btnSell = document.getElementById('btn-sell-sim');
       
       btnSpin.disabled = true;
+      btnSpin.innerText = '🔒 Терминал занят...';
       btnBuy.disabled = true;
       btnSell.disabled = true;
       
@@ -1332,7 +1345,10 @@
 
           player.spinsCount++;
           isSpinning = false;
+          
+          // Кнопка генерации остается заблокированной с замочком, пока не выберут действие
           btnSpin.disabled = false;
+          btnSpin.innerText = '🔒 Решите судьбу чипа';
           btnBuy.disabled = false;
           btnSell.disabled = false;
           
@@ -1360,13 +1376,17 @@
 
       showToast('📱 Ваша новая сим-карта добавлена в инвентарь!', 1500);
       
+      // Снимаем блокировку
+      hasActiveRoll = false;
       currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
       resetCardGlow('common');
+      document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
       document.getElementById('btn-buy-sim').disabled = true;
       document.getElementById('btn-sell-sim').disabled = true;
+      updateX2UI();
     }
 
     function sellCurrentSim() {
@@ -1378,13 +1398,17 @@
       playSuccessSound();
       showToast('💰 Номер успешно продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!', 1500);
 
+      // Снимаем блокировку
+      hasActiveRoll = false;
       currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
       resetCardGlow('common');
+      document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
       document.getElementById('btn-buy-sim').disabled = true;
       document.getElementById('btn-sell-sim').disabled = true;
+      updateX2UI();
     }
 
     function spawnCan() {
