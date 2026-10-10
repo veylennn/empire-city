@@ -1,11 +1,9 @@
-Вот полностью обновленный и готовый к работе код `index.html`, где текст в салоне связи изменен на **«Купить СИМ-карту»**, а все анимации, эффекты X2, модальные окна и рулетка работают идеально:
-
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
   <title>EmpireCity // Midnight Noir</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -674,6 +672,25 @@
     @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-30px); } }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   </style>
+
+  <!-- ЗАЩИТА ПАРОЛЕМ ПЕРЕД ЗАГРУЗКОЙ -->
+  <script>
+    (function() {
+      const ACCESS_PASSWORD = "qwerty234234";
+      const isAuthed = sessionStorage.getItem("empire_dev_auth");
+      if (isAuthed !== "true") {
+        const userInput = prompt("🔒 Введите пароль разработчика для доступа к проекту:");
+        if (userInput === ACCESS_PASSWORD) {
+          sessionStorage.setItem("empire_dev_auth", "true");
+        } else {
+          alert("Неверный пароль!");
+          document.documentElement.innerHTML = "<body style='background:#090a0f; color:#f1f5f9; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif;'><h1>Доступ ограничен 🔒</h1></body>";
+          window.stop();
+          throw new Error("Access Denied");
+        }
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -1579,5 +1596,3 @@
   </script>
 </body>
 </html>
-
-```
