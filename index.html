@@ -1490,4 +1490,74 @@
         playRaritySound(currentRolledCar.rarity);
 
         if (currentRolledCar.rarity === 'mythic' || currentRolledCar.rarity === 'legendary') {
-          try { confetti({ particleCount: 100, spread: 90
+          try { confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 }, zIndex: 300000 }); } catch(e){}
+        }
+
+        btnOpen.disabled = false;
+        btnOpen.innerText = '📦 Открыть еще';
+        btnBuy.disabled = false;
+        btnSell.disabled = false;
+      }, 5100);
+    }
+
+    function confirmBuyCar() {
+      if (!currentRolledCar) return;
+      player.cars.push(currentRolledCar);
+      updateUI(); playSuccessSound();
+      showToast('🏎️ Автомобиль добавлен в гараж!');
+      currentRolledCar = null;
+      closeModal('modal-car-case');
+    }
+
+    function sellCurrentCar() {
+      if (!currentRolledCar) return;
+      player.cash += currentRolledCar.val;
+      updateUI(); playSuccessSound();
+      showToast('💰 Авто продано за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽!');
+      currentRolledCar = null;
+      closeModal('modal-car-case');
+    }
+
+    // КЛИКЕР
+    function spawnCan() {
+      var area = document.getElementById('game-area');
+      var screenWork = document.getElementById('screen-work');
+      if (!area || !screenWork.classList.contains('active')) return;
+      if (area.children.length >= 4) return;
+      var can = document.createElement('div');
+      can.className = 'can-item'; can.innerText = '🥫';
+      var x = Math.random() * (area.clientWidth - 40);
+      var y = Math.random() * (area.clientHeight - 40);
+      can.style.left = x + 'px'; can.style.top = y + 'px';
+      can.onclick = function() {
+        playSound(650);
+        var reward = Math.floor(Math.random() * 1000) + 500;
+        player.cash += reward; updateUI();
+        var floatText = document.createElement('div');
+        floatText.className = 'floating-text'; floatText.innerText = '+' + reward.toLocaleString('ru-RU') + ' ₽';
+        floatText.style.left = x + 'px'; floatText.style.top = y + 'px';
+        area.appendChild(floatText);
+        setTimeout(function() { floatText.remove(); }, 600);
+        can.remove();
+      };
+      area.appendChild(can);
+    }
+    setInterval(spawnCan, 800);
+
+    window.onload = function() {
+      updateUI();
+      try {
+        if (window.Telegram && window.Telegram.WebApp) {
+          var tg = window.Telegram.WebApp;
+          tg.expand(); tg.ready();
+          if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            var user = tg.initDataUnsafe.user;
+            document.getElementById('user-name').innerText = user.first_name;
+            document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
+          }
+        }
+      } catch(e) {}
+    };
+  </script>
+</body>
+</html>
