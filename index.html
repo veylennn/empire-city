@@ -488,15 +488,23 @@
       z-index: 2;
     }
 
-    /* ИНВЕНТАРЬ С МИНИ-СИМКАМИ И ИХ СВЕЧЕНИЕМ ПО РЕДКОСТИ */
+    /* ИНВЕНТАРЬ И ГАРАЖ */
+    .inventory-section-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 12px 0 6px 4px;
+    }
+
     .inventory-grid {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-top: 10px;
     }
 
-    .mini-sim-wrapper {
+    .mini-sim-wrapper, .mini-car-wrapper {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 16px;
@@ -505,7 +513,7 @@
       transition: all 0.25s ease;
     }
 
-    .mini-sim-card {
+    .mini-sim-card, .mini-car-card {
       width: 100%;
       height: 105px;
       background: linear-gradient(135deg, #111827 0%, #030712 100%);
@@ -521,37 +529,35 @@
       transition: transform 0.1s ease, border-color 0.2s ease, box-shadow 0.3s ease;
     }
 
-    /* Свечение и рамка карточек в инвентаре по их редкости */
-    .mini-sim-card.inv-glow-common {
-      border-color: rgba(100, 116, 139, 0.5) !important;
-      box-shadow: 0 0 10px rgba(100, 116, 139, 0.2);
+    /* Стили карточек машин с фоновыми изображениями */
+    .mini-car-card {
+      height: 130px;
+      background-size: cover;
+      background-position: center;
     }
-    .mini-sim-card.inv-glow-rare {
-      border-color: rgba(56, 189, 248, 0.6) !important;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
-    }
-    .mini-sim-card.inv-glow-epic {
-      border-color: rgba(168, 85, 247, 0.7) !important;
-      box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
-    }
-    .mini-sim-card.inv-glow-legendary {
-      border-color: rgba(250, 204, 21, 0.8) !important;
-      box-shadow: 0 0 22px rgba(250, 204, 21, 0.55);
-    }
-    .mini-sim-card.inv-glow-mythic {
-      border-color: rgba(239, 68, 68, 0.9) !important;
-      box-shadow: 0 0 28px rgba(239, 68, 68, 0.75);
-      animation: pulseMythic 1.2s infinite alternate;
+    .mini-car-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(3,7,18,0.7) 0%, rgba(3,7,18,0.9) 100%);
+      z-index: 1;
     }
 
-    .mini-sim-card:active {
+    /* Свечение по редкости */
+    .inv-glow-common { border-color: rgba(100, 116, 139, 0.5) !important; box-shadow: 0 0 10px rgba(100, 116, 139, 0.2); }
+    .inv-glow-rare { border-color: rgba(56, 189, 248, 0.6) !important; box-shadow: 0 0 15px rgba(56, 189, 248, 0.35); }
+    .inv-glow-epic { border-color: rgba(168, 85, 247, 0.7) !important; box-shadow: 0 0 18px rgba(168, 85, 247, 0.45); }
+    .inv-glow-legendary { border-color: rgba(250, 204, 21, 0.8) !important; box-shadow: 0 0 22px rgba(250, 204, 21, 0.55); }
+    .inv-glow-mythic { border-color: rgba(239, 68, 68, 0.9) !important; box-shadow: 0 0 28px rgba(239, 68, 68, 0.75); animation: pulseMythic 1.2s infinite alternate; }
+
+    .mini-sim-card:active, .mini-car-card:active {
       transform: scale(0.98);
     }
-    .mini-sim-card.active-equipped {
+    .active-equipped {
       box-shadow: 0 0 20px rgba(56, 189, 248, 0.6) !important;
     }
 
-    .mini-sim-top {
+    .mini-sim-top, .mini-car-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -571,7 +577,7 @@
       border: 1px solid #a16207;
       z-index: 2;
     }
-    .mini-number {
+    .mini-number, .mini-car-info {
       font-family: 'Courier New', Courier, monospace;
       font-size: 13px;
       font-weight: 900;
@@ -582,6 +588,12 @@
       border: 1px solid rgba(56, 189, 248, 0.2);
       text-align: center;
       z-index: 2;
+    }
+    .mini-car-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
     }
 
     .sim-actions-panel {
@@ -594,7 +606,7 @@
       transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, margin-top 0.3s ease;
       margin-top: 0;
     }
-    .mini-sim-wrapper.expanded .sim-actions-panel {
+    .mini-sim-wrapper.expanded .sim-actions-panel, .mini-car-wrapper.expanded .sim-actions-panel {
       max-height: 200px;
       opacity: 1;
       margin-top: 10px;
@@ -629,6 +641,84 @@
       background: rgba(239, 68, 68, 0.25);
     }
 
+    /* АВТОСАЛОН КЕЙСЫ */
+    .case-store-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .case-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.2s;
+    }
+    .case-card:active {
+      transform: scale(0.98);
+      border-color: #38bdf8;
+    }
+
+    .case-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .case-title-box h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .case-title-box p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .case-price-badge {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* Карточка рулетки кейса */
+    .car-card-model {
+      width: 100%;
+      height: 195px;
+      background: linear-gradient(135deg, #111827 0%, #030712 100%);
+      background-size: cover;
+      background-position: center;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .car-card-model::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(3,7,18,0.5) 0%, rgba(3,7,18,0.85) 100%);
+      z-index: 1;
+    }
+
     .scanning-matrix {
       filter: blur(0.4px);
       animation: matrixGlitch 0.08s infinite alternate;
@@ -643,16 +733,10 @@
       opacity: 0;
       transform: translateY(6px);
       animation: charIn 0.3s forwards ease;
-      font-family: 'Courier New', Courier, monospace !important;
-      font-weight: 900 !important;
-      font-variant-numeric: tabular-nums;
     }
 
     @keyframes charIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     #game-toast {
@@ -723,7 +807,7 @@
       pointer-events: auto;
     }
 
-    #modal-chances.modal-overlay {
+    #modal-chances.modal-overlay, #modal-car-chances.modal-overlay {
       z-index: 20000 !important;
     }
 
@@ -920,6 +1004,17 @@
         </div>
         <span style="color:#38bdf8;">➔</span>
       </div>
+
+      <div class="hub-card" onclick="openScreen('screen-car-store')">
+        <div class="hub-left">
+          <div class="hub-icon">🏎️</div>
+          <div class="hub-text">
+            <h3>Элитный Автосалон</h3>
+            <p>Кейсы с эксклюзивными авто</p>
+          </div>
+        </div>
+        <span style="color:#38bdf8;">➔</span>
+      </div>
     </div>
 
     <!-- ЭКРАН 2: САЛОН СВЯЗИ -->
@@ -943,6 +1038,38 @@
       <button class="btn-main" style="margin-top: 15px;" onclick="openScreen('screen-home')">⬅️ Вернуться в город</button>
     </div>
 
+    <!-- ЭКРАН АВТОСАЛОНА -->
+    <div id="screen-car-store" class="screen">
+      <div style="font-size:14px; color:#38bdf8; font-weight:800;">🏎️ Автосалон «Empire Motors»</div>
+      <p style="font-size:11px; color:var(--text-muted);">Открывайте кейсы с автомобилями и сорвите джекпот.</p>
+      
+      <div class="case-store-grid">
+        <div class="case-card" onclick="openCaseModal('street')">
+          <div class="case-card-header">
+            <div class="case-title-box">
+              <h3>📦 Кейс «Уличный Класс»</h3>
+              <p>Доступный транспорт для старта</p>
+            </div>
+            <div class="case-price-badge">50 000 ₽</div>
+          </div>
+          <button class="btn-main" style="padding: 10px; font-size: 12px;">Открыть кейс</button>
+        </div>
+
+        <div class="case-card" onclick="openCaseModal('luxury')">
+          <div class="case-card-header">
+            <div class="case-title-box">
+              <h3>📦 Кейс «Элита Мегаполиса»</h3>
+              <p>Премиальные гиперкары и суперкары</p>
+            </div>
+            <div class="case-price-badge" style="color:#facc15; border-color:rgba(250,204,21,0.4); background:rgba(250,204,21,0.1);">2 500 000 ₽</div>
+          </div>
+          <button class="btn-main" style="padding: 10px; font-size: 12px; border-color:#facc15; color:#facc15;">Открыть кейс</button>
+        </div>
+      </div>
+
+      <button class="btn-main" style="margin-top: 10px;" onclick="openScreen('screen-home')">⬅️ Вернуться в город</button>
+    </div>
+
     <!-- ЭКРАН 3: РАБОТА -->
     <div id="screen-work" class="screen">
       <div style="font-size:13px; color:#38bdf8; font-weight:800;">🥫 Уличный Сбор</div>
@@ -951,45 +1078,44 @@
       <button class="btn-main" onclick="openScreen('screen-home')">⬅️ Вернуться в город</button>
     </div>
 
-    <!-- ЭКРАН 4: ИНВЕНТАРЬ -->
+    <!-- ЭКРАН 4: ИНВЕНТАРЬ И ГАРАЖ -->
     <div id="screen-inventory" class="screen">
       <div style="font-size:13px; color:#38bdf8; font-weight:800;" id="inv-header-title">🎒 Ваш Инвентарь (0 / 2)</div>
       <div class="inventory-grid" id="inventory-list">
-        <div style="font-size:12px; color:var(--text-muted); padding-top: 10px;">У вас пока нет активных SIM-карт.</div>
+        <div style="font-size:12px; color:var(--text-muted); padding-top: 5px;">У вас пока нет активных SIM-карт.</div>
+      </div>
+
+      <div class="inventory-section-title">🏎️ Ваш Гараж (Автомобили)</div>
+      <div class="inventory-grid" id="garage-list">
+        <div style="font-size:12px; color:var(--text-muted); padding-top: 5px;">В гараже пока пусто. Откройте кейс в автосалоне!</div>
       </div>
     </div>
 
   </div>
 
-  <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ -->
+  <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ СИМ -->
   <div class="modal-overlay" id="modal-chances" onclick="handleOverlayClick(event, 'modal-chances')">
     <div class="modal-sheet" id="sheet-chances">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">📊 Вероятность категорий номеров</div>
-      <p style="font-size:11px; color:var(--text-muted); text-align:center;">Шансы выпадения при генерации:</p>
       
       <div class="chances-box">
-        <div class="chance-row">
-          <span class="color-common" style="font-weight:900;">Обычный (Common)</span>
-          <span style="color:#fff;">76.5%</span>
-        </div>
-        <div class="chance-row">
-          <span class="color-rare" style="font-weight:900;">Редкий (Rare)</span>
-          <span style="color:#fff;">17.0%</span>
-        </div>
-        <div class="chance-row">
-          <span class="color-epic" style="font-weight:900;">Эпический (Epic)</span>
-          <span style="color:#fff;">5.0%</span>
-        </div>
-        <div class="chance-row">
-          <span class="color-legendary" style="font-weight:900;">Легендарный (Legendary)</span>
-          <span style="color:#fff;">1.2%</span>
-        </div>
-        <div class="chance-row">
-          <span class="color-mythic" style="font-weight:900;">Мифический (Mythic)</span>
-          <span style="color:#fff;">0.3%</span>
-        </div>
+        <div class="chance-row"><span class="color-common" style="font-weight:900;">Обычный (Common)</span><span style="color:#fff;">76.5%</span></div>
+        <div class="chance-row"><span class="color-rare" style="font-weight:900;">Редкий (Rare)</span><span style="color:#fff;">17.0%</span></div>
+        <div class="chance-row"><span class="color-epic" style="font-weight:900;">Эпический (Epic)</span><span style="color:#fff;">5.0%</span></div>
+        <div class="chance-row"><span class="color-legendary" style="font-weight:900;">Легендарный (Legendary)</span><span style="color:#fff;">1.2%</span></div>
+        <div class="chance-row"><span class="color-mythic" style="font-weight:900;">Мифический (Mythic)</span><span style="color:#fff;">0.3%</span></div>
       </div>
+    </div>
+  </div>
+
+  <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ АВТО -->
+  <div class="modal-overlay" id="modal-car-chances" onclick="handleOverlayClick(event, 'modal-car-chances')">
+    <div class="modal-sheet" id="sheet-car-chances">
+      <div class="swipe-indicator"><div class="swipe-bar"></div></div>
+      <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;" id="car-chances-title">📊 Шансы кейса</div>
+      
+      <div class="chances-box" id="car-chances-box"></div>
     </div>
   </div>
 
@@ -997,20 +1123,16 @@
   <div class="modal-overlay" id="modal-buy-sim" onclick="handleOverlayClick(event, 'modal-buy-sim')">
     <div class="modal-sheet" id="sheet-buy-sim">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
-      <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;" id="modal-title-text">Терминал связи</div>
+      <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">Терминал связи</div>
 
       <div class="top-action-row">
-        <button class="btn-chances-small" onclick="openModal('modal-chances')">
-          <span>📊</span> Шансы
-        </button>
+        <button class="btn-chances-small" onclick="openModal('modal-chances')"><span>📊</span> Шансы</button>
         <div class="x2-progress-box" id="x2-box">
           <div class="x2-header-info">
             <span id="x2-title">⚡ ДО X2</span>
             <span id="x2-counter">1 / 5</span>
           </div>
-          <div class="x2-bar-container">
-            <div class="x2-bar-fill" id="x2-fill"></div>
-          </div>
+          <div class="x2-bar-container"><div class="x2-bar-fill" id="x2-fill"></div></div>
         </div>
       </div>
 
@@ -1019,9 +1141,7 @@
           <div class="sim-brand">EMPIRE SECURE</div>
           <div class="sim-operator">RU</div>
         </div>
-
         <div class="sim-chip"></div>
-        
         <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
       </div>
 
@@ -1033,6 +1153,35 @@
       <button class="btn-main" id="btn-spin" onclick="tryStartSimSpin()">🎲 Сгенерировать чип (1 500 ₽)</button>
       <button class="btn-main" id="btn-buy-sim" disabled style="border-color:#38bdf8; color:#38bdf8;" onclick="confirmBuySim()">📱 Забрать себе</button>
       <button class="btn-main" id="btn-sell-sim" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellCurrentSim()">💰 Продать номер</button>
+    </div>
+  </div>
+
+  <!-- ШТОРКА ОТКРЫТИЯ КЕЙСА МАШИН -->
+  <div class="modal-overlay" id="modal-car-case" onclick="handleOverlayClick(event, 'modal-car-case')">
+    <div class="modal-sheet" id="sheet-car-case">
+      <div class="swipe-indicator"><div class="swipe-bar"></div></div>
+      <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;" id="case-modal-title">Автомобильный кейс</div>
+
+      <div class="top-action-row">
+        <button class="btn-chances-small" onclick="openCarChances()"><span>📊</span> Шансы кейса</button>
+      </div>
+
+      <div class="car-card-model glow-common" id="car-card-model-box">
+        <div class="sim-card-top">
+          <div class="sim-brand" id="car-case-brand">EMPIRE MOTORS</div>
+          <div class="sim-operator" id="car-case-op">АВТО</div>
+        </div>
+        <div class="sim-number-display" id="car-spin-display" style="background:rgba(3,7,18,0.7); font-size:15px !important;">Выбор автомобиля...</div>
+      </div>
+
+      <div class="external-info-bar">
+        <div class="external-value" id="car-market-value-text">Оценка: —</div>
+        <div class="external-rarity color-common" id="car-rarity-tag">Ожидание</div>
+      </div>
+
+      <button class="btn-main" id="btn-open-car" onclick="startCarSpin()">📦 Открыть кейс</button>
+      <button class="btn-main" id="btn-buy-car" disabled style="border-color:#38bdf8; color:#38bdf8;" onclick="confirmBuyCar()">🏎️ В гараж</button>
+      <button class="btn-main" id="btn-sell-car" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellCurrentCar()">💰 Продать авто</button>
     </div>
   </div>
 
@@ -1050,10 +1199,11 @@
 
   <script>
     var player = {
-      cash: 5000,
+      cash: 500000, // Дадим чуть больше стартовых для теста автосалона
       bank: 0,
       activePhone: 'Не установлена',
       sims: [],
+      cars: [],
       maxSimSlots: 2,
       spinsCount: 0
     };
@@ -1063,20 +1213,57 @@
     var currentRarityKey = 'common';
     var isSpinning = false;
     var hasActiveRoll = false; 
+
+    // Данные кейсов автосалона с картинками
+    var currentActiveCaseType = 'street';
+    var currentRolledCar = null;
+    var hasActiveCarRoll = false;
+
+    var carDatabase = {
+      street: {
+        title: 'Уличный Класс',
+        price: 50000,
+        items: [
+          { name: 'Лада 2107 «Urban Noir»', rarity: 'common', minVal: 15000, maxVal: 22000, chance: 0.78, img: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80' },
+          { name: 'ВАЗ-2109 Turbo', rarity: 'common', minVal: 15000, maxVal: 22000, chance: 0, img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Volkswagen Golf GTI Mk3', rarity: 'rare', minVal: 30000, maxVal: 38000, chance: 0.172, img: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=600&q=80' },
+          { name: 'BMW E36 325i', rarity: 'rare', minVal: 30000, maxVal: 38000, chance: 0, img: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Subaru Impreza WRX STI', rarity: 'epic', minVal: 45000, maxVal: 49000, chance: 0.042, img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Toyota Chaser JZX100', rarity: 'epic', minVal: 45000, maxVal: 49000, chance: 0, img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Nissan Skyline GT-R R34', rarity: 'legendary', minVal: 180000, maxVal: 250000, chance: 0.0055, img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Toyota Supra MK4', rarity: 'legendary', minVal: 180000, maxVal: 250000, chance: 0, img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Porsche 911 Turbo (964)', rarity: 'mythic', minVal: 1500000, maxVal: 1500000, chance: 0.0005, img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80' }
+        ]
+      },
+      luxury: {
+        title: 'Элита Мегаполиса',
+        price: 2500000,
+        items: [
+          { name: 'BMW M5 E60', rarity: 'common', minVal: 900000, maxVal: 1200000, chance: 0.72, img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Mercedes-Benz E 63 AMG', rarity: 'common', minVal: 900000, maxVal: 1200000, chance: 0, img: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Audi RS6 Avant (C8)', rarity: 'rare', minVal: 1500000, maxVal: 1800000, chance: 0.22, img: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Porsche Panamera GTS', rarity: 'rare', minVal: 1500000, maxVal: 1800000, chance: 0, img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Mercedes-Maybach S 580', rarity: 'epic', minVal: 2350000, maxVal: 2450000, chance: 0.053, img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Porsche 911 GT3 RS', rarity: 'epic', minVal: 2350000, maxVal: 2450000, chance: 0, img: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Lamborghini Aventador SVJ', rarity: 'legendary', minVal: 8000000, maxVal: 12000000, chance: 0.0065, img: 'https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Ferrari 812 Superfast', rarity: 'legendary', minVal: 8000000, maxVal: 12000000, chance: 0, img: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=600&q=80' },
+          { name: 'Bugatti Chiron Super Sport', rarity: 'mythic', minVal: 50000000, maxVal: 50000000, chance: 0.0005, img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80' }
+        ]
+      }
+    };
+
     var audioCtx = null;
     var toastTimeout = null;
     var expandedSimIndex = null;
+    var expandedCarIndex = null;
 
     function showToast(text, duration = 1500) {
       var toast = document.getElementById('game-toast');
       if (toastTimeout) clearTimeout(toastTimeout);
-      
       toast.classList.remove('show');
       void toast.offsetWidth;
-
       toast.innerText = text;
       toast.classList.add('show');
-      
       toastTimeout = setTimeout(function() {
         toast.classList.remove('show');
       }, duration);
@@ -1117,13 +1304,25 @@
       }
     }
 
-    function tryStartSimSpin() {
-      if (hasActiveRoll) {
-        playSound(220);
-        showToast('⚠️ Недоступно. Заберите номер или продайте', 2000);
-        return;
-      }
-      startSimSpin();
+    function playSound(freq, isX2Scroll) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        if (isX2Scroll) {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime((freq || 440) * 1.5, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        } else {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        }
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+      } catch(e){}
     }
 
     function playSuccessSound() {
@@ -1143,86 +1342,45 @@
       } catch(e){}
     }
 
-    function playSound(freq, isX2Scroll) {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-        
-        if (isX2Scroll) {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime((freq || 440) * 1.5, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-        } else {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-        }
-
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.05);
-      } catch(e){}
-    }
-
     function playRaritySound(rarity) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
         var now = audioCtx.currentTime;
-
         if (rarity === 'common') {
-          var osc = audioCtx.createOscillator();
-          var gain = audioCtx.createGain();
-          osc.frequency.setValueAtTime(350, now);
-          gain.gain.setValueAtTime(0.05, now);
+          var osc = audioCtx.createOscillator(); var gain = audioCtx.createGain();
+          osc.frequency.setValueAtTime(350, now); gain.gain.setValueAtTime(0.05, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-          osc.connect(gain); gain.connect(audioCtx.destination);
-          osc.start(now); osc.stop(now + 0.15);
+          osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.15);
         } else if (rarity === 'rare') {
           [440, 550].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.frequency.setValueAtTime(f, now + i * 0.1);
-            gain.gain.setValueAtTime(0.06, now + i * 0.1);
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(f, now + i * 0.1); gain.gain.setValueAtTime(0.06, now + i * 0.1);
             gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.15);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.15);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.15);
           });
         } else if (rarity === 'epic') {
           [520, 650, 780].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.frequency.setValueAtTime(f, now + i * 0.08);
-            gain.gain.setValueAtTime(0.07, now + i * 0.08);
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(f, now + i * 0.08); gain.gain.setValueAtTime(0.07, now + i * 0.08);
             gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
           });
         } else if (rarity === 'legendary') {
           [600, 750, 900, 1200].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(f, now + i * 0.06);
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(f, now + i * 0.06);
             gain.gain.setValueAtTime(0.06, now + i * 0.06);
             gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.3);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.3);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.3);
           });
         } else if (rarity === 'mythic') {
           [440, 880, 1320, 1760, 2200].forEach((f, i) => {
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(f, now + i * 0.08);
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(f, now + i * 0.08);
             gain.gain.setValueAtTime(0.08, now + i * 0.08);
             gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.4);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.4);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.4);
           });
         }
       } catch(e){}
@@ -1240,13 +1398,12 @@
 
       updateX2UI();
 
+      // Отрисовка SIM-карт
       var inv = document.getElementById('inventory-list');
       if (player.sims.length > 0) {
         inv.innerHTML = player.sims.map(function(s, index) {
           var isEquipped = (player.activePhone === s.number);
           var isExpanded = (expandedSimIndex === index);
-          
-          // Вычисляем редкость, если она не была сохранена ранее
           var simRarity = s.rarity || evaluateNumber(s.number).rarity;
           
           return `
@@ -1260,10 +1417,7 @@
               </div>
               <div class="sim-actions-panel">
                 <div class="action-row-btns">
-                  ${isEquipped ? 
-                    `<button class="btn-action-item" onclick="unequipSim(${index})">❌ Снять</button>` : 
-                    `<button class="btn-action-item" onclick="equipSim(${index})">📱 Использовать</button>`
-                  }
+                  ${isEquipped ? `<button class="btn-action-item" onclick="unequipSim(${index})">❌ Снять</button>` : `<button class="btn-action-item" onclick="equipSim(${index})">📱 Использовать</button>`}
                   <button class="btn-action-item" onclick="topUpSim(${index})">💳 Пополнить</button>
                   <button class="btn-action-item btn-sell-mini" onclick="sellSimFromInv(${index})">💰 Продать за ${s.val.toLocaleString('ru-RU')} ₽</button>
                 </div>
@@ -1272,16 +1426,48 @@
           `;
         }).join('');
       } else {
-        inv.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding-top: 10px;">У вас пока нет активных SIM-карт.</div>';
+        inv.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding-top: 5px;">У вас пока нет активных SIM-карт.</div>';
+      }
+
+      // Отрисовка Гаража (Автомобилей)
+      var garage = document.getElementById('garage-list');
+      if (player.cars && player.cars.length > 0) {
+        garage.innerHTML = player.cars.map(function(c, index) {
+          var isExpanded = (expandedCarIndex === index);
+          return `
+            <div class="mini-car-wrapper ${isExpanded ? 'expanded' : ''}">
+              <div class="mini-car-card inv-glow-${c.rarity}" style="background-image: url('${c.img}')" onclick="toggleCarCard(${index})">
+                <div class="mini-car-top">
+                  <div class="mini-brand" style="background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;">EMPIRE MOTORS</div>
+                </div>
+                <div class="mini-car-info">
+                  <span>🏎️ ${c.name}</span>
+                  <span class="color-${c.rarity}">${c.val.toLocaleString('ru-RU')} ₽</span>
+                </div>
+              </div>
+              <div class="sim-actions-panel">
+                <div class="action-row-btns">
+                  <button class="btn-action-item btn-sell-mini" onclick="sellCarFromGarage(${index})">💰 Продать авто за ${c.val.toLocaleString('ru-RU')} ₽</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        garage.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding-top: 5px;">В гараже пока пусто. Откройте кейс в автосалоне!</div>';
       }
     }
 
     function toggleSimCard(index) {
-      if (expandedSimIndex === index) {
-        expandedSimIndex = null;
-      } else {
-        expandedSimIndex = index;
-      }
+      expandedSimIndex = (expandedSimIndex === index) ? null : index;
+      expandedCarIndex = null;
+      playSound(400);
+      updateUI();
+    }
+
+    function toggleCarCard(index) {
+      expandedCarIndex = (expandedCarIndex === index) ? null : index;
+      expandedSimIndex = null;
       playSound(400);
       updateUI();
     }
@@ -1308,16 +1494,21 @@
     function sellSimFromInv(index) {
       var sim = player.sims[index];
       player.cash += sim.val;
-      
-      if (player.activePhone === sim.number) {
-        player.activePhone = 'Не установлена';
-      }
-
+      if (player.activePhone === sim.number) player.activePhone = 'Не установлена';
       player.sims.splice(index, 1);
       expandedSimIndex = null;
-      
       playSuccessSound();
-      showToast('💰 Номер успешно продан за ' + sim.val.toLocaleString('ru-RU') + ' ₽!');
+      showToast('💰 Номер продан за ' + sim.val.toLocaleString('ru-RU') + ' ₽!');
+      updateUI();
+    }
+
+    function sellCarFromGarage(index) {
+      var car = player.cars[index];
+      player.cash += car.val;
+      player.cars.splice(index, 1);
+      expandedCarIndex = null;
+      playSuccessSound();
+      showToast('💰 Автомобиль продан за ' + car.val.toLocaleString('ru-RU') + ' ₽!');
       updateUI();
     }
 
@@ -1331,7 +1522,6 @@
     function switchTab(tab) {
       document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
       document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-
       if (tab === 'home') {
         document.getElementById('tab-home').classList.add('active');
         document.getElementById('screen-home').classList.add('active');
@@ -1356,69 +1546,45 @@
     function openModal(id) {
       var modal = document.getElementById(id);
       modal.classList.add('active');
-      if (id === 'modal-buy-sim') {
-        if (!hasActiveRoll) {
-          resetCardGlow('common');
-          document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
-          document.getElementById('market-value-text').innerText = 'Оценка: —';
-          setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-          document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
-          document.getElementById('btn-spin').disabled = false;
-          document.getElementById('btn-buy-sim').disabled = true;
-          document.getElementById('btn-sell-sim').disabled = true;
-        }
+      if (id === 'modal-buy-sim' && !hasActiveRoll) {
+        resetCardGlow('common');
+        document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+        document.getElementById('market-value-text').innerText = 'Оценка: —';
+        setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
+        document.getElementById('btn-spin').disabled = false;
+        document.getElementById('btn-buy-sim').disabled = true;
+        document.getElementById('btn-sell-sim').disabled = true;
       }
       playSound(450);
     }
 
     function closeModal(id) {
-      var modal = document.getElementById(id);
-      modal.classList.remove('active');
+      document.getElementById(id).classList.remove('active');
     }
 
     function handleOverlayClick(event, id) {
-      if (event.target.id === id) {
-        closeModal(id);
-      }
+      if (event.target.id === id) closeModal(id);
     }
 
-    /* СВАЙП ШТОРКИ ВНИЗ ПАЛЬЦЕМ */
+    // Свайп шторки вниз
     document.querySelectorAll('.modal-sheet').forEach(sheet => {
       let overlay = sheet.closest('.modal-overlay');
-      let startY = 0;
-      let currentY = 0;
-      let isDragging = false;
-
+      let startY = 0, currentY = 0, isDragging = false;
       sheet.addEventListener('touchstart', e => {
-        let targetTag = e.target.tagName.toLowerCase();
-        if (targetTag === 'button' || e.target.closest('button')) return;
-
-        if (sheet.scrollTop <= 5) {
-          startY = e.touches[0].clientY;
-          isDragging = true;
-          sheet.style.transition = 'none';
-        }
+        if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
+        if (sheet.scrollTop <= 5) { startY = e.touches[0].clientY; isDragging = true; sheet.style.transition = 'none'; }
       }, {passive: true});
-
       sheet.addEventListener('touchmove', e => {
         if (!isDragging) return;
         currentY = e.touches[0].clientY;
         let diff = currentY - startY;
-
-        if (diff > 0) {
-          sheet.style.transform = `translateY(${diff}px)`;
-        }
+        if (diff > 0) sheet.style.transform = `translateY(${diff}px)`;
       }, {passive: true});
-
       sheet.addEventListener('touchend', e => {
         if (!isDragging) return;
         isDragging = false;
         sheet.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
-        let diff = currentY - startY;
-
-        if (diff > 90) {
-          closeModal(overlay.id);
-        }
+        if ((currentY - startY) > 90) closeModal(overlay.id);
         sheet.style.transform = 'translateY(0)';
       }, {passive: true});
     });
@@ -1426,83 +1592,39 @@
     function setCardGlow(rarity) {
       var modelBox = document.getElementById('sim-card-model-box');
       modelBox.className = 'sim-card-model glow-' + rarity;
-      if (rarity === 'legendary' || rarity === 'mythic') {
-        modelBox.classList.add('holo-active');
-      } else {
-        modelBox.classList.remove('holo-active');
-      }
     }
-
     function resetCardGlow(rarity) {
       var modelBox = document.getElementById('sim-card-model-box');
       modelBox.className = 'sim-card-model glow-' + rarity;
-      modelBox.classList.remove('holo-active');
+    }
+
+    function setCarCardGlow(rarity) {
+      var modelBox = document.getElementById('car-card-model-box');
+      modelBox.className = 'car-card-model glow-' + rarity;
     }
 
     function evaluateNumber(num) {
       var clean = num.replace(/\D/g, '').slice(1);
       var tail = clean.slice(3);
-
       var firstChar = tail[0];
       var allSame = true;
-      for (var i = 1; i < tail.length; i++) {
-        if (tail[i] !== firstChar) { allSame = false; break; }
-      }
+      for (var i = 1; i < tail.length; i++) { if (tail[i] !== firstChar) { allSame = false; break; } }
       var isPureRound = (tail.slice(1) === '000000') || (tail.slice(2) === '00000') || (tail.slice(3) === '0000');
-
-      if ((allSame && firstChar !== '0') || (isPureRound && tail[0] !== '0')) {
-        return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: 'Мифический' };
-      }
-
+      if ((allSame && firstChar !== '0') || (isPureRound && tail[0] !== '0')) return { val: Math.floor(5000000 + Math.random() * 5000000), rarity: 'mythic', name: 'Мифический' };
       var isPalindrome = tail === tail.split('').reverse().join('');
-      var isLadderAsc = tail === '1234567' || tail === '0123456' || tail === '3456789' || tail === '1231231';
-      var isLadderDesc = tail === '7654321' || tail === '6543210' || tail === '9876543';
-
-      if (isPalindrome || isLadderAsc || isLadderDesc || tail.startsWith('777') || tail.startsWith('999') || tail.startsWith('000')) {
-        return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: 'Легендарный' };
-      }
-
-      var hasTriplet = (tail.includes('000') || tail.includes('111') || tail.includes('222') || 
-                        tail.includes('333') || tail.includes('444') || tail.includes('555') || 
-                        tail.includes('666') || tail.includes('777') || tail.includes('888') || tail.includes('999'));
-
-      var hasBlockRhythm = (tail[1] === tail[2] && tail[4] === tail[5]) || 
-                           (tail[2] === tail[3] && tail[5] === tail[6]) ||
-                           (tail.slice(0,3) === tail.slice(3,6));
-
-      if (hasTriplet || hasBlockRhythm) {
-        return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: 'Эпический' };
-      }
-
-      var hasNiceTail = (tail[5] === tail[6] && tail[3] === tail[4]) || 
-                        (tail[3] === tail[4] && tail[1] === tail[2]) || 
-                        (tail[4] === tail[5] === tail[6]);
-
-      var hasPairEnd = (tail[5] === tail[6]) || (tail[4] === tail[5]);
-
-      if (hasNiceTail || hasPairEnd) {
-        return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: 'Редкий' };
-      }
-
+      var isLadder = tail === '1234567' || tail === '7654321';
+      if (isPalindrome || isLadder || tail.startsWith('777')) return { val: Math.floor(1000000 + Math.random() * 1500000), rarity: 'legendary', name: 'Легендарный' };
+      if (tail.includes('000') || tail.includes('777')) return { val: Math.floor(100000 + Math.random() * 200000), rarity: 'epic', name: 'Эпический' };
+      if (tail[5] === tail[6]) return { val: Math.floor(15000 + Math.random() * 30000), rarity: 'rare', name: 'Редкий' };
       return { val: Math.floor(150 + Math.random() * 350), rarity: 'common', name: 'Обычный' };
     }
 
     function generateRandomPhone() {
       var boost = isCurrentSpinX2() ? 2.5 : 1.0;
-
       var rand = Math.random();
       if (rand < (0.003 * boost)) {
-        var digit = Math.floor(1 + Math.random() * 9);
-        return '+7 (777) ' + digit + digit + digit + '-' + digit + digit + '-' + digit + digit;
-      }
-      if (rand < (0.015 * boost)) {
-        return '+7 (777) 555-55-55';
-      }
-      if (rand < (0.065 * boost)) {
-        return '+7 (777) 777-12-12';
-      }
-      if (rand < (0.235 * boost)) {
-        return '+7 (777) 123-44-55';
+        var d = Math.floor(1 + Math.random() * 9);
+        return '+7 (777) ' + d + d + d + '-' + d + d + '-' + d + d;
       }
       var p1 = Math.floor(100 + Math.random() * 900);
       var p2 = Math.floor(10 + Math.random() * 90);
@@ -1522,19 +1644,12 @@
       }
     }
 
-    function startSimSpin() {
-      if (player.cash < 1500) {
-        showToast('❌ Недостаточно средств для генерации!');
-        return;
-      }
-
+    function tryStartSimSpin() {
+      if (hasActiveRoll) { playSound(220); showToast('⚠️ Заберите или продайте номер', 2000); return; }
+      if (player.cash < 1500) { showToast('❌ Недостаточно средств!'); return; }
       player.cash -= 1500;
-      var activeX2 = isCurrentSpinX2();
-
       updateUI();
-      isSpinning = true;
-      hasActiveRoll = true; 
-
+      hasActiveRoll = true;
       var display = document.getElementById('spin-display');
       var valText = document.getElementById('market-value-text');
       var rarityTag = document.getElementById('sim-rarity-tag');
@@ -1542,58 +1657,34 @@
       var btnBuy = document.getElementById('btn-buy-sim');
       var btnSell = document.getElementById('btn-sell-sim');
       
-      btnSpin.disabled = true;
-      btnSpin.innerText = '🔒 Сканирование...';
-      btnBuy.disabled = true;
-      btnSell.disabled = true;
-      
-      resetCardGlow('common');
+      btnSpin.disabled = true; btnBuy.disabled = true; btnSell.disabled = true;
+      display.classList.add('scanning-matrix');
       setRarityStyle(rarityTag, 'common', 'Сканирование...');
       valText.innerText = 'Оценка: анализ...';
 
-      display.classList.add('scanning-matrix');
-
       var count = 0;
       var interval = setInterval(function() {
-        var tempNum = generateRandomPhone();
-        display.innerText = tempNum;
-        playSound(300 + (count % 10) * 20, activeX2);
+        display.innerText = generateRandomPhone();
+        playSound(300 + (count % 10) * 20, isCurrentSpinX2());
         count += 50;
-
         if (count >= 2500) {
           clearInterval(interval);
           currentRolledNum = generateRandomPhone();
           var evaluated = evaluateNumber(currentRolledNum);
-          
+          var activeX2 = isCurrentSpinX2();
           currentMarketVal = activeX2 ? evaluated.val * 2 : evaluated.val;
           currentRarityKey = evaluated.rarity;
 
           setCardGlow(currentRarityKey);
-          
-          if (activeX2) {
-            setRarityStyle(rarityTag, currentRarityKey, evaluated.name + ' (X2 БОНУС!)');
-          } else {
-            setRarityStyle(rarityTag, currentRarityKey, evaluated.name);
-          }
-
+          setRarityStyle(rarityTag, currentRarityKey, evaluated.name + (activeX2 ? ' (X2!)' : ''));
           valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
           btnSell.innerText = '💰 Продать за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
 
           animateTextSmooth(display, currentRolledNum);
           playRaritySound(currentRarityKey);
-
-          if (activeX2) {
-            showToast('🔥 ФАЗА X2 СРАБОТАЛА! Стоимость удвоена!', 1800);
-          }
-
           player.spinsCount++;
-          isSpinning = false;
-          
-          btnSpin.disabled = false;
-          btnSpin.innerText = '🔒 Требуется решение';
-          btnBuy.disabled = false;
-          btnSell.disabled = false;
-          
+          btnSpin.disabled = false; btnSpin.innerText = '🔒 Требуется решение';
+          btnBuy.disabled = false; btnSell.disabled = false;
           updateX2UI();
         }
       }, 50);
@@ -1601,37 +1692,17 @@
 
     function confirmBuySim() {
       if (!currentRolledNum) return;
-
       if (player.sims.length >= player.maxSimSlots) {
-        playSound(220);
-        showToast('❌ Инвентарь заполнен (' + player.sims.length + '/' + player.maxSimSlots + ')! Продайте номер', 2000);
+        showToast('❌ Инвентарь заполнен (' + player.sims.length + '/' + player.maxSimSlots + ')!', 2000);
         return;
       }
-
-      // СОХРАНЯЕМ РЕДКОСТЬ КАРТОЧКИ В ОБЪЕКТ
-      player.sims.push({ 
-        number: currentRolledNum, 
-        val: currentMarketVal,
-        rarity: currentRarityKey 
-      });
+      player.sims.push({ number: currentRolledNum, val: currentMarketVal, rarity: currentRarityKey });
       player.activePhone = currentRolledNum;
       updateUI();
-
       playSuccessSound();
-      
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 80,
-          origin: { y: 0.6 },
-          zIndex: 30000
-        });
-      } catch(e) {}
-
-      showToast('📱 Ваша новая сим-карта добавлена в инвентарь!', 1500);
-      
-      hasActiveRoll = false;
-      currentRolledNum = null;
+      try { confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 }, zIndex: 30000 }); } catch(e) {}
+      showToast('📱 Сим-карта добавлена в инвентарь!');
+      hasActiveRoll = false; currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
@@ -1644,15 +1715,11 @@
 
     function sellCurrentSim() {
       if (!currentRolledNum) return;
-
       player.cash += currentMarketVal;
       updateUI();
-
       playSuccessSound();
-      showToast('💰 Номер успешно продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!', 1500);
-
-      hasActiveRoll = false;
-      currentRolledNum = null;
+      showToast('💰 Номер продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!');
+      hasActiveRoll = false; currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
@@ -1663,38 +1730,173 @@
       updateX2UI();
     }
 
+    // ЛОГИКА АВТОСАЛОНА И КЕЙСОВ
+    function openCaseModal(type) {
+      currentActiveCaseType = type;
+      var caseData = carDatabase[type];
+      document.getElementById('case-modal-title').innerText = 'Кейс «' + caseData.title + '»';
+      document.getElementById('btn-open-car').innerText = '📦 Открыть кейс (' + caseData.price.toLocaleString('ru-RU') + ' ₽)';
+      
+      hasActiveCarRoll = false;
+      currentRolledCar = null;
+      document.getElementById('car-spin-display').innerText = 'Нажмите кнопку открытия';
+      document.getElementById('car-market-value-text').innerText = 'Оценка: —';
+      setRarityStyle(document.getElementById('car-rarity-tag'), 'common', 'Ожидание');
+      setCarCardGlow('common');
+      document.getElementById('car-card-model-box').style.backgroundImage = 'none';
+
+      document.getElementById('btn-open-car').disabled = false;
+      document.getElementById('btn-buy-car').disabled = true;
+      document.getElementById('btn-sell-car').disabled = true;
+
+      openModal('modal-car-case');
+    }
+
+    function openCarChances() {
+      var caseData = carDatabase[currentActiveCaseType];
+      var box = document.getElementById('car-chances-box');
+      document.getElementById('car-chances-title').innerText = '📊 Шансы кейса «' + caseData.title + '»';
+      
+      box.innerHTML = `
+        <div class="chance-row"><span class="color-common" style="font-weight:900;">Обычный (Common)</span><span style="color:#fff;">~72-78%</span></div>
+        <div class="chance-row"><span class="color-rare" style="font-weight:900;">Редкий (Rare)</span><span style="color:#fff;">~17-22%</span></div>
+        <div class="chance-row"><span class="color-epic" style="font-weight:900;">Эпический (Epic) ~Окуп</span><span style="color:#fff;">~4-5%</span></div>
+        <div class="chance-row"><span class="color-legendary" style="font-weight:900;">Легендарный (Legendary)</span><span style="color:#fff;">~0.6%</span></div>
+        <div class="chance-row"><span class="color-mythic" style="font-weight:900;">Мифический (Джекпот)</span><span style="color:#fff;">0.05%</span></div>
+      `;
+      openModal('modal-car-chances');
+    }
+
+    function rollCarFromCase(type) {
+      var items = carDatabase[type].items;
+      var rand = Math.random();
+      var cumulative = 0;
+      
+      // Имитируем падение по шансам
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].chance > 0) cumulative += items[i].chance;
+        if (rand <= cumulative || i === items.length - 1) {
+          var selected = items[i];
+          // Если у машины диапазон оценки
+          var val = Math.floor(selected.minVal + Math.random() * (selected.maxVal - selected.minVal + 1));
+          return { name: selected.name, rarity: selected.rarity, val: val, img: selected.img };
+        }
+      }
+      return items[0];
+    }
+
+    function startCarSpin() {
+      var caseData = carDatabase[currentActiveCaseType];
+      if (player.cash < caseData.price) {
+        showToast('❌ Недостаточно средств для открытия кейса!');
+        return;
+      }
+
+      player.cash -= caseData.price;
+      updateUI();
+      hasActiveCarRoll = true;
+
+      var display = document.getElementById('car-spin-display');
+      var valText = document.getElementById('car-market-value-text');
+      var rarityTag = document.getElementById('car-rarity-tag');
+      var btnOpen = document.getElementById('btn-open-car');
+      var btnBuy = document.getElementById('btn-buy-car');
+      var btnSell = document.getElementById('btn-sell-car');
+      var modelBox = document.getElementById('car-card-model-box');
+
+      btnOpen.disabled = true; btnBuy.disabled = true; btnSell.disabled = true;
+      modelBox.style.backgroundImage = 'none';
+      modelBox.classList.add('scanning-matrix');
+      setRarityStyle(rarityTag, 'common', 'Розыгрыш...');
+      valText.innerText = 'Оценка: анализ...';
+
+      var count = 0;
+      var interval = setInterval(function() {
+        var randItem = carDatabase[currentActiveCaseType].items[Math.floor(Math.random() * carDatabase[currentActiveCaseType].items.length)];
+        display.innerText = randItem.name;
+        playSound(350, false);
+        count += 50;
+
+        if (count >= 2500) {
+          clearInterval(interval);
+          currentRolledCar = rollCarFromCase(currentActiveCaseType);
+
+          modelBox.classList.remove('scanning-matrix');
+          modelBox.style.backgroundImage = 'url("' + currentRolledCar.img + '")';
+          setCarCardGlow(currentRolledCar.rarity);
+
+          var rarityNameMap = { common: 'Обычный', rare: 'Редкий', epic: 'Эпический', legendary: 'Легендарный', mythic: 'МИФИЧЕСКИЙ ДЖЕКПОТ!' };
+          setRarityStyle(rarityTag, currentRolledCar.rarity, rarityNameMap[currentRolledCar.rarity]);
+          valText.innerText = 'Оценка: ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
+          btnSell.innerText = '💰 Продать за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
+
+          display.innerHTML = '';
+          var span = document.createElement('span');
+          span.className = 'char-fade';
+          span.innerText = currentRolledCar.name;
+          display.appendChild(span);
+
+          playRaritySound(currentRolledCar.rarity);
+
+          if (currentRolledCar.rarity === 'mythic' || currentRolledCar.rarity === 'legendary') {
+            try { confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 }, zIndex: 30000 }); } catch(e){}
+          }
+
+          btnOpen.disabled = false;
+          btnOpen.innerText = '📦 Открыть еще';
+          btnBuy.disabled = false;
+          btnSell.disabled = false;
+        }
+      }, 50);
+    }
+
+    function confirmBuyCar() {
+      if (!currentRolledCar) return;
+      player.cars.push(currentRolledCar);
+      updateUI();
+      playSuccessSound();
+      showToast('🏎️ Автомобиль добавлен в гараж!');
+      
+      hasActiveCarRoll = false;
+      currentRolledCar = null;
+      closeModal('modal-car-case');
+    }
+
+    function sellCurrentCar() {
+      if (!currentRolledCar) return;
+      player.cash += currentRolledCar.val;
+      updateUI();
+      playSuccessSound();
+      showToast('💰 Авто продано за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽!');
+
+      hasActiveCarRoll = false;
+      currentRolledCar = null;
+      closeModal('modal-car-case');
+    }
+
+    // КЛИКЕР (Уличный сбор)
     function spawnCan() {
       var area = document.getElementById('game-area');
       var screenWork = document.getElementById('screen-work');
       if (!area || !screenWork.classList.contains('active')) return;
       if (area.children.length >= 4) return;
-
       var can = document.createElement('div');
-      can.className = 'can-item';
-      can.innerText = '🥫';
-      
+      can.className = 'can-item'; can.innerText = '🥫';
       var x = Math.random() * (area.clientWidth - 40);
       var y = Math.random() * (area.clientHeight - 40);
-      can.style.left = x + 'px';
-      can.style.top = y + 'px';
-
+      can.style.left = x + 'px'; can.style.top = y + 'px';
       can.onclick = function() {
         playSound(650);
         var reward = Math.floor(Math.random() * 20) + 15;
         player.cash += reward;
         updateUI();
-
         var floatText = document.createElement('div');
-        floatText.className = 'floating-text';
-        floatText.innerText = '+' + reward + ' ₽';
-        floatText.style.left = x + 'px';
-        floatText.style.top = y + 'px';
+        floatText.className = 'floating-text'; floatText.innerText = '+' + reward + ' ₽';
+        floatText.style.left = x + 'px'; floatText.style.top = y + 'px';
         area.appendChild(floatText);
-
         setTimeout(function() { floatText.remove(); }, 600);
         can.remove();
       };
-
       area.appendChild(can);
     }
     setInterval(spawnCan, 1000);
@@ -1704,8 +1906,7 @@
       try {
         if (window.Telegram && window.Telegram.WebApp) {
           var tg = window.Telegram.WebApp;
-          tg.expand();
-          tg.ready();
+          tg.expand(); tg.ready();
           if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             var user = tg.initDataUnsafe.user;
             document.getElementById('user-name').innerText = user.first_name;
