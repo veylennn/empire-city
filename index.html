@@ -356,11 +356,11 @@
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .glow-common { box-shadow: 0 0 20px rgba(100, 116, 139, 0.3); }
-    .glow-rare { box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
-    .glow-epic { box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); }
-    .glow-legendary { box-shadow: 0 0 35px rgba(250, 204, 21, 0.7); }
-    .glow-mythic { box-shadow: 0 0 45px rgba(239, 68, 68, 0.8); animation: pulseMythic 1s infinite alternate; }
+    .glow-common { border-color: rgba(100, 116, 139, 0.5) !important; box-shadow: 0 0 20px rgba(100, 116, 139, 0.3); }
+    .glow-rare { border-color: rgba(56, 189, 248, 0.6) !important; box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
+    .glow-epic { border-color: rgba(168, 85, 247, 0.7) !important; box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); }
+    .glow-legendary { border-color: rgba(250, 204, 21, 0.8) !important; box-shadow: 0 0 35px rgba(250, 204, 21, 0.7); }
+    .glow-mythic { border-color: rgba(239, 68, 68, 0.9) !important; box-shadow: 0 0 45px rgba(239, 68, 68, 0.8); animation: pulseMythic 1s infinite alternate; }
 
     @keyframes pulseMythic {
       0% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
@@ -488,7 +488,7 @@
       z-index: 2;
     }
 
-    /* ИНВЕНТАРЬ С МИНИ-СИМКАМИ */
+    /* ИНВЕНТАРЬ С МИНИ-СИМКАМИ И ИХ СВЕЧЕНИЕМ ПО РЕДКОСТИ */
     .inventory-grid {
       display: flex;
       flex-direction: column;
@@ -518,14 +518,37 @@
       position: relative;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.1s ease, border-color 0.2s ease;
+      transition: transform 0.1s ease, border-color 0.2s ease, box-shadow 0.3s ease;
     }
+
+    /* Свечение и рамка карточек в инвентаре по их редкости */
+    .mini-sim-card.inv-glow-common {
+      border-color: rgba(100, 116, 139, 0.5) !important;
+      box-shadow: 0 0 10px rgba(100, 116, 139, 0.2);
+    }
+    .mini-sim-card.inv-glow-rare {
+      border-color: rgba(56, 189, 248, 0.6) !important;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+    }
+    .mini-sim-card.inv-glow-epic {
+      border-color: rgba(168, 85, 247, 0.7) !important;
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
+    }
+    .mini-sim-card.inv-glow-legendary {
+      border-color: rgba(250, 204, 21, 0.8) !important;
+      box-shadow: 0 0 22px rgba(250, 204, 21, 0.55);
+    }
+    .mini-sim-card.inv-glow-mythic {
+      border-color: rgba(239, 68, 68, 0.9) !important;
+      box-shadow: 0 0 28px rgba(239, 68, 68, 0.75);
+      animation: pulseMythic 1.2s infinite alternate;
+    }
+
     .mini-sim-card:active {
       transform: scale(0.98);
     }
     .mini-sim-card.active-equipped {
-      border-color: #38bdf8;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6) !important;
     }
 
     .mini-sim-top {
@@ -1031,7 +1054,7 @@
       bank: 0,
       activePhone: 'Не установлена',
       sims: [],
-      maxSimSlots: 2, // ОГРАНИЧЕНИЕ: Максимум 2 сим-карты в инвентаре
+      maxSimSlots: 2,
       spinsCount: 0
     };
 
@@ -1210,7 +1233,6 @@
       document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('user-phone').innerText = '📱 SIM: ' + player.activePhone;
       
-      // Обновляем заголовок слотов в инвентаре
       var invHeader = document.getElementById('inv-header-title');
       if (invHeader) {
         invHeader.innerText = '🎒 Ваш Инвентарь (' + player.sims.length + ' / ' + player.maxSimSlots + ')';
@@ -1224,9 +1246,12 @@
           var isEquipped = (player.activePhone === s.number);
           var isExpanded = (expandedSimIndex === index);
           
+          // Вычисляем редкость, если она не была сохранена ранее
+          var simRarity = s.rarity || evaluateNumber(s.number).rarity;
+          
           return `
             <div class="mini-sim-wrapper ${isExpanded ? 'expanded' : ''}">
-              <div class="mini-sim-card ${isEquipped ? 'active-equipped' : ''}" onclick="toggleSimCard(${index})">
+              <div class="mini-sim-card inv-glow-${simRarity} ${isEquipped ? 'active-equipped' : ''}" onclick="toggleSimCard(${index})">
                 <div class="mini-sim-top">
                   <div class="mini-brand">EMPIRE SECURE</div>
                   <div class="mini-chip"></div>
@@ -1577,14 +1602,18 @@
     function confirmBuySim() {
       if (!currentRolledNum) return;
 
-      // ПРОВЕРКА ЛИМИТА СЛОТОВ
       if (player.sims.length >= player.maxSimSlots) {
         playSound(220);
         showToast('❌ Инвентарь заполнен (' + player.sims.length + '/' + player.maxSimSlots + ')! Продайте номер', 2000);
         return;
       }
 
-      player.sims.push({ number: currentRolledNum, val: currentMarketVal });
+      // СОХРАНЯЕМ РЕДКОСТЬ КАРТОЧКИ В ОБЪЕКТ
+      player.sims.push({ 
+        number: currentRolledNum, 
+        val: currentMarketVal,
+        rarity: currentRarityKey 
+      });
       player.activePhone = currentRolledNum;
       updateUI();
 
