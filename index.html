@@ -289,6 +289,10 @@
       overflow: hidden;
       transition: all 0.3s ease;
     }
+    .x2-progress-box.charged {
+      border-color: #facc15;
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+    }
     .x2-header-info {
       display: flex;
       justify-content: space-between;
@@ -310,6 +314,9 @@
       background: linear-gradient(90deg, #38bdf8, #818cf8);
       border-radius: 3px;
       transition: width 0.3s ease;
+    }
+    .x2-progress-box.charged .x2-bar-fill {
+      background: linear-gradient(90deg, #facc15, #f87171);
     }
 
     .sim-card-model {
@@ -334,9 +341,27 @@
     .glow-legendary { border-color: rgba(250, 204, 21, 0.8) !important; box-shadow: 0 0 35px rgba(250, 204, 21, 0.7); }
     .glow-mythic { border-color: rgba(239, 68, 68, 0.9) !important; box-shadow: 0 0 45px rgba(239, 68, 68, 0.8); animation: pulseMythic 1s infinite alternate; }
 
+    .x2-card-glow {
+      border-color: #facc15 !important;
+      box-shadow: 0 0 30px rgba(250, 204, 21, 0.8) !important;
+      animation: pulseX2Card 1s infinite alternate;
+    }
+
     @keyframes pulseMythic {
       0% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
       100% { box-shadow: 0 0 45px rgba(239, 68, 68, 1); }
+    }
+
+    @keyframes pulseX2Card {
+      0% { box-shadow: 0 0 20px rgba(250, 204, 21, 0.5); }
+      100% { box-shadow: 0 0 35px rgba(250, 204, 21, 0.9); }
+    }
+
+    .x2-btn-glow {
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.3), rgba(15, 23, 42, 0.6)) !important;
+      border-color: #facc15 !important;
+      color: #facc15 !important;
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
     }
 
     .sim-card-top {
@@ -603,7 +628,7 @@
     .can-item { position: absolute; font-size: 36px; cursor: pointer; animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .floating-text { position: absolute; color: #38bdf8; font-weight: 900; font-size: 16px; pointer-events: none; animation: floatUp 0.6s forwards ease-out; }
 
-    /* ФИКС МОДАЛОК ПОВЕРХ ВСЕГО ЭКРАНА С ДИНАМИЧЕСКИМ Z-INDEX */
+    /* МОДАЛЬНЫЕ ОКНА ПОВЕРХ ВСЕГО ЭКРАНА */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(0,0,0,0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
@@ -818,9 +843,8 @@
     </div>
   </div>
 
-  <!-- ВСЕ МОДАЛЬНЫЕ ОКНА В КОРНЕ BODY -->
+  <!-- МОДАЛЬНЫЕ ОКНА В КОРНЕ BODY -->
 
-  <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ СИМ -->
   <div class="modal-overlay" id="modal-chances" onclick="handleOverlayClick(event, 'modal-chances')">
     <div class="modal-sheet" id="sheet-chances">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
@@ -835,7 +859,6 @@
     </div>
   </div>
 
-  <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ АВТО -->
   <div class="modal-overlay" id="modal-car-chances" onclick="handleOverlayClick(event, 'modal-car-chances')">
     <div class="modal-sheet" id="sheet-car-chances">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
@@ -844,7 +867,6 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ -->
   <div class="modal-overlay" id="modal-buy-sim" onclick="handleOverlayClick(event, 'modal-buy-sim')">
     <div class="modal-sheet" id="sheet-buy-sim">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
@@ -881,7 +903,6 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ОТКРЫТИЯ КЕЙСА МАШИН -->
   <div class="modal-overlay" id="modal-car-case" onclick="handleOverlayClick(event, 'modal-car-case')">
     <div class="modal-sheet" id="sheet-car-case">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
@@ -891,7 +912,6 @@
         <button class="btn-chances-small" onclick="openCarChances()"><span>📊</span> Шансы кейса</button>
       </div>
 
-      <!-- ГОРИЗОНТАЛЬНАЯ РУЛЕТКА CS:GO -->
       <div class="cs-roulette-container">
         <div class="cs-roulette-pointer"></div>
         <div class="cs-roulette-track" id="cs-track"></div>
@@ -983,7 +1003,6 @@
       var fill = document.getElementById('x2-fill');
       var counter = document.getElementById('x2-counter');
       var title = document.getElementById('x2-title');
-      var sheet = document.getElementById('sheet-buy-sim');
       var modelBox = document.getElementById('sim-card-model-box');
       var btnSpin = document.getElementById('btn-spin');
 
@@ -992,14 +1011,17 @@
       counter.innerText = currentStepInCycle + ' / 5';
 
       if (isCurrentSpinX2()) {
-        box.classList.add('charged'); title.innerText = '🔥 СЛЕДУЮЩИЙ X2!';
-        sheet.classList.add('x2-active-sheet'); modelBox.classList.add('x2-card-glow');
+        box.classList.add('charged'); 
+        title.innerText = '🔥 СЛЕДУЮЩИЙ X2!';
+        modelBox.classList.add('x2-card-glow');
         if (!hasActiveRoll) btnSpin.classList.add('x2-btn-glow');
         document.body.classList.add('x2-active-bg');
       } else {
-        box.classList.remove('charged'); title.innerText = '⚡ БЛИЖАЙШИЙ X2';
-        sheet.classList.remove('x2-active-sheet'); modelBox.classList.remove('x2-card-glow');
-        btnSpin.classList.remove('x2-btn-glow'); document.body.classList.remove('x2-active-bg');
+        box.classList.remove('charged'); 
+        title.innerText = '⚡ БЛИЖАЙШИЙ X2';
+        modelBox.classList.remove('x2-card-glow');
+        btnSpin.classList.remove('x2-btn-glow'); 
+        document.body.classList.remove('x2-active-bg');
       }
     }
 
@@ -1090,7 +1112,6 @@
 
       updateX2UI();
 
-      // Инвентарь SIM
       var inv = document.getElementById('inventory-list');
       if (player.sims.length > 0) {
         inv.innerHTML = player.sims.map(function(s, index) {
@@ -1120,7 +1141,6 @@
         inv.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding-top: 5px;">У вас пока нет активных SIM-карт.</div>';
       }
 
-      // Инвентарь Гараж
       var garage = document.getElementById('garage-list');
       if (player.cars && player.cars.length > 0) {
         garage.innerHTML = player.cars.map(function(c, index) {
@@ -1220,17 +1240,14 @@
       element.innerText = rarityName;
     }
 
-    // ИСПРАВЛЕННЫЙ МЕХАНИЗМ ОТКРЫТИЯ МОДАЛОК С УЧЕТОМ Z-INDEX
     function openModal(id) {
       var modal = document.getElementById(id);
       if (!modal) return;
-      
       var maxZ = 100000;
       document.querySelectorAll('.modal-overlay.active').forEach(function(m) {
         var z = parseInt(window.getComputedStyle(m).zIndex) || 100000;
         if (z >= maxZ) maxZ = z + 10;
       });
-      
       modal.style.zIndex = maxZ;
       modal.classList.add('active');
       playSound(450);
@@ -1352,7 +1369,6 @@
       updateX2UI();
     }
 
-    // ЛОГИКА АВТОСАЛОНА
     function openCaseModal(type) {
       currentActiveCaseType = type;
       var caseData = carDatabase[type];
@@ -1518,7 +1534,6 @@
       closeModal('modal-car-case');
     }
 
-    // КЛИКЕР
     function spawnCan() {
       var area = document.getElementById('game-area');
       var screenWork = document.getElementById('screen-work');
