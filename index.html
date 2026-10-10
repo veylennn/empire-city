@@ -603,7 +603,7 @@
     .can-item { position: absolute; font-size: 36px; cursor: pointer; animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .floating-text { position: absolute; color: #38bdf8; font-weight: 900; font-size: 16px; pointer-events: none; animation: floatUp 0.6s forwards ease-out; }
 
-    /* ФИКС МОДАЛОК ПОВЕРХ ВСЕГО ЭКРАНА */
+    /* ФИКС МОДАЛОК ПОВЕРХ ВСЕГО ЭКРАНА С ДИНАМИЧЕСКИМ Z-INDEX */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(0,0,0,0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
@@ -818,7 +818,7 @@
     </div>
   </div>
 
-  <!-- ВСЕ МОДАЛЬНЫЕ ОКНА ВЫНЕСЕНЫ В КОРЕНЬ BODY ДЛЯ КОРРЕКТНОЙ ОТРЕСОВКИ -->
+  <!-- ВСЕ МОДАЛЬНЫЕ ОКНА В КОРНЕ BODY -->
 
   <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ СИМ -->
   <div class="modal-overlay" id="modal-chances" onclick="handleOverlayClick(event, 'modal-chances')">
@@ -851,7 +851,7 @@
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">Терминал связи</div>
 
       <div class="top-action-row">
-        <button class="btn-chances-small" onclick="openModal('modal-chances')"><span>📊</span> Шансы</button>
+        <button class="btn-chances-small" onclick="openSimChances()"><span>📊</span> Шансы</button>
         <div class="x2-progress-box" id="x2-box">
           <div class="x2-header-info">
             <span id="x2-title">⚡ ДО X2</span>
@@ -881,7 +881,7 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ОТКРЫТИЯ КЕЙСА МАШИН В СТИЛЕ CS -->
+  <!-- ШТОРКА ОТКРЫТИЯ КЕЙСА МАШИН -->
   <div class="modal-overlay" id="modal-car-case" onclick="handleOverlayClick(event, 'modal-car-case')">
     <div class="modal-sheet" id="sheet-car-case">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
@@ -1220,13 +1220,29 @@
       element.innerText = rarityName;
     }
 
+    // ИСПРАВЛЕННЫЙ МЕХАНИЗМ ОТКРЫТИЯ МОДАЛОК С УЧЕТОМ Z-INDEX
     function openModal(id) {
-      document.getElementById(id).classList.add('active');
+      var modal = document.getElementById(id);
+      if (!modal) return;
+      
+      var maxZ = 100000;
+      document.querySelectorAll('.modal-overlay.active').forEach(function(m) {
+        var z = parseInt(window.getComputedStyle(m).zIndex) || 100000;
+        if (z >= maxZ) maxZ = z + 10;
+      });
+      
+      modal.style.zIndex = maxZ;
+      modal.classList.add('active');
       playSound(450);
     }
 
+    function openSimChances() {
+      openModal('modal-chances');
+    }
+
     function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
+      var modal = document.getElementById(id);
+      if (modal) modal.classList.remove('active');
     }
 
     function handleOverlayClick(event, id) {
@@ -1474,74 +1490,4 @@
         playRaritySound(currentRolledCar.rarity);
 
         if (currentRolledCar.rarity === 'mythic' || currentRolledCar.rarity === 'legendary') {
-          try { confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 }, zIndex: 300000 }); } catch(e){}
-        }
-
-        btnOpen.disabled = false;
-        btnOpen.innerText = '📦 Открыть еще';
-        btnBuy.disabled = false;
-        btnSell.disabled = false;
-      }, 5100);
-    }
-
-    function confirmBuyCar() {
-      if (!currentRolledCar) return;
-      player.cars.push(currentRolledCar);
-      updateUI(); playSuccessSound();
-      showToast('🏎️ Автомобиль добавлен в гараж!');
-      currentRolledCar = null;
-      closeModal('modal-car-case');
-    }
-
-    function sellCurrentCar() {
-      if (!currentRolledCar) return;
-      player.cash += currentRolledCar.val;
-      updateUI(); playSuccessSound();
-      showToast('💰 Авто продано за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽!');
-      currentRolledCar = null;
-      closeModal('modal-car-case');
-    }
-
-    // КЛИКЕР
-    function spawnCan() {
-      var area = document.getElementById('game-area');
-      var screenWork = document.getElementById('screen-work');
-      if (!area || !screenWork.classList.contains('active')) return;
-      if (area.children.length >= 4) return;
-      var can = document.createElement('div');
-      can.className = 'can-item'; can.innerText = '🥫';
-      var x = Math.random() * (area.clientWidth - 40);
-      var y = Math.random() * (area.clientHeight - 40);
-      can.style.left = x + 'px'; can.style.top = y + 'px';
-      can.onclick = function() {
-        playSound(650);
-        var reward = Math.floor(Math.random() * 1000) + 500;
-        player.cash += reward; updateUI();
-        var floatText = document.createElement('div');
-        floatText.className = 'floating-text'; floatText.innerText = '+' + reward.toLocaleString('ru-RU') + ' ₽';
-        floatText.style.left = x + 'px'; floatText.style.top = y + 'px';
-        area.appendChild(floatText);
-        setTimeout(function() { floatText.remove(); }, 600);
-        can.remove();
-      };
-      area.appendChild(can);
-    }
-    setInterval(spawnCan, 800);
-
-    window.onload = function() {
-      updateUI();
-      try {
-        if (window.Telegram && window.Telegram.WebApp) {
-          var tg = window.Telegram.WebApp;
-          tg.expand(); tg.ready();
-          if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            var user = tg.initDataUnsafe.user;
-            document.getElementById('user-name').innerText = user.first_name;
-            document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
-          }
-        }
-      } catch(e) {}
-    };
-  </script>
-</body>
-</html>
+          try { confetti({ particleCount: 100, spread: 90
