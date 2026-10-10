@@ -275,9 +275,6 @@
       gap: 6px;
       z-index: 20;
     }
-    .btn-chances-small:active {
-      background: rgba(56, 189, 248, 0.15);
-    }
 
     .x2-progress-box {
       flex: 1.2;
@@ -315,31 +312,6 @@
       transition: width 0.3s ease;
     }
 
-    .x2-progress-box.charged {
-      border-color: #facc15;
-      background: rgba(250, 204, 21, 0.08);
-      box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
-      animation: pulseX2Fast 0.6s infinite alternate;
-    }
-    .x2-progress-box.charged .x2-bar-fill {
-      background: linear-gradient(90deg, #facc15, #f87171);
-      width: 100% !important;
-    }
-    .x2-progress-box.charged .x2-header-info {
-      color: #facc15;
-      text-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
-    }
-
-    @keyframes pulseX2Fast {
-      0% { transform: scale(1); box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
-      100% { transform: scale(1.02); box-shadow: 0 0 25px rgba(250, 204, 21, 0.8); }
-    }
-
-    .modal-sheet.x2-active-sheet {
-      border-top: 2px solid #facc15;
-      box-shadow: 0 -10px 40px rgba(250, 204, 21, 0.25);
-    }
-
     .sim-card-model {
       width: 100%;
       height: 165px;
@@ -365,32 +337,6 @@
     @keyframes pulseMythic {
       0% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
       100% { box-shadow: 0 0 50px rgba(239, 68, 68, 1); }
-    }
-
-    .sim-card-model.x2-card-glow {
-      border-color: #facc15 !important;
-    }
-
-    .sim-card-model.holo-active::before {
-      content: '';
-      position: absolute;
-      top: -150%; left: -150%; width: 400%; height: 400%;
-      background: linear-gradient(
-        45deg,
-        transparent 45%,
-        rgba(250, 204, 21, 0.15) 50%,
-        rgba(248, 113, 113, 0.15) 55%,
-        rgba(56, 189, 248, 0.15) 60%,
-        transparent 65%
-      );
-      animation: holoShine 3s linear infinite;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    @keyframes holoShine {
-      0% { transform: translateY(-50%) translateX(-50%) rotate(0deg); }
-      100% { transform: translateY(-50%) translateX(-50%) rotate(360deg); }
     }
 
     .sim-card-top {
@@ -427,13 +373,6 @@
       position: relative;
       z-index: 2;
     }
-    .sim-chip::after {
-      content: '';
-      position: absolute;
-      top: 5px; left: 5px; right: 5px; bottom: 5px;
-      border: 1px solid rgba(0,0,0,0.3);
-      border-radius: 2px;
-    }
 
     .external-info-bar {
       display: flex;
@@ -459,7 +398,6 @@
       font-weight: 900;
       letter-spacing: 0.5px;
       text-align: right;
-      word-break: break-word;
     }
 
     .color-common { color: #64748b; }
@@ -484,9 +422,88 @@
       align-items: center;
       justify-content: center;
       white-space: nowrap;
-      font-variant-numeric: tabular-nums;
       z-index: 2;
     }
+
+    /* РУЛЕТКА В СТИЛЕ CS:GO FOR CARS */
+    .cs-roulette-container {
+      width: 100%;
+      height: 140px;
+      background: rgba(3, 7, 18, 0.9);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      margin: 10px 0;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    /* Красный маркер по центру рулетки */
+    .cs-roulette-pointer {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444;
+      z-index: 20;
+    }
+    .cs-roulette-pointer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -6px;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid #ef4444;
+    }
+    .cs-roulette-pointer::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: -6px;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 10px solid #ef4444;
+    }
+
+    .cs-roulette-track {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: absolute;
+      left: 0;
+      top: 15px;
+      height: 110px;
+      will-change: transform;
+    }
+
+    .cs-item-card {
+      width: 110px;
+      height: 110px;
+      flex-shrink: 0;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 12px;
+      border: 2px solid #334155;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 6px;
+      text-align: center;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Рамки для ленты рулетки */
+    .cs-item-card.border-common { border-color: #64748b; background: radial-gradient(circle, rgba(100,116,139,0.15) 0%, rgba(15,23,42,0.9) 100%); }
+    .cs-item-card.border-rare { border-color: #38bdf8; background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, rgba(15,23,42,0.9) 100%); }
+    .cs-item-card.border-epic { border-color: #c084fc; background: radial-gradient(circle, rgba(192,132,252,0.2) 0%, rgba(15,23,42,0.9) 100%); }
+    .cs-item-card.border-legendary { border-color: #facc15; background: radial-gradient(circle, rgba(250,204,21,0.25) 0%, rgba(15,23,42,0.9) 100%); }
+    .cs-item-card.border-mythic { border-color: #ef4444; background: radial-gradient(circle, rgba(239,68,68,0.3) 0%, rgba(15,23,42,0.9) 100%); }
+
+    .cs-item-icon { font-size: 28px; margin-top: 4px; }
+    .cs-item-name { font-size: 10px; font-weight: 800; color: #fff; line-height: 1.2; word-break: break-word; }
 
     /* ИНВЕНТАРЬ И ГАРАЖ */
     .inventory-section-title {
@@ -515,7 +532,7 @@
 
     .mini-sim-card, .mini-car-card {
       width: 100%;
-      height: 105px;
+      height: 95px;
       background: linear-gradient(135deg, #111827 0%, #030712 100%);
       border-radius: 12px;
       border: 1px solid rgba(56, 189, 248, 0.4);
@@ -524,59 +541,22 @@
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      overflow: hidden;
       cursor: pointer;
       transition: transform 0.1s ease, border-color 0.2s ease, box-shadow 0.3s ease;
     }
 
-    /* Стили карточек машин с фоновыми изображениями */
-    .mini-car-card {
-      height: 130px;
-      background-size: cover;
-      background-position: center;
-    }
-    .mini-car-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(180deg, rgba(3,7,18,0.7) 0%, rgba(3,7,18,0.9) 100%);
-      z-index: 1;
-    }
-
-    /* Свечение по редкости */
     .inv-glow-common { border-color: rgba(100, 116, 139, 0.5) !important; box-shadow: 0 0 10px rgba(100, 116, 139, 0.2); }
     .inv-glow-rare { border-color: rgba(56, 189, 248, 0.6) !important; box-shadow: 0 0 15px rgba(56, 189, 248, 0.35); }
     .inv-glow-epic { border-color: rgba(168, 85, 247, 0.7) !important; box-shadow: 0 0 18px rgba(168, 85, 247, 0.45); }
     .inv-glow-legendary { border-color: rgba(250, 204, 21, 0.8) !important; box-shadow: 0 0 22px rgba(250, 204, 21, 0.55); }
     .inv-glow-mythic { border-color: rgba(239, 68, 68, 0.9) !important; box-shadow: 0 0 28px rgba(239, 68, 68, 0.75); animation: pulseMythic 1.2s infinite alternate; }
 
-    .mini-sim-card:active, .mini-car-card:active {
-      transform: scale(0.98);
-    }
-    .active-equipped {
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6) !important;
-    }
+    .mini-sim-card:active, .mini-car-card:active { transform: scale(0.98); }
+    .active-equipped { box-shadow: 0 0 20px rgba(56, 189, 248, 0.6) !important; }
 
-    .mini-sim-top, .mini-car-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 2;
-    }
-    .mini-brand {
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: #38bdf8;
-    }
-    .mini-chip {
-      width: 26px;
-      height: 18px;
-      background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
-      border-radius: 3px;
-      border: 1px solid #a16207;
-      z-index: 2;
-    }
+    .mini-sim-top, .mini-car-top { display: flex; justify-content: space-between; align-items: center; }
+    .mini-brand { font-size: 10px; font-weight: 900; letter-spacing: 1px; color: #38bdf8; }
+    .mini-chip { width: 26px; height: 18px; background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%); border-radius: 3px; border: 1px solid #a16207; }
     .mini-number, .mini-car-info {
       font-family: 'Courier New', Courier, monospace;
       font-size: 13px;
@@ -587,348 +567,96 @@
       border-radius: 6px;
       border: 1px solid rgba(56, 189, 248, 0.2);
       text-align: center;
-      z-index: 2;
     }
-    .mini-car-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-    }
+    .mini-car-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
 
     .sim-actions-panel {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      max-height: 0; opacity: 0; overflow: hidden;
+      display: flex; flex-direction: column; gap: 8px;
       transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, margin-top 0.3s ease;
       margin-top: 0;
     }
     .mini-sim-wrapper.expanded .sim-actions-panel, .mini-car-wrapper.expanded .sim-actions-panel {
-      max-height: 200px;
-      opacity: 1;
-      margin-top: 10px;
+      max-height: 200px; opacity: 1; margin-top: 10px;
     }
 
-    .action-row-btns {
-      display: flex;
-      gap: 6px;
-    }
+    .action-row-btns { display: flex; gap: 6px; }
     .btn-action-item {
-      flex: 1;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
-      padding: 10px 6px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      text-align: center;
-      transition: background 0.2s;
+      flex: 1; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8; padding: 10px 6px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer; text-align: center;
     }
-    .btn-action-item:active {
-      background: rgba(56, 189, 248, 0.25);
-    }
-    .btn-action-item.btn-sell-mini {
-      background: rgba(239, 68, 68, 0.1);
-      border-color: rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-    }
-    .btn-action-item.btn-sell-mini:active {
-      background: rgba(239, 68, 68, 0.25);
-    }
+    .btn-action-item.btn-sell-mini { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; }
 
-    /* АВТОСАЛОН КЕЙСЫ */
-    .case-store-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
+    /* КЕЙСЫ АВТОСАЛОНА */
+    .case-store-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
     .case-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 18px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      cursor: pointer;
-      transition: transform 0.1s, border-color 0.2s;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;
     }
-    .case-card:active {
-      transform: scale(0.98);
-      border-color: #38bdf8;
-    }
-
-    .case-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .case-title-box h3 {
-      font-size: 15px;
-      font-weight: 800;
-      color: #fff;
-    }
-    .case-title-box p {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
+    .case-card-header { display: flex; align-items: center; justify-content: space-between; }
+    .case-title-box h3 { font-size: 15px; font-weight: 800; color: #fff; }
+    .case-title-box p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .case-price-badge {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: #38bdf8;
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 900;
-      font-family: 'Courier New', Courier, monospace;
-    }
-
-    /* Карточка рулетки кейса */
-    .car-card-model {
-      width: 100%;
-      height: 195px;
-      background: linear-gradient(135deg, #111827 0%, #030712 100%);
-      background-size: cover;
-      background-position: center;
-      border-radius: 16px;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-      color: #fff;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .car-card-model::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(180deg, rgba(3,7,18,0.5) 0%, rgba(3,7,18,0.85) 100%);
-      z-index: 1;
-    }
-
-    .scanning-matrix {
-      filter: blur(0.4px);
-      animation: matrixGlitch 0.08s infinite alternate;
-    }
-
-    @keyframes matrixGlitch {
-      0% { opacity: 0.8; transform: skewX(-1deg); }
-      100% { opacity: 1; transform: skewX(1deg); }
-    }
-
-    .char-fade {
-      opacity: 0;
-      transform: translateY(6px);
-      animation: charIn 0.3s forwards ease;
-    }
-
-    @keyframes charIn {
-      to { opacity: 1; transform: translateY(0); }
+      background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8; padding: 6px 12px; border-radius: 10px; font-size: 13px; font-weight: 900; font-family: 'Courier New', Courier, monospace;
     }
 
     #game-toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-120px);
-      background: #0f172a;
-      border: 1px solid #38bdf8;
-      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
-      color: #fff;
-      padding: 14px 22px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 800;
-      z-index: 99999;
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      text-align: center;
-      pointer-events: none;
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-120px);
+      background: #0f172a; border: 1px solid #38bdf8; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+      color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 13px; font-weight: 800; z-index: 99999;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; pointer-events: none;
     }
-    #game-toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
+    #game-toast.show { transform: translateX(-50%) translateY(0); }
 
     .game-area {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      background: rgba(15, 18, 25, 0.8);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      overflow: hidden;
+      position: relative; width: 100%; height: 300px;
+      background: rgba(15, 18, 25, 0.8); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;
     }
-
-    .can-item {
-      position: absolute;
-      font-size: 36px;
-      cursor: pointer;
-      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .floating-text {
-      position: absolute;
-      color: #38bdf8;
-      font-weight: 900;
-      font-size: 16px;
-      pointer-events: none;
-      animation: floatUp 0.6s forwards ease-out;
-    }
+    .can-item { position: absolute; font-size: 36px; cursor: pointer; animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .floating-text { position: absolute; color: #38bdf8; font-weight: 900; font-size: 16px; pointer-events: none; animation: floatUp 0.6s forwards ease-out; }
 
     .modal-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0);
-      backdrop-filter: blur(0px);
-      -webkit-backdrop-filter: blur(0px);
-      z-index: 10000;
-      display: flex;
-      align-items: flex-end;
-      pointer-events: none;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+      z-index: 10000; display: flex; align-items: flex-end; pointer-events: none;
       transition: background 0.3s ease, backdrop-filter 0.3s ease;
     }
-    .modal-overlay.active {
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      pointer-events: auto;
-    }
-
-    #modal-chances.modal-overlay, #modal-car-chances.modal-overlay {
-      z-index: 20000 !important;
-    }
+    .modal-overlay.active { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); pointer-events: auto; }
 
     .modal-sheet {
-      width: 100%;
-      background: #0f1219;
-      border-top: 1px solid var(--border-color);
-      border-radius: 24px 24px 0 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-height: 90vh;
-      overflow-y: auto;
-      transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+      width: 100%; background: #0f1219; border-top: 1px solid var(--border-color);
+      border-radius: 24px 24px 0 0; padding: 20px; display: flex; flex-direction: column; gap: 12px;
+      max-height: 90vh; overflow-y: auto; transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .modal-overlay.active .modal-sheet {
-      transform: translateY(0);
-    }
+    .modal-overlay.active .modal-sheet { transform: translateY(0); }
 
-    .swipe-indicator {
-      width: 100%;
-      padding: 12px 0 6px 0;
-      display: flex;
-      justify-content: center;
-      cursor: grab;
-      touch-action: none;
-    }
-    .swipe-bar {
-      width: 44px;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.35);
-      border-radius: 3px;
-    }
+    .swipe-indicator { width: 100%; padding: 12px 0 6px 0; display: flex; justify-content: center; cursor: grab; touch-action: none; }
+    .swipe-bar { width: 44px; height: 5px; background: rgba(255, 255, 255, 0.35); border-radius: 3px; }
 
     .btn-main {
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(15, 23, 42, 0.4));
-      border: 1px solid rgba(56, 189, 248, 0.5);
-      color: #38bdf8;
-      padding: 14px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-      z-index: 5;
+      border: 1px solid rgba(56, 189, 248, 0.5); color: #38bdf8; padding: 14px; border-radius: 14px;
+      font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; transition: all 0.2s;
     }
     .btn-main:active { transform: scale(0.97); }
+    .btn-main:disabled { opacity: 0.3; pointer-events: none; border-color: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
 
-    .btn-main.x2-btn-glow {
-      background: linear-gradient(135deg, rgba(250, 204, 21, 0.3), rgba(15, 23, 42, 0.6)) !important;
-      border-color: #facc15 !important;
-      color: #facc15 !important;
-      box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
-    }
-
-    .btn-main:disabled {
-      opacity: 0.3;
-      pointer-events: none;
-      border-color: rgba(255, 255, 255, 0.1);
-      color: var(--text-muted);
-      box-shadow: none !important;
-    }
-
-    .chances-box {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .chance-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      font-weight: 700;
-    }
+    .chances-box { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .chance-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; }
 
     .bottom-bar {
-      position: fixed;
-      bottom: 0; left: 0;
-      width: 100%; height: 65px;
-      background: rgba(9, 10, 15, 0.95);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 9999;
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
+      background: rgba(9, 10, 15, 0.95); backdrop-filter: blur(16px); border-top: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-around; z-index: 9999;
     }
-
-    .tab-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
-      width: 50%;
-    }
+    .tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); cursor: pointer; font-size: 11px; font-weight: 700; width: 50%; }
     .tab-item.active { color: #38bdf8; }
 
-    @keyframes popIn {
-      0% { transform: scale(0); }
-      100% { transform: scale(1); }
-    }
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-30px); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+    @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-30px); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -939,10 +667,7 @@
 
     <div class="server-status">
       <span>EMPIRE CITY // NOIR-01</span>
-      <div class="status-online">
-        <span class="dot"></span>
-        <span>SECURE</span>
-      </div>
+      <div class="status-online"><span class="dot"></span><span>SECURE</span></div>
     </div>
 
     <!-- Профиль -->
@@ -961,7 +686,7 @@
       <div class="balance-grid">
         <div class="balance-card">
           <div class="balance-label">💵 Наличные</div>
-          <div class="balance-val" id="cash">5 000 ₽</div>
+          <div class="balance-val" id="cash">500 000 ₽</div>
         </div>
         <div class="balance-card">
           <div class="balance-label">💳 Счёт в банке</div>
@@ -1041,7 +766,7 @@
     <!-- ЭКРАН АВТОСАЛОНА -->
     <div id="screen-car-store" class="screen">
       <div style="font-size:14px; color:#38bdf8; font-weight:800;">🏎️ Автосалон «Empire Motors»</div>
-      <p style="font-size:11px; color:var(--text-muted);">Открывайте кейсы с автомобилями и сорвите джекпот.</p>
+      <p style="font-size:11px; color:var(--text-muted);">Открывайте кейсы с автомобилями в CS-стиле.</p>
       
       <div class="case-store-grid">
         <div class="case-card" onclick="openCaseModal('street')">
@@ -1098,7 +823,6 @@
     <div class="modal-sheet" id="sheet-chances">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">📊 Вероятность категорий номеров</div>
-      
       <div class="chances-box">
         <div class="chance-row"><span class="color-common" style="font-weight:900;">Обычный (Common)</span><span style="color:#fff;">76.5%</span></div>
         <div class="chance-row"><span class="color-rare" style="font-weight:900;">Редкий (Rare)</span><span style="color:#fff;">17.0%</span></div>
@@ -1114,7 +838,6 @@
     <div class="modal-sheet" id="sheet-car-chances">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;" id="car-chances-title">📊 Шансы кейса</div>
-      
       <div class="chances-box" id="car-chances-box"></div>
     </div>
   </div>
@@ -1156,7 +879,7 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ОТКРЫТИЯ КЕЙСА МАШИН -->
+  <!-- ШТОРКА ОТКРЫТИЯ КЕЙСА МАШИН В СТИЛЕ CS -->
   <div class="modal-overlay" id="modal-car-case" onclick="handleOverlayClick(event, 'modal-car-case')">
     <div class="modal-sheet" id="sheet-car-case">
       <div class="swipe-indicator"><div class="swipe-bar"></div></div>
@@ -1166,12 +889,10 @@
         <button class="btn-chances-small" onclick="openCarChances()"><span>📊</span> Шансы кейса</button>
       </div>
 
-      <div class="car-card-model glow-common" id="car-card-model-box">
-        <div class="sim-card-top">
-          <div class="sim-brand" id="car-case-brand">EMPIRE MOTORS</div>
-          <div class="sim-operator" id="car-case-op">АВТО</div>
-        </div>
-        <div class="sim-number-display" id="car-spin-display" style="background:rgba(3,7,18,0.7); font-size:15px !important;">Выбор автомобиля...</div>
+      <!-- ГОРИЗОНТАЛЬНАЯ РУЛЕТКА CS:GO -->
+      <div class="cs-roulette-container">
+        <div class="cs-roulette-pointer"></div>
+        <div class="cs-roulette-track" id="cs-track"></div>
       </div>
 
       <div class="external-info-bar">
@@ -1179,7 +900,7 @@
         <div class="external-rarity color-common" id="car-rarity-tag">Ожидание</div>
       </div>
 
-      <button class="btn-main" id="btn-open-car" onclick="startCarSpin()">📦 Открыть кейс</button>
+      <button class="btn-main" id="btn-open-car" onclick="startCarCSSpin()">📦 Открыть кейс</button>
       <button class="btn-main" id="btn-buy-car" disabled style="border-color:#38bdf8; color:#38bdf8;" onclick="confirmBuyCar()">🏎️ В гараж</button>
       <button class="btn-main" id="btn-sell-car" disabled style="background:rgba(239, 68, 68, 0.15); border-color:#ef4444; color:#fca5a5;" onclick="sellCurrentCar()">💰 Продать авто</button>
     </div>
@@ -1199,7 +920,7 @@
 
   <script>
     var player = {
-      cash: 500000, // Дадим чуть больше стартовых для теста автосалона
+      cash: 500000,
       bank: 0,
       activePhone: 'Не установлена',
       sims: [],
@@ -1211,43 +932,42 @@
     var currentRolledNum = null;
     var currentMarketVal = 150;
     var currentRarityKey = 'common';
-    var isSpinning = false;
     var hasActiveRoll = false; 
 
-    // Данные кейсов автосалона с картинками
+    // Данные кейсов автосалона (без картинок)
     var currentActiveCaseType = 'street';
     var currentRolledCar = null;
-    var hasActiveCarRoll = false;
+    var isCarSpinning = false;
 
     var carDatabase = {
       street: {
         title: 'Уличный Класс',
         price: 50000,
         items: [
-          { name: 'Лада 2107 «Urban Noir»', rarity: 'common', minVal: 15000, maxVal: 22000, chance: 0.78, img: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80' },
-          { name: 'ВАЗ-2109 Turbo', rarity: 'common', minVal: 15000, maxVal: 22000, chance: 0, img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Volkswagen Golf GTI Mk3', rarity: 'rare', minVal: 30000, maxVal: 38000, chance: 0.172, img: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=600&q=80' },
-          { name: 'BMW E36 325i', rarity: 'rare', minVal: 30000, maxVal: 38000, chance: 0, img: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Subaru Impreza WRX STI', rarity: 'epic', minVal: 45000, maxVal: 49000, chance: 0.042, img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Toyota Chaser JZX100', rarity: 'epic', minVal: 45000, maxVal: 49000, chance: 0, img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Nissan Skyline GT-R R34', rarity: 'legendary', minVal: 180000, maxVal: 250000, chance: 0.0055, img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Toyota Supra MK4', rarity: 'legendary', minVal: 180000, maxVal: 250000, chance: 0, img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Porsche 911 Turbo (964)', rarity: 'mythic', minVal: 1500000, maxVal: 1500000, chance: 0.0005, img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80' }
+          { name: 'Лада 2107 «Urban Noir»', rarity: 'common', minVal: 15000, maxVal: 22000, chance: 0.78 },
+          { name: 'ВАЗ-2109 Turbo', rarity: 'common', minVal: 15000, maxVal: 22000, chance: 0 },
+          { name: 'Volkswagen Golf GTI Mk3', rarity: 'rare', minVal: 30000, maxVal: 38000, chance: 0.172 },
+          { name: 'BMW E36 325i', rarity: 'rare', minVal: 30000, maxVal: 38000, chance: 0 },
+          { name: 'Subaru Impreza WRX STI', rarity: 'epic', minVal: 45000, maxVal: 49000, chance: 0.042 },
+          { name: 'Toyota Chaser JZX100', rarity: 'epic', minVal: 45000, maxVal: 49000, chance: 0 },
+          { name: 'Nissan Skyline GT-R R34', rarity: 'legendary', minVal: 180000, maxVal: 250000, chance: 0.0055 },
+          { name: 'Toyota Supra MK4', rarity: 'legendary', minVal: 180000, maxVal: 250000, chance: 0 },
+          { name: 'Porsche 911 Turbo (964)', rarity: 'mythic', minVal: 1500000, maxVal: 1500000, chance: 0.0005 }
         ]
       },
       luxury: {
         title: 'Элита Мегаполиса',
         price: 2500000,
         items: [
-          { name: 'BMW M5 E60', rarity: 'common', minVal: 900000, maxVal: 1200000, chance: 0.72, img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Mercedes-Benz E 63 AMG', rarity: 'common', minVal: 900000, maxVal: 1200000, chance: 0, img: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Audi RS6 Avant (C8)', rarity: 'rare', minVal: 1500000, maxVal: 1800000, chance: 0.22, img: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Porsche Panamera GTS', rarity: 'rare', minVal: 1500000, maxVal: 1800000, chance: 0, img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Mercedes-Maybach S 580', rarity: 'epic', minVal: 2350000, maxVal: 2450000, chance: 0.053, img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Porsche 911 GT3 RS', rarity: 'epic', minVal: 2350000, maxVal: 2450000, chance: 0, img: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Lamborghini Aventador SVJ', rarity: 'legendary', minVal: 8000000, maxVal: 12000000, chance: 0.0065, img: 'https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Ferrari 812 Superfast', rarity: 'legendary', minVal: 8000000, maxVal: 12000000, chance: 0, img: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=600&q=80' },
-          { name: 'Bugatti Chiron Super Sport', rarity: 'mythic', minVal: 50000000, maxVal: 50000000, chance: 0.0005, img: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80' }
+          { name: 'BMW M5 E60', rarity: 'common', minVal: 900000, maxVal: 1200000, chance: 0.72 },
+          { name: 'Mercedes-Benz E 63 AMG', rarity: 'common', minVal: 900000, maxVal: 1200000, chance: 0 },
+          { name: 'Audi RS6 Avant (C8)', rarity: 'rare', minVal: 1500000, maxVal: 1800000, chance: 0.22 },
+          { name: 'Porsche Panamera GTS', rarity: 'rare', minVal: 1500000, maxVal: 1800000, chance: 0 },
+          { name: 'Mercedes-Maybach S 580', rarity: 'epic', minVal: 2350000, maxVal: 2450000, chance: 0.053 },
+          { name: 'Porsche 911 GT3 RS', rarity: 'epic', minVal: 2350000, maxVal: 2450000, chance: 0 },
+          { name: 'Lamborghini Aventador SVJ', rarity: 'legendary', minVal: 8000000, maxVal: 12000000, chance: 0.0065 },
+          { name: 'Ferrari 812 Superfast', rarity: 'legendary', minVal: 8000000, maxVal: 12000000, chance: 0 },
+          { name: 'Bugatti Chiron Super Sport', rarity: 'mythic', minVal: 50000000, maxVal: 50000000, chance: 0.0005 }
         ]
       }
     };
@@ -1264,14 +984,10 @@
       void toast.offsetWidth;
       toast.innerText = text;
       toast.classList.add('show');
-      toastTimeout = setTimeout(function() {
-        toast.classList.remove('show');
-      }, duration);
+      toastTimeout = setTimeout(function() { toast.classList.remove('show'); }, duration);
     }
 
-    function isCurrentSpinX2() {
-      return (player.spinsCount % 5 === 4);
-    }
+    function isCurrentSpinX2() { return (player.spinsCount % 5 === 4); }
 
     function updateX2UI() {
       var box = document.getElementById('x2-box');
@@ -1283,24 +999,18 @@
       var btnSpin = document.getElementById('btn-spin');
 
       var currentStepInCycle = (player.spinsCount % 5) + 1;
-      var percent = (currentStepInCycle / 5) * 100;
-      fill.style.width = percent + '%';
+      fill.style.width = ((currentStepInCycle / 5) * 100) + '%';
       counter.innerText = currentStepInCycle + ' / 5';
 
       if (isCurrentSpinX2()) {
-        box.classList.add('charged');
-        title.innerText = '🔥 СЛЕДУЮЩИЙ X2!';
-        sheet.classList.add('x2-active-sheet');
-        modelBox.classList.add('x2-card-glow');
+        box.classList.add('charged'); title.innerText = '🔥 СЛЕДУЮЩИЙ X2!';
+        sheet.classList.add('x2-active-sheet'); modelBox.classList.add('x2-card-glow');
         if (!hasActiveRoll) btnSpin.classList.add('x2-btn-glow');
         document.body.classList.add('x2-active-bg');
       } else {
-        box.classList.remove('charged');
-        title.innerText = '⚡ БЛИЖАЙШИЙ X2';
-        sheet.classList.remove('x2-active-sheet');
-        modelBox.classList.remove('x2-card-glow');
-        btnSpin.classList.remove('x2-btn-glow');
-        document.body.classList.remove('x2-active-bg');
+        box.classList.remove('charged'); title.innerText = '⚡ БЛИЖАЙШИЙ X2';
+        sheet.classList.remove('x2-active-sheet'); modelBox.classList.remove('x2-card-glow');
+        btnSpin.classList.remove('x2-btn-glow'); document.body.classList.remove('x2-active-bg');
       }
     }
 
@@ -1308,15 +1018,12 @@
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
+        var osc = audioCtx.createOscillator(); var gain = audioCtx.createGain();
         if (isX2Scroll) {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime((freq || 440) * 1.5, audioCtx.currentTime);
+          osc.type = 'square'; osc.frequency.setValueAtTime((freq || 440) * 1.5, audioCtx.currentTime);
           gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
         } else {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
           gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
         }
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
@@ -1331,10 +1038,8 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
         var now = audioCtx.currentTime;
         [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
-          let osc = audioCtx.createOscillator();
-          let gain = audioCtx.createGain();
-          osc.frequency.setValueAtTime(f, now + i * 0.08);
-          gain.gain.setValueAtTime(0.06, now + i * 0.08);
+          let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+          osc.frequency.setValueAtTime(f, now + i * 0.08); gain.gain.setValueAtTime(0.06, now + i * 0.08);
           gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
           osc.connect(gain); gain.connect(audioCtx.destination);
           osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.2);
@@ -1392,20 +1097,17 @@
       document.getElementById('user-phone').innerText = '📱 SIM: ' + player.activePhone;
       
       var invHeader = document.getElementById('inv-header-title');
-      if (invHeader) {
-        invHeader.innerText = '🎒 Ваш Инвентарь (' + player.sims.length + ' / ' + player.maxSimSlots + ')';
-      }
+      if (invHeader) invHeader.innerText = '🎒 Ваш Инвентарь (' + player.sims.length + ' / ' + player.maxSimSlots + ')';
 
       updateX2UI();
 
-      // Отрисовка SIM-карт
+      // Инвентарь SIM
       var inv = document.getElementById('inventory-list');
       if (player.sims.length > 0) {
         inv.innerHTML = player.sims.map(function(s, index) {
           var isEquipped = (player.activePhone === s.number);
           var isExpanded = (expandedSimIndex === index);
           var simRarity = s.rarity || evaluateNumber(s.number).rarity;
-          
           return `
             <div class="mini-sim-wrapper ${isExpanded ? 'expanded' : ''}">
               <div class="mini-sim-card inv-glow-${simRarity} ${isEquipped ? 'active-equipped' : ''}" onclick="toggleSimCard(${index})">
@@ -1429,19 +1131,20 @@
         inv.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding-top: 5px;">У вас пока нет активных SIM-карт.</div>';
       }
 
-      // Отрисовка Гаража (Автомобилей)
+      // Инвентарь Гараж
       var garage = document.getElementById('garage-list');
       if (player.cars && player.cars.length > 0) {
         garage.innerHTML = player.cars.map(function(c, index) {
           var isExpanded = (expandedCarIndex === index);
           return `
             <div class="mini-car-wrapper ${isExpanded ? 'expanded' : ''}">
-              <div class="mini-car-card inv-glow-${c.rarity}" style="background-image: url('${c.img}')" onclick="toggleCarCard(${index})">
+              <div class="mini-car-card inv-glow-${c.rarity}" onclick="toggleCarCard(${index})">
                 <div class="mini-car-top">
-                  <div class="mini-brand" style="background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;">EMPIRE MOTORS</div>
+                  <div class="mini-brand">EMPIRE MOTORS</div>
+                  <span style="font-size:18px;">🏎️</span>
                 </div>
                 <div class="mini-car-info">
-                  <span>🏎️ ${c.name}</span>
+                  <span>${c.name}</span>
                   <span class="color-${c.rarity}">${c.val.toLocaleString('ru-RU')} ₽</span>
                 </div>
               </div>
@@ -1460,35 +1163,26 @@
 
     function toggleSimCard(index) {
       expandedSimIndex = (expandedSimIndex === index) ? null : index;
-      expandedCarIndex = null;
-      playSound(400);
-      updateUI();
+      expandedCarIndex = null; playSound(400); updateUI();
     }
 
     function toggleCarCard(index) {
       expandedCarIndex = (expandedCarIndex === index) ? null : index;
-      expandedSimIndex = null;
-      playSound(400);
-      updateUI();
+      expandedSimIndex = null; playSound(400); updateUI();
     }
 
     function equipSim(index) {
       player.activePhone = player.sims[index].number;
-      playSound(520);
-      showToast('📱 Сим-карта установлена как основная!');
-      updateUI();
+      playSound(520); showToast('📱 Сим-карта установлена!'); updateUI();
     }
 
     function unequipSim(index) {
       player.activePhone = 'Не установлена';
-      playSound(350);
-      showToast('❌ Сим-карта снята');
-      updateUI();
+      playSound(350); showToast('❌ Сим-карта снята'); updateUI();
     }
 
     function topUpSim(index) {
-      playSound(300);
-      showToast('⚡ Функция пополнения баланса находится в разработке', 2000);
+      playSound(300); showToast('⚡ Функция в разработке', 2000);
     }
 
     function sellSimFromInv(index) {
@@ -1496,26 +1190,20 @@
       player.cash += sim.val;
       if (player.activePhone === sim.number) player.activePhone = 'Не установлена';
       player.sims.splice(index, 1);
-      expandedSimIndex = null;
-      playSuccessSound();
-      showToast('💰 Номер продан за ' + sim.val.toLocaleString('ru-RU') + ' ₽!');
-      updateUI();
+      expandedSimIndex = null; playSuccessSound();
+      showToast('💰 Номер продан за ' + sim.val.toLocaleString('ru-RU') + ' ₽!'); updateUI();
     }
 
     function sellCarFromGarage(index) {
       var car = player.cars[index];
       player.cash += car.val;
       player.cars.splice(index, 1);
-      expandedCarIndex = null;
-      playSuccessSound();
-      showToast('💰 Автомобиль продан за ' + car.val.toLocaleString('ru-RU') + ' ₽!');
-      updateUI();
+      expandedCarIndex = null; playSuccessSound();
+      showToast('💰 Авто продан за ' + car.val.toLocaleString('ru-RU') + ' ₽!'); updateUI();
     }
 
     function claimBonus() {
-      player.cash += 2500;
-      playSound(520);
-      updateUI();
+      player.cash += 2500; playSound(520); updateUI();
       showToast('🎁 Ресурс зачислен: +2 500 ₽!');
     }
 
@@ -1544,17 +1232,7 @@
     }
 
     function openModal(id) {
-      var modal = document.getElementById(id);
-      modal.classList.add('active');
-      if (id === 'modal-buy-sim' && !hasActiveRoll) {
-        resetCardGlow('common');
-        document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
-        document.getElementById('market-value-text').innerText = 'Оценка: —';
-        setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-        document.getElementById('btn-spin').disabled = false;
-        document.getElementById('btn-buy-sim').disabled = true;
-        document.getElementById('btn-sell-sim').disabled = true;
-      }
+      document.getElementById(id).classList.add('active');
       playSound(450);
     }
 
@@ -1566,41 +1244,8 @@
       if (event.target.id === id) closeModal(id);
     }
 
-    // Свайп шторки вниз
-    document.querySelectorAll('.modal-sheet').forEach(sheet => {
-      let overlay = sheet.closest('.modal-overlay');
-      let startY = 0, currentY = 0, isDragging = false;
-      sheet.addEventListener('touchstart', e => {
-        if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
-        if (sheet.scrollTop <= 5) { startY = e.touches[0].clientY; isDragging = true; sheet.style.transition = 'none'; }
-      }, {passive: true});
-      sheet.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-        currentY = e.touches[0].clientY;
-        let diff = currentY - startY;
-        if (diff > 0) sheet.style.transform = `translateY(${diff}px)`;
-      }, {passive: true});
-      sheet.addEventListener('touchend', e => {
-        if (!isDragging) return;
-        isDragging = false;
-        sheet.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
-        if ((currentY - startY) > 90) closeModal(overlay.id);
-        sheet.style.transform = 'translateY(0)';
-      }, {passive: true});
-    });
-
     function setCardGlow(rarity) {
-      var modelBox = document.getElementById('sim-card-model-box');
-      modelBox.className = 'sim-card-model glow-' + rarity;
-    }
-    function resetCardGlow(rarity) {
-      var modelBox = document.getElementById('sim-card-model-box');
-      modelBox.className = 'sim-card-model glow-' + rarity;
-    }
-
-    function setCarCardGlow(rarity) {
-      var modelBox = document.getElementById('car-card-model-box');
-      modelBox.className = 'car-card-model glow-' + rarity;
+      document.getElementById('sim-card-model-box').className = 'sim-card-model glow-' + rarity;
     }
 
     function evaluateNumber(num) {
@@ -1632,24 +1277,10 @@
       return '+7 (777) ' + p1 + '-' + p2 + '-' + p3;
     }
 
-    function animateTextSmooth(element, text) {
-      element.innerHTML = '';
-      element.classList.remove('scanning-matrix');
-      for (var i = 0; i < text.length; i++) {
-        var span = document.createElement('span');
-        span.className = 'char-fade';
-        span.innerText = text[i];
-        span.style.animationDelay = (i * 0.03) + 's';
-        element.appendChild(span);
-      }
-    }
-
     function tryStartSimSpin() {
-      if (hasActiveRoll) { playSound(220); showToast('⚠️ Заберите или продайте номер', 2000); return; }
+      if (hasActiveRoll) { showToast('⚠️ Заберите или продайте номер'); return; }
       if (player.cash < 1500) { showToast('❌ Недостаточно средств!'); return; }
-      player.cash -= 1500;
-      updateUI();
-      hasActiveRoll = true;
+      player.cash -= 1500; updateUI(); hasActiveRoll = true;
       var display = document.getElementById('spin-display');
       var valText = document.getElementById('market-value-text');
       var rarityTag = document.getElementById('sim-rarity-tag');
@@ -1658,14 +1289,11 @@
       var btnSell = document.getElementById('btn-sell-sim');
       
       btnSpin.disabled = true; btnBuy.disabled = true; btnSell.disabled = true;
-      display.classList.add('scanning-matrix');
-      setRarityStyle(rarityTag, 'common', 'Сканирование...');
-      valText.innerText = 'Оценка: анализ...';
+      setRarityStyle(rarityTag, 'common', 'Сканирование...'); valText.innerText = 'Оценка: анализ...';
 
       var count = 0;
       var interval = setInterval(function() {
-        display.innerText = generateRandomPhone();
-        playSound(300 + (count % 10) * 20, isCurrentSpinX2());
+        display.innerText = generateRandomPhone(); playSound(300 + (count % 10) * 20, isCurrentSpinX2());
         count += 50;
         if (count >= 2500) {
           clearInterval(interval);
@@ -1679,8 +1307,7 @@
           setRarityStyle(rarityTag, currentRarityKey, evaluated.name + (activeX2 ? ' (X2!)' : ''));
           valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
           btnSell.innerText = '💰 Продать за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
-
-          animateTextSmooth(display, currentRolledNum);
+          display.innerText = currentRolledNum;
           playRaritySound(currentRarityKey);
           player.spinsCount++;
           btnSpin.disabled = false; btnSpin.innerText = '🔒 Требуется решение';
@@ -1692,62 +1319,52 @@
 
     function confirmBuySim() {
       if (!currentRolledNum) return;
-      if (player.sims.length >= player.maxSimSlots) {
-        showToast('❌ Инвентарь заполнен (' + player.sims.length + '/' + player.maxSimSlots + ')!', 2000);
-        return;
-      }
+      if (player.sims.length >= player.maxSimSlots) { showToast('❌ Инвентарь заполнен!', 2000); return; }
       player.sims.push({ number: currentRolledNum, val: currentMarketVal, rarity: currentRarityKey });
-      player.activePhone = currentRolledNum;
-      updateUI();
-      playSuccessSound();
-      try { confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 }, zIndex: 30000 }); } catch(e) {}
+      player.activePhone = currentRolledNum; updateUI(); playSuccessSound();
       showToast('📱 Сим-карта добавлена в инвентарь!');
       hasActiveRoll = false; currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-      resetCardGlow('common');
+      setCardGlow('common');
       document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
-      document.getElementById('btn-buy-sim').disabled = true;
-      document.getElementById('btn-sell-sim').disabled = true;
+      document.getElementById('btn-buy-sim').disabled = true; document.getElementById('btn-sell-sim').disabled = true;
       updateX2UI();
     }
 
     function sellCurrentSim() {
       if (!currentRolledNum) return;
-      player.cash += currentMarketVal;
-      updateUI();
-      playSuccessSound();
+      player.cash += currentMarketVal; updateUI(); playSuccessSound();
       showToast('💰 Номер продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!');
       hasActiveRoll = false; currentRolledNum = null;
       document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
       document.getElementById('market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
-      resetCardGlow('common');
+      setCardGlow('common');
       document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
-      document.getElementById('btn-buy-sim').disabled = true;
-      document.getElementById('btn-sell-sim').disabled = true;
+      document.getElementById('btn-buy-sim').disabled = true; document.getElementById('btn-sell-sim').disabled = true;
       updateX2UI();
     }
 
-    // ЛОГИКА АВТОСАЛОНА И КЕЙСОВ
+    // ЛОГИКА АВТОСАЛОНА (РУЛЕТКА CS:GO)
     function openCaseModal(type) {
       currentActiveCaseType = type;
       var caseData = carDatabase[type];
       document.getElementById('case-modal-title').innerText = 'Кейс «' + caseData.title + '»';
       document.getElementById('btn-open-car').innerText = '📦 Открыть кейс (' + caseData.price.toLocaleString('ru-RU') + ' ₽)';
       
-      hasActiveCarRoll = false;
       currentRolledCar = null;
-      document.getElementById('car-spin-display').innerText = 'Нажмите кнопку открытия';
+      isCarSpinning = false;
       document.getElementById('car-market-value-text').innerText = 'Оценка: —';
       setRarityStyle(document.getElementById('car-rarity-tag'), 'common', 'Ожидание');
-      setCarCardGlow('common');
-      document.getElementById('car-card-model-box').style.backgroundImage = 'none';
 
       document.getElementById('btn-open-car').disabled = false;
       document.getElementById('btn-buy-car').disabled = true;
       document.getElementById('btn-sell-car').disabled = true;
+
+      // Первичная заполнение ленты случайными авто перед открытием
+      buildStaticCSPreviewTrack(type);
 
       openModal('modal-car-case');
     }
@@ -1756,7 +1373,6 @@
       var caseData = carDatabase[currentActiveCaseType];
       var box = document.getElementById('car-chances-box');
       document.getElementById('car-chances-title').innerText = '📊 Шансы кейса «' + caseData.title + '»';
-      
       box.innerHTML = `
         <div class="chance-row"><span class="color-common" style="font-weight:900;">Обычный (Common)</span><span style="color:#fff;">~72-78%</span></div>
         <div class="chance-row"><span class="color-rare" style="font-weight:900;">Редкий (Rare)</span><span style="color:#fff;">~17-22%</span></div>
@@ -1771,93 +1387,128 @@
       var items = carDatabase[type].items;
       var rand = Math.random();
       var cumulative = 0;
-      
-      // Имитируем падение по шансам
       for (var i = 0; i < items.length; i++) {
         if (items[i].chance > 0) cumulative += items[i].chance;
         if (rand <= cumulative || i === items.length - 1) {
           var selected = items[i];
-          // Если у машины диапазон оценки
           var val = Math.floor(selected.minVal + Math.random() * (selected.maxVal - selected.minVal + 1));
-          return { name: selected.name, rarity: selected.rarity, val: val, img: selected.img };
+          return { name: selected.name, rarity: selected.rarity, val: val };
         }
       }
       return items[0];
     }
 
-    function startCarSpin() {
-      var caseData = carDatabase[currentActiveCaseType];
-      if (player.cash < caseData.price) {
-        showToast('❌ Недостаточно средств для открытия кейса!');
-        return;
+    function getRandomItemFromCase(type) {
+      var items = carDatabase[type].items;
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function buildStaticCSPreviewTrack(type) {
+      var track = document.getElementById('cs-track');
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0px)';
+      track.innerHTML = '';
+      for (var i = 0; i < 10; i++) {
+        var item = getRandomItemFromCase(type);
+        track.appendChild(createCSCardElem(item));
       }
+    }
+
+    function createCSCardElem(item) {
+      var card = document.createElement('div');
+      card.className = 'cs-item-card border-' + item.rarity;
+      card.innerHTML = `
+        <div class="cs-item-icon">🏎️</div>
+        <div class="cs-item-name">${item.name}</div>
+      `;
+      return card;
+    }
+
+    function startCarCSSpin() {
+      if (isCarSpinning) return;
+      var caseData = carDatabase[currentActiveCaseType];
+      if (player.cash < caseData.price) { showToast('❌ Недостаточно средств!'); return; }
 
       player.cash -= caseData.price;
       updateUI();
-      hasActiveCarRoll = true;
+      isCarSpinning = true;
 
-      var display = document.getElementById('car-spin-display');
-      var valText = document.getElementById('car-market-value-text');
-      var rarityTag = document.getElementById('car-rarity-tag');
       var btnOpen = document.getElementById('btn-open-car');
       var btnBuy = document.getElementById('btn-buy-car');
       var btnSell = document.getElementById('btn-sell-car');
-      var modelBox = document.getElementById('car-card-model-box');
-
       btnOpen.disabled = true; btnBuy.disabled = true; btnSell.disabled = true;
-      modelBox.style.backgroundImage = 'none';
-      modelBox.classList.add('scanning-matrix');
-      setRarityStyle(rarityTag, 'common', 'Розыгрыш...');
-      valText.innerText = 'Оценка: анализ...';
 
-      var count = 0;
-      var interval = setInterval(function() {
-        var randItem = carDatabase[currentActiveCaseType].items[Math.floor(Math.random() * carDatabase[currentActiveCaseType].items.length)];
-        display.innerText = randItem.name;
-        playSound(350, false);
-        count += 50;
+      var track = document.getElementById('cs-track');
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0px)';
+      track.innerHTML = '';
 
-        if (count >= 2500) {
-          clearInterval(interval);
-          currentRolledCar = rollCarFromCase(currentActiveCaseType);
+      // Генерируем выпавшее авто
+      currentRolledCar = rollCarFromCase(currentActiveCaseType);
 
-          modelBox.classList.remove('scanning-matrix');
-          modelBox.style.backgroundImage = 'url("' + currentRolledCar.img + '")';
-          setCarCardGlow(currentRolledCar.rarity);
-
-          var rarityNameMap = { common: 'Обычный', rare: 'Редкий', epic: 'Эпический', legendary: 'Легендарный', mythic: 'МИФИЧЕСКИЙ ДЖЕКПОТ!' };
-          setRarityStyle(rarityTag, currentRolledCar.rarity, rarityNameMap[currentRolledCar.rarity]);
-          valText.innerText = 'Оценка: ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
-          btnSell.innerText = '💰 Продать за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
-
-          display.innerHTML = '';
-          var span = document.createElement('span');
-          span.className = 'char-fade';
-          span.innerText = currentRolledCar.name;
-          display.appendChild(span);
-
-          playRaritySound(currentRolledCar.rarity);
-
-          if (currentRolledCar.rarity === 'mythic' || currentRolledCar.rarity === 'legendary') {
-            try { confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 }, zIndex: 30000 }); } catch(e){}
-          }
-
-          btnOpen.disabled = false;
-          btnOpen.innerText = '📦 Открыть еще';
-          btnBuy.disabled = false;
-          btnSell.disabled = false;
+      // Генерируем 40 случайных элементов + вставляем на 32-ю позицию победителя
+      var winningIndex = 32;
+      var trackItems = [];
+      for (var i = 0; i < 45; i++) {
+        if (i === winningIndex) {
+          trackItems.push(currentRolledCar);
+        } else {
+          trackItems.push(getRandomItemFromCase(currentActiveCaseType));
         }
+      }
+
+      trackItems.forEach(item => {
+        track.appendChild(createCSCardElem(item));
+      });
+
+      // Считаем точное смещение рулетки под центральный указатель
+      // 110px ширина карточки + 10px gap = 120px на один элемент
+      // Рассчитываем смещение до победной 32-й карточки по центру контейнера
+      var containerWidth = document.querySelector('.cs-roulette-container').clientWidth;
+      var itemFullWidth = 120; // 110 + 10
+      var targetOffset = (winningIndex * itemFullWidth) - (containerWidth / 2) + (110 / 2) + 5;
+
+      // Запускаем анимированную прокрутку
+      setTimeout(function() {
+        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.1, 1)';
+        track.style.transform = 'translateX(-' + targetOffset + 'px)';
       }, 50);
+
+      // Звуковые щелчки во время вращения
+      var soundInterval = setInterval(function() {
+        playSound(400, false);
+      }, 120);
+
+      setTimeout(function() {
+        clearInterval(soundInterval);
+        isCarSpinning = false;
+
+        var rarityTag = document.getElementById('car-rarity-tag');
+        var valText = document.getElementById('car-market-value-text');
+        var rarityNameMap = { common: 'Обычный', rare: 'Редкий', epic: 'Эпический', legendary: 'Легендарный', mythic: 'МИФИЧЕСКИЙ ДЖЕКПОТ!' };
+        
+        setRarityStyle(rarityTag, currentRolledCar.rarity, rarityNameMap[currentRolledCar.rarity]);
+        valText.innerText = 'Оценка: ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
+        btnSell.innerText = '💰 Продать за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
+
+        playRaritySound(currentRolledCar.rarity);
+
+        if (currentRolledCar.rarity === 'mythic' || currentRolledCar.rarity === 'legendary') {
+          try { confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 }, zIndex: 30000 }); } catch(e){}
+        }
+
+        btnOpen.disabled = false;
+        btnOpen.innerText = '📦 Открыть еще';
+        btnBuy.disabled = false;
+        btnSell.disabled = false;
+      }, 5100);
     }
 
     function confirmBuyCar() {
       if (!currentRolledCar) return;
       player.cars.push(currentRolledCar);
-      updateUI();
-      playSuccessSound();
+      updateUI(); playSuccessSound();
       showToast('🏎️ Автомобиль добавлен в гараж!');
-      
-      hasActiveCarRoll = false;
       currentRolledCar = null;
       closeModal('modal-car-case');
     }
@@ -1865,16 +1516,13 @@
     function sellCurrentCar() {
       if (!currentRolledCar) return;
       player.cash += currentRolledCar.val;
-      updateUI();
-      playSuccessSound();
+      updateUI(); playSuccessSound();
       showToast('💰 Авто продано за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽!');
-
-      hasActiveCarRoll = false;
       currentRolledCar = null;
       closeModal('modal-car-case');
     }
 
-    // КЛИКЕР (Уличный сбор)
+    // КЛИКЕР
     function spawnCan() {
       var area = document.getElementById('game-area');
       var screenWork = document.getElementById('screen-work');
@@ -1888,8 +1536,7 @@
       can.onclick = function() {
         playSound(650);
         var reward = Math.floor(Math.random() * 20) + 15;
-        player.cash += reward;
-        updateUI();
+        player.cash += reward; updateUI();
         var floatText = document.createElement('div');
         floatText.className = 'floating-text'; floatText.innerText = '+' + reward + ' ₽';
         floatText.style.left = x + 'px'; floatText.style.top = y + 'px';
