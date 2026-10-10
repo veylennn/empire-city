@@ -340,30 +340,12 @@
       box-shadow: 0 -10px 40px rgba(250, 204, 21, 0.25);
     }
 
-    .sim-card-container {
-      position: relative;
-      width: 100%;
-      border-radius: 18px;
-      padding: 4px;
-      transition: box-shadow 0.5s ease;
-    }
-
-    .glow-common { box-shadow: 0 0 25px rgba(100, 116, 139, 0.3); }
-    .glow-rare { box-shadow: 0 0 30px rgba(56, 189, 248, 0.5); }
-    .glow-epic { box-shadow: 0 0 35px rgba(168, 85, 247, 0.6); }
-    .glow-legendary { box-shadow: 0 0 40px rgba(250, 204, 21, 0.7); }
-    .glow-mythic { box-shadow: 0 0 50px rgba(239, 68, 68, 0.8); animation: pulseMythic 1s infinite alternate; }
-
-    @keyframes pulseMythic {
-      0% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); }
-      100% { box-shadow: 0 0 60px rgba(239, 68, 68, 1); }
-    }
-
+    /* ИСПРАВЛЕНО: Свечение применяется к самой карточке без темных углов */
     .sim-card-model {
       width: 100%;
       height: 165px;
       background: linear-gradient(135deg, #111827 0%, #030712 100%);
-      border-radius: 15px;
+      border-radius: 16px;
       border: 1px solid rgba(56, 189, 248, 0.4);
       padding: 16px;
       display: flex;
@@ -372,12 +354,22 @@
       position: relative;
       overflow: hidden;
       color: #fff;
-      transition: border-color 0.3s ease;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glow-common { box-shadow: 0 0 20px rgba(100, 116, 139, 0.3); }
+    .glow-rare { box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
+    .glow-epic { box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); }
+    .glow-legendary { box-shadow: 0 0 35px rgba(250, 204, 21, 0.7); }
+    .glow-mythic { box-shadow: 0 0 45px rgba(239, 68, 68, 0.8); animation: pulseMythic 1s infinite alternate; }
+
+    @keyframes pulseMythic {
+      0% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
+      100% { box-shadow: 0 0 50px rgba(239, 68, 68, 1); }
     }
 
     .sim-card-model.x2-card-glow {
       border-color: #facc15 !important;
-      box-shadow: inset 0 0 15px rgba(250, 204, 21, 0.3);
     }
 
     .sim-card-model.holo-active::before {
@@ -733,17 +725,17 @@
 
     .swipe-indicator {
       width: 100%;
-      padding: 10px 0;
+      padding: 12px 0 6px 0;
       display: flex;
       justify-content: center;
       cursor: grab;
       touch-action: none;
     }
     .swipe-bar {
-      width: 40px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 2px;
+      width: 44px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 3px;
     }
 
     .btn-main {
@@ -950,7 +942,7 @@
   <!-- ШТОРКА: ТАБЛИЦА ШАНСОВ -->
   <div class="modal-overlay" id="modal-chances" onclick="handleOverlayClick(event, 'modal-chances')">
     <div class="modal-sheet" id="sheet-chances">
-      <div class="swipe-indicator" id="swipe-chances"><div class="swipe-bar"></div></div>
+      <div class="swipe-indicator"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;">📊 Вероятность категорий номеров</div>
       <p style="font-size:11px; color:var(--text-muted); text-align:center;">Шансы выпадения при генерации:</p>
       
@@ -982,7 +974,7 @@
   <!-- ШТОРКА ПОКУПКИ СИМ-КАРТЫ -->
   <div class="modal-overlay" id="modal-buy-sim" onclick="handleOverlayClick(event, 'modal-buy-sim')">
     <div class="modal-sheet" id="sheet-buy-sim">
-      <div class="swipe-indicator" id="swipe-buy"><div class="swipe-bar"></div></div>
+      <div class="swipe-indicator"><div class="swipe-bar"></div></div>
       <div style="font-size:15px; color:#38bdf8; font-weight:800; text-align:center;" id="modal-title-text">Терминал связи</div>
 
       <div class="top-action-row">
@@ -1000,17 +992,16 @@
         </div>
       </div>
 
-      <div class="sim-card-container glow-common" id="sim-container-glow">
-        <div class="sim-card-model" id="sim-card-model-box">
-          <div class="sim-card-top">
-            <div class="sim-brand">EMPIRE SECURE</div>
-            <div class="sim-operator">RU</div>
-          </div>
-
-          <div class="sim-chip"></div>
-          
-          <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
+      <!-- ИСПРАВЛЕНО: Прямое скругление без внешних углов -->
+      <div class="sim-card-model glow-common" id="sim-card-model-box">
+        <div class="sim-card-top">
+          <div class="sim-brand">EMPIRE SECURE</div>
+          <div class="sim-operator">RU</div>
         </div>
+
+        <div class="sim-chip"></div>
+        
+        <div class="sim-number-display" id="spin-display">+7 (777) ???-??-??</div>
       </div>
 
       <div class="external-info-bar">
@@ -1360,35 +1351,41 @@
       }
     }
 
-    /* ИСПРАВЛЕННЫЙ СВАЙП: свайпаем только за индикатор, чтобы кнопки внутри шторки не блокировались */
-    document.querySelectorAll('.swipe-indicator').forEach(indicator => {
-      let overlay = indicator.closest('.modal-overlay');
-      let sheet = overlay.querySelector('.modal-sheet');
+    /* ИСПРАВЛЕННЫЙ СВАЙП ШТОРКИ ВНИЗ ПАЛЬЦЕМ */
+    document.querySelectorAll('.modal-sheet').forEach(sheet => {
+      let overlay = sheet.closest('.modal-overlay');
       let startY = 0;
       let currentY = 0;
       let isDragging = false;
 
-      indicator.addEventListener('touchstart', e => {
-        startY = e.touches[0].clientY;
-        isDragging = true;
-        sheet.style.transition = 'none';
+      sheet.addEventListener('touchstart', e => {
+        let targetTag = e.target.tagName.toLowerCase();
+        if (targetTag === 'button' || e.target.closest('button')) return;
+
+        if (sheet.scrollTop <= 5) {
+          startY = e.touches[0].clientY;
+          isDragging = true;
+          sheet.style.transition = 'none';
+        }
       }, {passive: true});
 
-      indicator.addEventListener('touchmove', e => {
+      sheet.addEventListener('touchmove', e => {
         if (!isDragging) return;
         currentY = e.touches[0].clientY;
         let diff = currentY - startY;
+
         if (diff > 0) {
           sheet.style.transform = `translateY(${diff}px)`;
         }
       }, {passive: true});
 
-      indicator.addEventListener('touchend', e => {
+      sheet.addEventListener('touchend', e => {
         if (!isDragging) return;
         isDragging = false;
         sheet.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
         let diff = currentY - startY;
-        if (diff > 60) {
+
+        if (diff > 90) {
           closeModal(overlay.id);
         }
         sheet.style.transform = 'translateY(0)';
@@ -1396,10 +1393,8 @@
     });
 
     function setCardGlow(rarity) {
-      var container = document.getElementById('sim-container-glow');
       var modelBox = document.getElementById('sim-card-model-box');
-      
-      container.className = 'sim-container-glow glow-' + rarity;
+      modelBox.className = 'sim-card-model glow-' + rarity;
       if (rarity === 'legendary' || rarity === 'mythic') {
         modelBox.classList.add('holo-active');
       } else {
@@ -1408,9 +1403,8 @@
     }
 
     function resetCardGlow(rarity) {
-      var container = document.getElementById('sim-container-glow');
       var modelBox = document.getElementById('sim-card-model-box');
-      container.className = 'sim-card-container glow-' + rarity;
+      modelBox.className = 'sim-card-model glow-' + rarity;
       modelBox.classList.remove('holo-active');
     }
 
