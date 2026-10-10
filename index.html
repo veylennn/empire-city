@@ -1293,4 +1293,255 @@
           currentRarityKey = evaluated.rarity;
 
           setCardGlow(currentRarityKey);
-          setRarityStyle(rarityTag, currentRarityKey
+          setRarityStyle(rarityTag, currentRarityKey, evaluated.name + (activeX2 ? ' (X2!)' : ''));
+          valText.innerText = 'Оценка: ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
+          btnSell.innerText = '💰 Продать за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽';
+          display.innerText = currentRolledNum;
+          playRaritySound(currentRarityKey);
+          player.spinsCount++;
+          btnSpin.disabled = false; btnSpin.innerText = '🔒 Требуется решение';
+          btnBuy.disabled = false; btnSell.disabled = false;
+          updateX2UI();
+        }
+      }, 50);
+    }
+
+    function confirmBuySim() {
+      if (!currentRolledNum) return;
+      if (player.sims.length >= player.maxSimSlots) { showToast('❌ Инвентарь заполнен!', 2000); return; }
+      player.sims.push({ number: currentRolledNum, val: currentMarketVal, rarity: currentRarityKey });
+      player.activePhone = currentRolledNum; updateUI(); playSuccessSound();
+      showToast('📱 Сим-карта добавлена в инвентарь!');
+      hasActiveRoll = false; currentRolledNum = null;
+      document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+      document.getElementById('market-value-text').innerText = 'Оценка: —';
+      setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
+      setCardGlow('common');
+      document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
+      document.getElementById('btn-buy-sim').disabled = true; document.getElementById('btn-sell-sim').disabled = true;
+      updateX2UI();
+    }
+
+    function sellCurrentSim() {
+      if (!currentRolledNum) return;
+      player.cash += currentMarketVal; updateUI(); playSuccessSound();
+      showToast('💰 Номер продан за ' + currentMarketVal.toLocaleString('ru-RU') + ' ₽!');
+      hasActiveRoll = false; currentRolledNum = null;
+      document.getElementById('spin-display').innerText = '+7 (777) ???-??-??';
+      document.getElementById('market-value-text').innerText = 'Оценка: —';
+      setRarityStyle(document.getElementById('sim-rarity-tag'), 'common', 'Обычный');
+      setCardGlow('common');
+      document.getElementById('btn-spin').innerText = '🎲 Сгенерировать чип (1 500 ₽)';
+      document.getElementById('btn-buy-sim').disabled = true; document.getElementById('btn-sell-sim').disabled = true;
+      updateX2UI();
+    }
+
+    // ЛОГИКА АВТОСАЛОНА
+    function openCaseModal(type) {
+      currentActiveCaseType = type;
+      var caseData = carDatabase[type];
+      document.getElementById('case-modal-title').innerText = 'Кейс «' + caseData.title + '»';
+      document.getElementById('btn-open-car').innerText = '📦 Открыть кейс (' + caseData.price.toLocaleString('ru-RU') + ' ₽)';
+      
+      currentRolledCar = null;
+      isCarSpinning = false;
+      document.getElementById('car-market-value-text').innerText = 'Оценка: —';
+      setRarityStyle(document.getElementById('car-rarity-tag'), 'common', 'Ожидание');
+
+      document.getElementById('btn-open-car').disabled = false;
+      document.getElementById('btn-buy-car').disabled = true;
+      document.getElementById('btn-sell-car').disabled = true;
+
+      buildStaticCSPreviewTrack(type);
+      openModal('modal-car-case');
+    }
+
+    function openCarChances() {
+      var caseData = carDatabase[currentActiveCaseType];
+      var box = document.getElementById('car-chances-box');
+      document.getElementById('car-chances-title').innerText = '📊 Шансы кейса «' + caseData.title + '»';
+      box.innerHTML = `
+        <div class="chance-row"><span class="color-common" style="font-weight:900;">Обычный (Common)</span><span style="color:#fff;">~72-78%</span></div>
+        <div class="chance-row"><span class="color-rare" style="font-weight:900;">Редкий (Rare)</span><span style="color:#fff;">~17-22%</span></div>
+        <div class="chance-row"><span class="color-epic" style="font-weight:900;">Эпический (Epic) ~Окуп</span><span style="color:#fff;">~4-5%</span></div>
+        <div class="chance-row"><span class="color-legendary" style="font-weight:900;">Легендарный (Legendary)</span><span style="color:#fff;">~0.6%</span></div>
+        <div class="chance-row"><span class="color-mythic" style="font-weight:900;">Мифический (Джекпот)</span><span style="color:#fff;">0.05%</span></div>
+      `;
+      openModal('modal-car-chances');
+    }
+
+    function rollCarFromCase(type) {
+      var items = carDatabase[type].items;
+      var rand = Math.random();
+      var cumulative = 0;
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].chance > 0) cumulative += items[i].chance;
+        if (rand <= cumulative || i === items.length - 1) {
+          var selected = items[i];
+          var val = Math.floor(selected.minVal + Math.random() * (selected.maxVal - selected.minVal + 1));
+          return { name: selected.name, rarity: selected.rarity, val: val };
+        }
+      }
+      return items[0];
+    }
+
+    function getRandomItemFromCase(type) {
+      var items = carDatabase[type].items;
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function buildStaticCSPreviewTrack(type) {
+      var track = document.getElementById('cs-track');
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0px)';
+      track.innerHTML = '';
+      for (var i = 0; i < 10; i++) {
+        var item = getRandomItemFromCase(type);
+        track.appendChild(createCSCardElem(item));
+      }
+    }
+
+    function createCSCardElem(item) {
+      var card = document.createElement('div');
+      card.className = 'cs-item-card border-' + item.rarity;
+      card.innerHTML = `
+        <div class="cs-item-icon">🏎️</div>
+        <div class="cs-item-name">${item.name}</div>
+      `;
+      return card;
+    }
+
+    function startCarCSSpin() {
+      if (isCarSpinning) return;
+      var caseData = carDatabase[currentActiveCaseType];
+      if (player.cash < caseData.price) { showToast('❌ Недостаточно средств!'); return; }
+
+      player.cash -= caseData.price;
+      updateUI();
+      isCarSpinning = true;
+
+      var btnOpen = document.getElementById('btn-open-car');
+      var btnBuy = document.getElementById('btn-buy-car');
+      var btnSell = document.getElementById('btn-sell-car');
+      btnOpen.disabled = true; btnBuy.disabled = true; btnSell.disabled = true;
+
+      var track = document.getElementById('cs-track');
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(0px)';
+      track.innerHTML = '';
+
+      currentRolledCar = rollCarFromCase(currentActiveCaseType);
+
+      var winningIndex = 32;
+      var trackItems = [];
+      for (var i = 0; i < 45; i++) {
+        if (i === winningIndex) {
+          trackItems.push(currentRolledCar);
+        } else {
+          trackItems.push(getRandomItemFromCase(currentActiveCaseType));
+        }
+      }
+
+      trackItems.forEach(item => {
+        track.appendChild(createCSCardElem(item));
+      });
+
+      var containerWidth = document.querySelector('.cs-roulette-container').clientWidth;
+      var itemFullWidth = 120;
+      var targetOffset = (winningIndex * itemFullWidth) - (containerWidth / 2) + (110 / 2) + 5;
+
+      setTimeout(function() {
+        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.1, 1)';
+        track.style.transform = 'translateX(-' + targetOffset + 'px)';
+      }, 50);
+
+      var soundInterval = setInterval(function() {
+        playSound(400, false);
+      }, 120);
+
+      setTimeout(function() {
+        clearInterval(soundInterval);
+        isCarSpinning = false;
+
+        var rarityTag = document.getElementById('car-rarity-tag');
+        var valText = document.getElementById('car-market-value-text');
+        var rarityNameMap = { common: 'Обычный', rare: 'Редкий', epic: 'Эпический', legendary: 'Легендарный', mythic: 'МИФИЧЕСКИЙ ДЖЕКПОТ!' };
+        
+        setRarityStyle(rarityTag, currentRolledCar.rarity, rarityNameMap[currentRolledCar.rarity]);
+        valText.innerText = 'Оценка: ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
+        btnSell.innerText = '💰 Продать за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽';
+
+        playRaritySound(currentRolledCar.rarity);
+
+        if (currentRolledCar.rarity === 'mythic' || currentRolledCar.rarity === 'legendary') {
+          try { confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 }, zIndex: 300000 }); } catch(e){}
+        }
+
+        btnOpen.disabled = false;
+        btnOpen.innerText = '📦 Открыть еще';
+        btnBuy.disabled = false;
+        btnSell.disabled = false;
+      }, 5100);
+    }
+
+    function confirmBuyCar() {
+      if (!currentRolledCar) return;
+      player.cars.push(currentRolledCar);
+      updateUI(); playSuccessSound();
+      showToast('🏎️ Автомобиль добавлен в гараж!');
+      currentRolledCar = null;
+      closeModal('modal-car-case');
+    }
+
+    function sellCurrentCar() {
+      if (!currentRolledCar) return;
+      player.cash += currentRolledCar.val;
+      updateUI(); playSuccessSound();
+      showToast('💰 Авто продано за ' + currentRolledCar.val.toLocaleString('ru-RU') + ' ₽!');
+      currentRolledCar = null;
+      closeModal('modal-car-case');
+    }
+
+    // КЛИКЕР
+    function spawnCan() {
+      var area = document.getElementById('game-area');
+      var screenWork = document.getElementById('screen-work');
+      if (!area || !screenWork.classList.contains('active')) return;
+      if (area.children.length >= 4) return;
+      var can = document.createElement('div');
+      can.className = 'can-item'; can.innerText = '🥫';
+      var x = Math.random() * (area.clientWidth - 40);
+      var y = Math.random() * (area.clientHeight - 40);
+      can.style.left = x + 'px'; can.style.top = y + 'px';
+      can.onclick = function() {
+        playSound(650);
+        var reward = Math.floor(Math.random() * 1000) + 500;
+        player.cash += reward; updateUI();
+        var floatText = document.createElement('div');
+        floatText.className = 'floating-text'; floatText.innerText = '+' + reward.toLocaleString('ru-RU') + ' ₽';
+        floatText.style.left = x + 'px'; floatText.style.top = y + 'px';
+        area.appendChild(floatText);
+        setTimeout(function() { floatText.remove(); }, 600);
+        can.remove();
+      };
+      area.appendChild(can);
+    }
+    setInterval(spawnCan, 800);
+
+    window.onload = function() {
+      updateUI();
+      try {
+        if (window.Telegram && window.Telegram.WebApp) {
+          var tg = window.Telegram.WebApp;
+          tg.expand(); tg.ready();
+          if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            var user = tg.initDataUnsafe.user;
+            document.getElementById('user-name').innerText = user.first_name;
+            document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
+          }
+        }
+      } catch(e) {}
+    };
+  </script>
+</body>
+</html>
