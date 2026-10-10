@@ -340,7 +340,6 @@
       box-shadow: 0 -10px 40px rgba(250, 204, 21, 0.25);
     }
 
-    /* ИСПРАВЛЕНО: Свечение применяется к самой карточке без темных углов */
     .sim-card-model {
       width: 100%;
       height: 165px;
@@ -931,7 +930,7 @@
 
     <!-- ЭКРАН 4: ИНВЕНТАРЬ -->
     <div id="screen-inventory" class="screen">
-      <div style="font-size:13px; color:#38bdf8; font-weight:800;">🎒 Ваш Инвентарь (SIM-карты)</div>
+      <div style="font-size:13px; color:#38bdf8; font-weight:800;" id="inv-header-title">🎒 Ваш Инвентарь (0 / 2)</div>
       <div class="inventory-grid" id="inventory-list">
         <div style="font-size:12px; color:var(--text-muted); padding-top: 10px;">У вас пока нет активных SIM-карт.</div>
       </div>
@@ -992,7 +991,6 @@
         </div>
       </div>
 
-      <!-- ИСПРАВЛЕНО: Прямое скругление без внешних углов -->
       <div class="sim-card-model glow-common" id="sim-card-model-box">
         <div class="sim-card-top">
           <div class="sim-brand">EMPIRE SECURE</div>
@@ -1033,6 +1031,7 @@
       bank: 0,
       activePhone: 'Не установлена',
       sims: [],
+      maxSimSlots: 2, // ОГРАНИЧЕНИЕ: Максимум 2 сим-карты в инвентаре
       spinsCount: 0
     };
 
@@ -1210,6 +1209,13 @@
       document.getElementById('cash').innerText = player.cash.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('bank').innerText = player.bank.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('user-phone').innerText = '📱 SIM: ' + player.activePhone;
+      
+      // Обновляем заголовок слотов в инвентаре
+      var invHeader = document.getElementById('inv-header-title');
+      if (invHeader) {
+        invHeader.innerText = '🎒 Ваш Инвентарь (' + player.sims.length + ' / ' + player.maxSimSlots + ')';
+      }
+
       updateX2UI();
 
       var inv = document.getElementById('inventory-list');
@@ -1351,7 +1357,7 @@
       }
     }
 
-    /* ИСПРАВЛЕННЫЙ СВАЙП ШТОРКИ ВНИЗ ПАЛЬЦЕМ */
+    /* СВАЙП ШТОРКИ ВНИЗ ПАЛЬЦЕМ */
     document.querySelectorAll('.modal-sheet').forEach(sheet => {
       let overlay = sheet.closest('.modal-overlay');
       let startY = 0;
@@ -1570,6 +1576,13 @@
 
     function confirmBuySim() {
       if (!currentRolledNum) return;
+
+      // ПРОВЕРКА ЛИМИТА СЛОТОВ
+      if (player.sims.length >= player.maxSimSlots) {
+        playSound(220);
+        showToast('❌ Инвентарь заполнен (' + player.sims.length + '/' + player.maxSimSlots + ')! Продайте номер', 2000);
+        return;
+      }
 
       player.sims.push({ number: currentRolledNum, val: currentMarketVal });
       player.activePhone = currentRolledNum;
